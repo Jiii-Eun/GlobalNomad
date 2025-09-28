@@ -1,4 +1,4 @@
-const config = {
+export default {
   semi: true,
   singleQuote: false,
   trailingComma: "all",
@@ -7,6 +7,5 @@ const config = {
   bracketSpacing: true,
   arrowParens: "always",
   endOfLine: "lf",
+  plugins: ["prettier-plugin-tailwindcss"],
 };
-
-export default config;

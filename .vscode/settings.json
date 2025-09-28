@@ -1,13 +1,18 @@
 {
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
   "files.eol": "\n",
   "editor.codeActionsOnSave": {
-    "source.fixAll": true,
-    "source.fixAll.eslint": true
+    "source.fixAll": "explicit",
+    "source.fixAll.eslint": "explicit"
   },
-  "eslint.experimental.useFlatConfig": true,
-  "eslint.validate": ["javascript", "typescript", "typescriptreact", "javascriptreact"],
+  "eslint.useFlatConfig": true,
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "typescriptreact",
+    "javascriptreact"
+  ],
   "editor.quickSuggestions": {
     "strings": true
   },
