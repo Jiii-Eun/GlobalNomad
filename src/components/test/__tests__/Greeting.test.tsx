@@ -5,9 +5,7 @@ import Greeting from "../Greeting";
 // 테스트마다 새로운 QueryClient 생성
 function renderWithClient(ui: React.ReactNode) {
   const queryClient = new QueryClient();
-  return render(
-    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
-  );
+  return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
 }
 
 describe("Greeting Component", () => {
@@ -18,8 +16,6 @@ describe("Greeting Component", () => {
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
 
     // API 데이터가 나타나는지 확인
-    await waitFor(() =>
-      expect(screen.getByText("Hello from API")).toBeInTheDocument()
-    );
+    await waitFor(() => expect(screen.getByText("Hello from API")).toBeInTheDocument());
   });
 });
