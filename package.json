@@ -15,7 +15,8 @@
     "test": "vitest",
     "test:unit": "vitest run --config vitest.config.mts",
     "test:storybook": "vitest run --config vitest.storybook.config.ts",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.13",
