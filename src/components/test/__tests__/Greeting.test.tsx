@@ -1,5 +1,6 @@
-import { render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { render, screen, waitFor } from "@testing-library/react";
+
 import Greeting from "../Greeting";
 
 // 테스트마다 새로운 QueryClient 생성
