@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { fetchGreeting } from "@/lib/test/api";
+import { fetchGreeting } from "@/entities/test/api";
 
 export default function Greeting() {
   const { data, isLoading } = useQuery({
