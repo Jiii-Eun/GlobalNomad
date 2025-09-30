@@ -1,9 +1,9 @@
-import "./globals.css";
-import Providers from "./providers";
+import "@/styles/globals.css";
+import Providers from "../components/provider/providers";
 
 export const metadata = {
   title: "GlobalNomad",
-  description: "체험의 모든것을 즐겨봐요~",
+  description: "일상을 벗어나 특별한 순간을 예약하세요",
 };
 
 export default function RootLayout({

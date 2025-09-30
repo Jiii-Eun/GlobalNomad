@@ -1,7 +1,7 @@
 // 테스트용
 import Link from "next/link";
 
-import TestMotions from "@/components/test/TestMotions";
+import TestMotions from "@/app/test/TestMotions";
 
 export default function Home() {
   return (
