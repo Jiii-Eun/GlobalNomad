@@ -4,13 +4,12 @@ import Providers from "../components/provider/providers";
 export const metadata = {
   title: "GlobalNomad",
   description: "일상을 벗어나 특별한 순간을 예약하세요",
+  icon: "/favicon.ico",
+  shortcut: "/favicon-32x32.png",
+  apple: "/apple-touch-icon.png",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
       <body>
