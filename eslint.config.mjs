@@ -102,6 +102,8 @@ const config = [
         "warn",
         { argsIgnorePattern: "^_" },
       ],
+      //스토리북
+      "storybook/no-renderer-packages": "off",
     },
     languageOptions: {
       parser: tseslint.parser,
