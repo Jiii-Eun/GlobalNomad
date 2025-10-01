@@ -76,11 +76,7 @@ const config = [
       "import/order": [
         "error",
         {
-          groups: [
-            ["builtin", "external"],
-            ["internal"],
-            ["parent", "sibling", "index"],
-          ],
+          groups: [["builtin", "external"], ["internal"], ["parent", "sibling", "index"]],
           pathGroups: [
             {
               pattern: "@/**",
@@ -98,10 +94,7 @@ const config = [
       "import/no-unresolved": "error",
 
       // TypeScript
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        { argsIgnorePattern: "^_" },
-      ],
+      "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
       //스토리북
       "storybook/no-renderer-packages": "off",
     },
