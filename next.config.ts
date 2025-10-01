@@ -9,8 +9,5 @@ export default withSvgr({
   ...nextConfig,
   svgrOptions: {
     dimensions: false,
-    svgProps: {
-      className: "svg-override",
-    },
   },
 });

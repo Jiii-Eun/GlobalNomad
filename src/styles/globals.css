@@ -105,9 +105,16 @@ a {
 }
 
 /* svgr 색상 변경 클래스 */
-.svg-override path,
-.svg-override circle,
-.svg-override rect {
-  fill: currentColor !important;
-  stroke: currentColor !important;
+/* fill만 */
+.svg-fill path,
+.svg-fill rect,
+.svg-fill circle {
+  fill: currentColor;
+}
+
+/* stroke만 */
+.svg-stroke path,
+.svg-stroke rect,
+.svg-stroke circle {
+  stroke: currentColor;
 }
