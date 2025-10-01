@@ -1,7 +1,7 @@
 ---
 name: ✅ 작업 요청 템플릿
 about: 특정 작업(Task) 요청을 정리하는 템플릿
-title: "[TASK] "
+title: "[작업내용] 간단 설명"
 labels: task
 assignees: ""
 ---

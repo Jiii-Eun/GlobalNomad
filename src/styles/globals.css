@@ -1,1 +1,105 @@
 @import "tailwindcss";
+@import "pretendard/dist/web/static/pretendard.css";
+
+
+@theme inline {
+  /* primary colors */
+  --color-brand-black: oklch(0.2221 0 0);
+  --color-brand-nomad-black: oklch(0.2313 0.0394 144.17);
+  
+  /* grays */
+  --color-brand-gray-900: oklch(0.4128 0 0);
+  --color-brand-gray-800: oklch(0.5667 0.0163 308.14);
+  --color-brand-gray-700: oklch(0.709 0 0);
+  --color-brand-gray-600: oklch(0.7143 0.0133 301.19);
+  --color-brand-gray-500: oklch(0.7531 0.0142 281.48);
+  --color-brand-gray-400: oklch(0.8393 0.0085 301.33);
+  --color-brand-gray-300: oklch(0.8975 0 0);
+  --color-brand-gray-200: oklch(0.9491 0 0);
+  --color-brand-gray-100: oklch(0.9851 0 0);
+
+  /* greens */
+  --color-brand-deep-green-500: oklch(0.3166 0.0563 169.09);
+  --color-brand-deep-green-50: oklch(0.8737 0.0116 176.27);
+
+  --color-brand-green-500: oklch(0.6452 0.2182 142.68);
+
+  /* reds */
+  --color-brand-red-500: oklch(0.664 0.2237 31.08);
+  --color-brand-red-200: oklch(0.8669 0.0714 27.15);
+  --color-brand-red-50: oklch(0.9397 0.0303 27.75);
+
+  /* oranges */
+  --color-brand-orange-500: oklch(0.7267 0.1848 49.4);
+  --color-brand-orange-50: oklch(0.9725 0.0198 70);
+
+  --color-brand-yellow-500: oklch(0.848 0.1563 82.44);
+
+  --color-brand-blue-500: oklch(0.6257 0.2051 254.88);
+  --color-brand-blue-200: oklch(0.7345 0.1539 239.62);
+  --color-brand-blue-50: oklch(0.9573 0.022 243.8);
+
+  /* 폰트 */
+  --font-sans: "Pretendard", system-ui, sans-serif;
+  
+  /* Text 3xl (32px / 42px) */
+  --text-3xl: 2rem;
+  --text-3xl--line-height: 2.625rem;
+
+  /* Text 2xl (24px / 32px) */
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+
+  /* Text xl (20px / 32px) */
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 2rem;
+
+  /* Text 2lg (18px / 26px) */
+  --text-2lg: 1.125rem;
+  --text-2lg--line-height: 1.625rem;
+
+  /* Text lg (16px / 26px) */
+  --text-lg: 1rem;
+  --text-lg--line-height: 1.625rem;
+
+  /* Text md (14px / 24px) */
+  --text-md: 0.875rem;
+  --text-md--line-height: 1.5rem;
+
+  /* Text sm (13px / 22px) */
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.375rem;
+
+  /* Text xs (12px / 18px) */
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.125rem;
+}
+
+body {
+  /* 기본 스타일 */
+  @apply bg-brand-gray-100 text-brand-black;
+}
+
+/* 버튼 커서 */
+button {
+  @apply cursor-pointer;
+}
+
+/* 링크 기본 스타일 */
+a {
+  @apply block no-underline text-brand-black w-full h-full;
+}
+
+/* 포커스인 테두리 */
+:focus {
+  @apply outline-brand-nomad-black;
+}
+
+/* 에러 테두리 */
+.is-error {
+  @apply border-brand-red-500 ring-1 ring-brand-red-500;
+}
+
+.flex-center {
+  @apply flex justify-center items-center;
+}
