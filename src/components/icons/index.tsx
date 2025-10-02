@@ -1,30 +1,31 @@
 // 브랜드(logo)
-import LogoBig from "@/assets/brand/logo-big.svg";
-import LogoKakao from "@/assets/brand/logo-kakao.svg";
-import LogoSmall from "@/assets/brand/logo-small.svg";
+import Big from "@/assets/brand/logo-big.svg";
+import Kakao from "@/assets/brand/logo-kakao.svg";
+import Small from "@/assets/brand/logo-small.svg";
 // arrow
-import ArrowDownFill from "@/assets/icons/arrows/arrow-down-fill.svg";
-import ArrowDown from "@/assets/icons/arrows/arrow-down.svg";
-import ArrowLeftFillDisabled from "@/assets/icons/arrows/arrow-left-fill-disabled.svg";
-import ArrowLeftFill from "@/assets/icons/arrows/arrow-left-fill.svg";
-import ArrowLeft from "@/assets/icons/arrows/arrow-left.svg";
-import ArrowRightFillDisabled from "@/assets/icons/arrows/arrow-right-fill-disabled.svg";
-import ArrowRightFill from "@/assets/icons/arrows/arrow-right-fill.svg";
-import ArrowRight from "@/assets/icons/arrows/arrow-right.svg";
+import DownFill from "@/assets/icons/arrows/arrow-down-fill.svg";
+import Down from "@/assets/icons/arrows/arrow-down.svg";
+import LeftFillDisabled from "@/assets/icons/arrows/arrow-left-fill-disabled.svg";
+import LeftFill from "@/assets/icons/arrows/arrow-left-fill.svg";
+import Left from "@/assets/icons/arrows/arrow-left.svg";
+import RightFillDisabled from "@/assets/icons/arrows/arrow-right-fill-disabled.svg";
+import RightFill from "@/assets/icons/arrows/arrow-right-fill.svg";
+import Right from "@/assets/icons/arrows/arrow-right.svg";
 // buttons
-import ButtonAddImage from "@/assets/icons/buttons/button-add-image.svg";
-import ButtonAdd from "@/assets/icons/buttons/button-add.svg";
-import ButtonEdit from "@/assets/icons/buttons/button-edit.svg";
-import ButtonRemove from "@/assets/icons/buttons/button-remove.svg";
-// Me / SNS
-import MeRegister from "@/assets/icons/me-sns/me-register.svg";
-import MeReservations from "@/assets/icons/me-sns/me-reservations.svg";
-import MeSchedule from "@/assets/icons/me-sns/me-schedule.svg";
+import AddImage from "@/assets/icons/buttons/button-add-image.svg";
+import Add from "@/assets/icons/buttons/button-add.svg";
+import Edit from "@/assets/icons/buttons/button-edit.svg";
+import Remove from "@/assets/icons/buttons/button-remove.svg";
+// Me
+import Register from "@/assets/icons/me-sns/me-register.svg";
+import Reservations from "@/assets/icons/me-sns/me-reservations.svg";
+import Schedule from "@/assets/icons/me-sns/me-schedule.svg";
 import Me from "@/assets/icons/me-sns/me.svg";
-import SnsFacebook from "@/assets/icons/me-sns/sns-facebook.svg";
-import SnsInstagram from "@/assets/icons/me-sns/sns-instagram.svg";
-import SnsX from "@/assets/icons/me-sns/sns-x.svg";
-import SnsYoutube from "@/assets/icons/me-sns/sns-youtube.svg";
+// SNS
+import Facebook from "@/assets/icons/me-sns/sns-facebook.svg";
+import Instagram from "@/assets/icons/me-sns/sns-instagram.svg";
+import X from "@/assets/icons/me-sns/sns-x.svg";
+import Youtube from "@/assets/icons/me-sns/sns-youtube.svg";
 // Status
 import CheckMarkFill from "@/assets/icons/status/check-mark-fill.svg";
 import CheckMark from "@/assets/icons/status/check-mark.svg";
@@ -45,52 +46,66 @@ import NotingPage from "@/assets/icons/ui/noting-page.svg";
 import Search from "@/assets/icons/ui/search.svg";
 
 // 아이콘 모음
-export const Icons = {
-  // 브랜드
-  LogoBig,
-  LogoKakao,
-  LogoSmall,
+// 브랜드
+export const Logo = {
+  Big,
+  Kakao,
+  Small,
+};
 
-  // 화살표
-  ArrowDown,
-  ArrowDownFill,
-  ArrowLeft,
-  ArrowLeftFill,
-  ArrowLeftFillDisabled,
-  ArrowRight,
-  ArrowRightFill,
-  ArrowRightFillDisabled,
+// 화살표
+export const Arrow = {
+  DownFill,
+  Down,
+  LeftFillDisabled,
+  LeftFill,
+  Left,
+  RightFillDisabled,
+  RightFill,
+  Right,
+};
 
-  // 버튼
-  ButtonAddImage,
-  ButtonAdd,
-  ButtonEdit,
-  ButtonRemove,
+// 버튼
+export const Button = {
+  AddImage,
+  Add,
+  Edit,
+  Remove,
+};
 
-  // Me / SNS
+// Me
+export const MeIcon = {
+  Register,
+  Reservations,
+  Schedule,
   Me,
-  MeSchedule,
-  MeRegister,
-  MeReservations,
-  SnsFacebook,
-  SnsInstagram,
-  SnsYoutube,
-  SnsX,
+};
 
-  // 상태
-  CheckMark,
+// SNS
+export const Sns = {
+  Facebook,
+  Instagram,
+  X,
+  Youtube,
+};
+
+// 상태
+export const Status = {
   CheckMarkFill,
-  Close,
+  CheckMark,
   CloseFill,
+  Close,
   DotSmallBlue,
   DotSmallGreen,
   DotSmallRed,
   StarEmpty,
   StarFill,
-  Visibility,
   VisibilityOff,
+  Visibility,
+};
 
-  // UI
+// UI
+export const Misc = {
   Calendar,
   MenuDot,
   NotificationBell,

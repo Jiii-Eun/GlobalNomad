@@ -103,3 +103,18 @@ a {
 .flex-center {
   @apply flex justify-center items-center;
 }
+
+/* svgr 색상 변경 클래스 */
+/* fill만 */
+.svg-fill path,
+.svg-fill rect,
+.svg-fill circle {
+  fill: currentColor;
+}
+
+/* stroke만 */
+.svg-stroke path,
+.svg-stroke rect,
+.svg-stroke circle {
+  stroke: currentColor;
+}
