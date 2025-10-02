@@ -10,7 +10,7 @@ export interface UserResponse {
   id: number;
   email: string;
   nickname: string;
-  profileImageUrl: string | File;
+  profileImageUrl: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -28,5 +28,5 @@ export interface UploadProfileImageRequest {
 }
 
 export interface UploadProfileImageResponse {
-  profileImageUrl: string | File;
+  profileImageUrl: string;
 }
