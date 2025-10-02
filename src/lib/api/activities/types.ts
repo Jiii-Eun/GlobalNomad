@@ -14,7 +14,7 @@ export type ActivityCategory = z.infer<typeof ActivityCategorySchema>;
 export const ActivitySortSchema = z.enum(["most_reviewed", "price_asc", "price_desc", "latest"]);
 export type ActivitySort = z.infer<typeof ActivitySortSchema>;
 
-export const GetActivitiesRequestSchema = z.object({
+export const GetActivitiesReq = z.object({
   method: z.enum(["offset", "cursor"]),
   cursorId: z.number().optional(),
   category: ActivityCategorySchema.optional(),
@@ -23,7 +23,7 @@ export const GetActivitiesRequestSchema = z.object({
   page: z.number().optional(),
   size: z.number().optional(),
 });
-export type GetActivitiesRequest = z.infer<typeof GetActivitiesRequestSchema>;
+export type GetActivitiesRequest = z.infer<typeof GetActivitiesReq>;
 
 // GET: 체험 리스트 조회
 export const ActivitySchema = z.object({
