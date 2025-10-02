@@ -17,11 +17,13 @@ export default function Home() {
       >
         Home
       </h1>
-      <Link href={"/login"}>login</Link>
+      <Link href={"/login"} className="mobile:text-9xl">
+        login
+      </Link>
       <Link href={"/signup"}>sign up</Link>
       <Arrow.DownFill className="svg-fill svg-stroke text-brand-red-500 hover:text-brand-blue-500 h-20 w-20" />
       <Button.Add className="h-8 w-8" />
-      <Button.Add className="svg-fill hover:text-brand-blue-500 h-6 w-6" />
+      <Button.Add className="svg-fill hover:text-brand-blue-500 tablet:text-brand-red-500 h-6 w-6" />
       <TestMotions />
     </div>
   );
