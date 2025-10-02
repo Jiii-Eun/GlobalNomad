@@ -3,7 +3,7 @@
 export default function ActivityId() {
   return (
     <>
-      <div className=""></div>
+      <div></div>
     </>
   );
 }
