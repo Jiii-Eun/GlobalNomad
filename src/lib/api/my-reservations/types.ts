@@ -1,82 +1,95 @@
-import { ReservationStatus } from "@/lib/api/activities/types";
+import { z } from "zod";
+
+import { ReservationStatusSchema } from "@/lib/api/activities/types";
 
 // GET: 내 예약 리스트 조회 요청
-export interface GetMyReservationsRequest {
-  teamId: string;
-  cursorId?: number;
-  size?: number; // 기본값 10
-  status?: ReservationStatus;
-}
+export const GetMyReservationsRequestSchema = z.object({
+  teamId: z.string(),
+  cursorId: z.number().optional(),
+  size: z.number().optional(),
+  status: ReservationStatusSchema.optional(),
+});
+export type GetMyReservationsRequest = z.infer<typeof GetMyReservationsRequestSchema>;
 
 // GET: 내 예약 리스트 조회 응답
-export interface MyReservation {
-  id: number;
-  teamId: string;
-  userId: number;
-  activity: {
-    id: number;
-    title: string;
-    bannerImageUrl: string;
-  };
-  scheduleId: number;
-  status: ReservationStatus;
-  reviewSubmitted: boolean;
-  totalPrice: number;
-  headCount: number;
-  date: string;
-  startTime: string;
-  endTime: string;
-  createdAt: string;
-  updatedAt: string;
-}
+export const MyReservationSchema = z.object({
+  id: z.number(),
+  teamId: z.string(),
+  userId: z.number(),
+  activity: z.object({
+    id: z.number(),
+    title: z.string(),
+    bannerImageUrl: z.string(),
+  }),
+  scheduleId: z.number(),
+  status: ReservationStatusSchema,
+  reviewSubmitted: z.boolean(),
+  totalPrice: z.number(),
+  headCount: z.number(),
+  date: z.string(),
+  startTime: z.string(),
+  endTime: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+export type MyReservation = z.infer<typeof MyReservationSchema>;
 
-export interface GetMyReservationsResponse {
-  cursorId: number;
-  reservations: MyReservation[];
-  totalCount: number;
-}
+export const GetMyReservationsResponseSchema = z.object({
+  cursorId: z.number(),
+  reservations: z.array(MyReservationSchema),
+  totalCount: z.number(),
+});
+export type GetMyReservationsResponse = z.infer<typeof GetMyReservationsResponseSchema>;
 
 // PATCH: 내 예약 수정 (취소) 요청
-export interface CancelMyReservationRequest {
-  teamId: string;
-  reservationId: number;
-  status: Extract<ReservationStatus, "canceled">;
-}
+export const CancelMyReservationRequestSchema = z.object({
+  teamId: z.string(),
+  reservationId: z.number(),
+  status: ReservationStatusSchema.extract(["canceled"]),
+});
+export type CancelMyReservationRequest = z.infer<typeof CancelMyReservationRequestSchema>;
 
 // PATCH: 내 예약 수정 (취소) 응답
-export interface CancelMyReservationResponse {
-  id: number;
-  teamId: string;
-  userId: number;
-  activityId: number;
-  scheduleId: number;
-  status: ReservationStatus;
-  reviewSubmitted: boolean;
-  totalPrice: number;
-  headCount: number;
-  date: string;
-  startTime: string;
-  endTime: string;
-  createdAt: string;
-  updatedAt: string;
-}
+export const CancelMyReservationResponseSchema = z.object({
+  id: z.number(),
+  teamId: z.string(),
+  userId: z.number(),
+  activityId: z.number(),
+  scheduleId: z.number(),
+  status: ReservationStatusSchema,
+  reviewSubmitted: z.boolean(),
+  totalPrice: z.number(),
+  headCount: z.number(),
+  date: z.string(),
+  startTime: z.string(),
+  endTime: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+export type CancelMyReservationResponse = z.infer<typeof CancelMyReservationResponseSchema>;
 
 // POST: 내 예약 리뷰 작성 요청
-export interface CreateMyReservationReviewRequest {
-  teamId: string;
-  reservationId: number;
-  rating: number;
-  content: string;
-}
+export const CreateMyReservationReviewRequestSchema = z.object({
+  teamId: z.string(),
+  reservationId: z.number(),
+  rating: z.number(),
+  content: z.string(),
+});
+export type CreateMyReservationReviewRequest = z.infer<
+  typeof CreateMyReservationReviewRequestSchema
+>;
 
 // POST: 내 예약 리뷰 작성 응답
-export interface CreateMyReservationReviewResponse {
-  id: number;
-  teamId: string;
-  userId: number;
-  activityId: number;
-  rating: number;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-}
+export const CreateMyReservationReviewResponseSchema = z.object({
+  id: z.number(),
+  teamId: z.string(),
+  userId: z.number(),
+  activityId: z.number(),
+  rating: z.number(),
+  content: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+export type CreateMyReservationReviewResponse = z.infer<
+  typeof CreateMyReservationReviewResponseSchema
+>;

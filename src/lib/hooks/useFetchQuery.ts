@@ -1,29 +1,27 @@
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
-import { apiRequest } from "@/lib/apiRequest";
-
 interface FetchQueryOptions<T> extends UseQueryOptions<T> {
   mockData?: T;
 }
 
 export function useFetchQuery<T>(
   key: unknown[],
-  endpoint: string | null,
+  queryFn?: () => Promise<T>,
   options?: FetchQueryOptions<T>,
 ) {
   return useQuery<T>({
     queryKey: key,
     queryFn: async () => {
-      if (endpoint === null) {
-        if (options?.mockData === undefined) {
-          throw new Error("mock 모드에서는 mockData가 필요합니다");
-        }
+      // Mock 모드
+      if (options?.mockData !== undefined) {
         return options.mockData;
       }
-      if (!endpoint) {
-        throw new Error("endpoint가 필요합니다");
+      if (!queryFn) {
+        throw new Error("useFetchQuery에는 queryFn 또는 mockData가 필요합니다");
       }
-      return apiRequest<T>(endpoint);
+
+      // API 모드
+      return queryFn();
     },
     ...options,
   });

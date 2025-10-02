@@ -1,18 +1,24 @@
-import { UserResponse } from "@/lib/api/users/types";
+import { z } from "zod";
+
+import { UserResponseSchema } from "@/lib/api/users/types";
 
 // POST: 로그인
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-export interface LoginResponse {
-  user: UserResponse;
-  refreshToken: string;
-  accessToken: string;
-}
+export const LoginRequestSchema = z.object({
+  email: z.string(),
+  password: z.string(),
+});
+export type LoginRequest = z.infer<typeof LoginRequestSchema>;
+
+export const LoginResponseSchema = z.object({
+  user: UserResponseSchema,
+  refreshToken: z.string(),
+  accessToken: z.string(),
+});
+export type LoginResponse = z.infer<typeof LoginResponseSchema>;
 
 // POST: 토큰 재발급
-export interface TokenResponse {
-  refreshToken: string;
-  accessToken: string;
-}
+export const TokenResponseSchema = z.object({
+  refreshToken: z.string(),
+  accessToken: z.string(),
+});
+export type TokenResponse = z.infer<typeof TokenResponseSchema>;

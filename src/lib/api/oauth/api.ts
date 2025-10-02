@@ -14,7 +14,7 @@ export function registerOAuthApp(data: OAuthRequest) {
 }
 
 // POST: 간편 회원가입
-export function oauthSignUp(provider: "google" | "kakao", data: OAuthSignUpRequest) {
+export function oauthSignUp(provider: "kakao", data: OAuthSignUpRequest) {
   return apiRequest<OAuthSignUpResponse>(`/oauth/sign-up/${provider}`, {
     method: "POST",
     data,
@@ -22,7 +22,7 @@ export function oauthSignUp(provider: "google" | "kakao", data: OAuthSignUpReque
 }
 
 // POST: 간편 로그인
-export function oauthSignIn(provider: "google" | "kakao", data: OAuthSignUpRequest) {
+export function oauthSignIn(provider: "kakao", data: OAuthSignUpRequest) {
   return apiRequest<OAuthLoginResponse>(`/oauth/sign-in/${provider}`, {
     method: "POST",
     data,

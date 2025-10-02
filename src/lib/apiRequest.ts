@@ -1,15 +1,17 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+import { ZodType } from "zod";
 
-interface FetchOptions extends Omit<RequestInit, "body"> {
+interface FetchOptions<T> extends Omit<RequestInit, "body"> {
   isFormData?: boolean;
   data?: unknown;
+  schema?: ZodType<T>;
 }
 
 export async function apiRequest<Response>(
   endpoint: string,
-  options: FetchOptions = {},
+  options: FetchOptions<Response> = {},
 ): Promise<Response> {
-  const { isFormData, headers, data, ...rest } = options;
+  const { isFormData, headers, data, schema, ...rest } = options;
 
   const fetchOptions: RequestInit = {
     ...rest,
@@ -49,5 +51,12 @@ export async function apiRequest<Response>(
     throw new Error(error?.message || "API 요청 실패");
   }
 
-  return response.json();
+  const json = await response.json();
+
+  // 스키마 검증
+  if (schema) {
+    return schema.parse(json);
+  }
+
+  return json as Response;
 }
