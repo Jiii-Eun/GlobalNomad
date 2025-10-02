@@ -14,7 +14,7 @@ export type ActivityCategory = z.infer<typeof ActivityCategorySchema>;
 export const ActivitySortSchema = z.enum(["most_reviewed", "price_asc", "price_desc", "latest"]);
 export type ActivitySort = z.infer<typeof ActivitySortSchema>;
 
-export const GetActivitiesReq = z.object({
+export const GetActivitiesReqSchema = z.object({
   method: z.enum(["offset", "cursor"]),
   cursorId: z.number().optional(),
   category: ActivityCategorySchema.optional(),
@@ -23,7 +23,7 @@ export const GetActivitiesReq = z.object({
   page: z.number().optional(),
   size: z.number().optional(),
 });
-export type GetActivitiesRequest = z.infer<typeof GetActivitiesReq>;
+export type GetActivitiesReq = z.infer<typeof GetActivitiesReqSchema>;
 
 // GET: 체험 리스트 조회
 export const ActivitySchema = z.object({
@@ -42,12 +42,12 @@ export const ActivitySchema = z.object({
 });
 export type Activity = z.infer<typeof ActivitySchema>;
 
-export const GetActivitiesResponseSchema = z.object({
+export const GetActivitiesResSchema = z.object({
   cursorId: z.number(),
   totalCount: z.number(),
   activities: z.array(ActivitySchema),
 });
-export type GetActivitiesResponse = z.infer<typeof GetActivitiesResponseSchema>;
+export type GetActivitiesRes = z.infer<typeof GetActivitiesResSchema>;
 
 // POST: 체험 등록
 export const ScheduleTimeSchema = z.object({
@@ -57,7 +57,7 @@ export const ScheduleTimeSchema = z.object({
 });
 export type ScheduleTime = z.infer<typeof ScheduleTimeSchema>;
 
-export const CreateActivityRequestSchema = z.object({
+export const CreateActivityReqSchema = z.object({
   title: z.string(),
   category: z.string(),
   description: z.string(),
@@ -67,7 +67,7 @@ export const CreateActivityRequestSchema = z.object({
   subImageUrls: z.array(z.union([z.string(), z.instanceof(File)])),
   schedules: z.array(ScheduleTimeSchema),
 });
-export type CreateActivityRequest = z.infer<typeof CreateActivityRequestSchema>;
+export type CreateActivityReq = z.infer<typeof CreateActivityReqSchema>;
 
 // POST: 체험 등록 응답
 export const ScheduleSlotSchema = z.object({
@@ -89,11 +89,11 @@ export const SubImageSchema = z.object({
 });
 export type SubImage = z.infer<typeof SubImageSchema>;
 
-export const CreateActivityResponseSchema = ActivitySchema.extend({
+export const CreateActivityResSchema = ActivitySchema.extend({
   subImages: z.array(SubImageSchema),
   schedules: z.array(ScheduleGroupSchema),
 });
-export type CreateActivityResponse = z.infer<typeof CreateActivityResponseSchema>;
+export type CreateActivityRes = z.infer<typeof CreateActivityResSchema>;
 
 // GET: 체험 상세 조회
 export const ScheduleSchema = ScheduleTimeSchema.extend({
@@ -130,19 +130,19 @@ export const ReviewSchema = z.object({
 });
 export type Review = z.infer<typeof ReviewSchema>;
 
-export const GetActivityReviewsResponseSchema = z.object({
+export const GetReviewsResSchema = z.object({
   averageRating: z.number(),
   totalCount: z.number(),
   reviews: z.array(ReviewSchema),
 });
-export type GetActivityReviewsResponse = z.infer<typeof GetActivityReviewsResponseSchema>;
+export type GetReviewsRes = z.infer<typeof GetReviewsResSchema>;
 
 // POST: 체험 예약 신청
-export const CreateReservationRequestSchema = z.object({
+export const CreateReservationReqSchema = z.object({
   scheduleId: z.number(),
   headCount: z.number(),
 });
-export type CreateReservationRequest = z.infer<typeof CreateReservationRequestSchema>;
+export type CreateReservationReq = z.infer<typeof CreateReservationReqSchema>;
 
 // POST: 체험 예약 신청 응답
 export const ReservationStatusSchema = z.enum([
@@ -154,7 +154,7 @@ export const ReservationStatusSchema = z.enum([
 ]);
 export type ReservationStatus = z.infer<typeof ReservationStatusSchema>;
 
-export const CreateReservationResponseSchema = z.object({
+export const CreateReservationResSchema = z.object({
   id: z.number(),
   teamId: z.string(),
   userId: z.number(),
@@ -170,16 +170,16 @@ export const CreateReservationResponseSchema = z.object({
   createdAt: z.string(),
   updatedAt: z.string(),
 });
-export type CreateReservationResponse = z.infer<typeof CreateReservationResponseSchema>;
+export type CreateReservationRes = z.infer<typeof CreateReservationResSchema>;
 
 // POST: 체험 이미지 업로드 요청
-export const UploadActivityImageRequestSchema = z.object({
+export const UploadImageReqSchema = z.object({
   image: z.instanceof(File),
 });
-export type UploadActivityImageRequest = z.infer<typeof UploadActivityImageRequestSchema>;
+export type UploadImageReq = z.infer<typeof UploadImageReqSchema>;
 
 // POST: 체험 이미지 업로드 응답
-export const UploadActivityImageResponseSchema = z.object({
+export const UploadImageResSchema = z.object({
   activityImageUrl: z.string(),
 });
-export type UploadActivityImageResponse = z.infer<typeof UploadActivityImageResponseSchema>;
+export type UploadImageRes = z.infer<typeof UploadImageResSchema>;

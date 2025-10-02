@@ -2,38 +2,39 @@ import { apiRequest } from "@/lib/apiRequest";
 import { toQueryString } from "@/lib/utills/queryString";
 
 import {
-  GetMyReservationsRequest,
-  GetMyReservationsResponse,
-  GetMyReservationsResponseSchema,
-  CancelMyReservationRequest,
-  CancelMyReservationResponse,
-  CancelMyReservationResponseSchema,
-  CreateMyReservationReviewRequest,
-  CreateMyReservationReviewResponse,
-  CreateMyReservationReviewResponseSchema,
+  GetMyResvsReq,
+  GetMyResvsRes,
+  GetMyResvsResSchema,
+  CancelResvReq,
+  CancelResvRes,
+  CancelResvResSchema,
+  CreateReviewReq,
+  CreateReviewRes,
+  CreateReviewResSchema,
 } from "./types";
 
 // GET: 내 예약 리스트 조회
-export function getMyReservations(params: GetMyReservationsRequest) {
+export function getMyReservations(params: GetMyResvsReq) {
   const query = toQueryString(params);
-  return apiRequest<GetMyReservationsResponse>(`/my-reservations?${query}`, {
-    schema: GetMyReservationsResponseSchema,
+  return apiRequest<GetMyResvsRes>(`/my-reservations?${query}`, {
+    schema: GetMyResvsResSchema,
   });
 }
 
 // PATCH: 내 예약 취소
-export function cancelMyReservation(data: CancelMyReservationRequest) {
-  return apiRequest<CancelMyReservationResponse>(`/my-reservations/${data.reservationId}`, {
+export function cancelMyReservation(data: CancelResvReq) {
+  return apiRequest<CancelResvRes>(`/my-reservations/${data.reservationId}`, {
     method: "PATCH",
     data,
-    schema: CancelMyReservationResponseSchema,
+    schema: CancelResvResSchema,
   });
 }
 
 // POST: 내 예약 리뷰 작성
-export function createMyReservationReview(data: CreateMyReservationReviewRequest) {
-  return apiRequest<CreateMyReservationReviewResponse>(
-    `/my-reservations/${data.reservationId}/reviews`,
-    { method: "POST", data, schema: CreateMyReservationReviewResponseSchema },
-  );
+export function createMyReservationReview(data: CreateReviewReq) {
+  return apiRequest<CreateReviewRes>(`/my-reservations/${data.reservationId}/reviews`, {
+    method: "POST",
+    data,
+    schema: CreateReviewResSchema,
+  });
 }

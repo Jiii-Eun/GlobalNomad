@@ -2,39 +2,39 @@ import { apiRequest } from "@/lib/apiRequest";
 import { toQueryString } from "@/lib/utills/queryString";
 
 import {
-  GetActivitiesRequest,
-  GetActivitiesResponse,
-  GetActivitiesResponseSchema,
-  CreateActivityRequest,
-  CreateActivityResponse,
-  CreateActivityResponseSchema,
+  GetActivitiesReq,
+  GetActivitiesRes,
+  GetActivitiesResSchema,
+  CreateActivityReq,
+  CreateActivityRes,
+  CreateActivityResSchema,
   ActivityDetail,
   ActivityDetailSchema,
   AvailableSchedule,
   AvailableScheduleSchema,
-  GetActivityReviewsResponse,
-  GetActivityReviewsResponseSchema,
-  CreateReservationRequest,
-  CreateReservationResponse,
-  CreateReservationResponseSchema,
-  UploadActivityImageResponse,
-  UploadActivityImageResponseSchema,
+  GetReviewsRes,
+  GetReviewsResSchema,
+  CreateReservationReq,
+  CreateReservationRes,
+  CreateReservationResSchema,
+  UploadImageRes,
+  UploadImageResSchema,
 } from "./types";
 
 // GET: 체험 리스트 조회
-export function getActivities(params: GetActivitiesRequest) {
+export function getActivities(params: GetActivitiesReq) {
   const query = toQueryString(params);
-  return apiRequest<GetActivitiesResponse>(`/activities?${query}`, {
-    schema: GetActivitiesResponseSchema,
+  return apiRequest<GetActivitiesRes>(`/activities?${query}`, {
+    schema: GetActivitiesResSchema,
   });
 }
 
 // POST: 체험 등록
-export function createActivity(data: CreateActivityRequest) {
-  return apiRequest<CreateActivityResponse>(`/activities`, {
+export function createActivity(data: CreateActivityReq) {
+  return apiRequest<CreateActivityRes>(`/activities`, {
     method: "POST",
     data,
-    schema: CreateActivityResponseSchema,
+    schema: CreateActivityResSchema,
   });
 }
 
@@ -55,27 +55,26 @@ export function getAvailableSchedule(activityId: number, year: string, month: st
 
 // GET: 체험 리뷰 조회
 export function getActivityReviews(activityId: number, page = 1, size = 3) {
-  return apiRequest<GetActivityReviewsResponse>(
-    `/activities/${activityId}/reviews?page=${page}&size=${size}`,
-    { schema: GetActivityReviewsResponseSchema },
-  );
+  return apiRequest<GetReviewsRes>(`/activities/${activityId}/reviews?page=${page}&size=${size}`, {
+    schema: GetReviewsResSchema,
+  });
 }
 
 // POST: 체험 예약 신청
-export function createReservation(activityId: number, data: CreateReservationRequest) {
-  return apiRequest<CreateReservationResponse>(`/activities/${activityId}/reservations`, {
+export function createReservation(activityId: number, data: CreateReservationReq) {
+  return apiRequest<CreateReservationRes>(`/activities/${activityId}/reservations`, {
     method: "POST",
     data,
-    schema: CreateReservationResponseSchema,
+    schema: CreateReservationResSchema,
   });
 }
 
 // POST: 체험 이미지 업로드
 export function uploadActivityImage(formData: FormData) {
-  return apiRequest<UploadActivityImageResponse>(`/activities/image`, {
+  return apiRequest<UploadImageRes>(`/activities/image`, {
     method: "POST",
     isFormData: true,
     data: formData,
-    schema: UploadActivityImageResponseSchema,
+    schema: UploadImageResSchema,
   });
 }

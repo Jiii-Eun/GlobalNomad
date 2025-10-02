@@ -2,19 +2,15 @@ import { useApiMutation, ApiMutationOptions } from "@/lib/hooks/useApiMutation";
 import { useFetchQuery, FetchQueryOptions } from "@/lib/hooks/useFetchQuery";
 
 import { getMyNotifications, deleteMyNotification } from "./api";
-import {
-  GetMyNotificationsRequest,
-  GetMyNotificationsResponse,
-  DeleteMyNotificationRequest,
-} from "./types";
+import { GetNotifsReq, GetNotifsRes, DeleteNotifReq } from "./types";
 
 /** GET: 내 알림 리스트 조회 */
 export function useMyNotifications(
-  params: GetMyNotificationsRequest,
+  params: GetNotifsReq,
   isMock = false,
-  options?: FetchQueryOptions<GetMyNotificationsResponse>,
+  options?: FetchQueryOptions<GetNotifsRes>,
 ) {
-  return useFetchQuery<GetMyNotificationsResponse>(
+  return useFetchQuery<GetNotifsRes>(
     ["myNotifications", params],
     isMock ? undefined : () => getMyNotifications(params),
     {
@@ -27,9 +23,9 @@ export function useMyNotifications(
 /** DELETE: 내 알림 삭제 */
 export function useDeleteMyNotification(
   isMock = false,
-  options?: ApiMutationOptions<null, DeleteMyNotificationRequest>,
+  options?: ApiMutationOptions<null, DeleteNotifReq>,
 ) {
-  return useApiMutation<null, DeleteMyNotificationRequest>(
+  return useApiMutation<null, DeleteNotifReq>(
     isMock ? undefined : (data) => deleteMyNotification(data),
     {
       mockResponse: isMock ? null : undefined,

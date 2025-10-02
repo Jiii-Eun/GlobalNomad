@@ -1,39 +1,40 @@
 import { apiRequest } from "@/lib/apiRequest";
 
 import {
-  OAuthRequest,
-  OAuthResponse,
-  OAuthResponseSchema,
-  OAuthSignUpRequest,
-  OAuthSignUpResponse,
-  OAuthSignUpResponseSchema,
-  OAuthLoginResponse,
-  OAuthLoginResponseSchema,
+  OAuthReq,
+  OAuthRes,
+  OAuthResSchema,
+  OAuthSignUpReq,
+  OAuthSignUpRes,
+  OAuthSignUpResSchema,
+  OAuthLoginRes,
+  OAuthLoginResSchema,
+  OAuthLoginReq,
 } from "./types";
 
 // POST: App 등록/수정
-export function registerOAuthApp(data: OAuthRequest) {
-  return apiRequest<OAuthResponse>(`/oauth/apps`, {
+export function registerOAuthApp(data: OAuthReq) {
+  return apiRequest<OAuthRes>(`/oauth/apps`, {
     method: "POST",
     data,
-    schema: OAuthResponseSchema,
+    schema: OAuthResSchema,
   });
 }
 
 // POST: 간편 회원가입
-export function oauthSignUp(provider: "kakao", data: OAuthSignUpRequest) {
-  return apiRequest<OAuthSignUpResponse>(`/oauth/sign-up/${provider}`, {
+export function oauthSignUp(provider: "kakao", data: OAuthSignUpReq) {
+  return apiRequest<OAuthSignUpRes>(`/oauth/sign-up/${provider}`, {
     method: "POST",
     data,
-    schema: OAuthSignUpResponseSchema,
+    schema: OAuthSignUpResSchema,
   });
 }
 
 // POST: 간편 로그인
-export function oauthSignIn(provider: "kakao", data: OAuthSignUpRequest) {
-  return apiRequest<OAuthLoginResponse>(`/oauth/sign-in/${provider}`, {
+export function oauthSignIn(provider: "kakao", data: OAuthLoginReq) {
+  return apiRequest<OAuthLoginRes>(`/oauth/sign-in/${provider}`, {
     method: "POST",
     data,
-    schema: OAuthLoginResponseSchema,
+    schema: OAuthLoginResSchema,
   });
 }

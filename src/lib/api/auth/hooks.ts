@@ -1,14 +1,11 @@
 import { useApiMutation, ApiMutationOptions } from "@/lib/hooks/useApiMutation";
 
 import { login, refreshToken } from "./api";
-import { LoginRequest, LoginResponse, TokenResponse } from "./types";
+import { LoginReq, LoginRes, TokenRes } from "./types";
 
 /** POST: 로그인 */
-export function useLogin(
-  isMock = false,
-  options?: ApiMutationOptions<LoginResponse, LoginRequest>,
-) {
-  return useApiMutation<LoginResponse, LoginRequest>(isMock ? undefined : (data) => login(data), {
+export function useLogin(isMock = false, options?: ApiMutationOptions<LoginRes, LoginReq>) {
+  return useApiMutation<LoginRes, LoginReq>(isMock ? undefined : (data) => login(data), {
     mockResponse: isMock
       ? {
           user: {
@@ -28,11 +25,8 @@ export function useLogin(
 }
 
 /** POST: 토큰 재발급 */
-export function useRefreshToken(
-  isMock = false,
-  options?: ApiMutationOptions<TokenResponse, undefined>,
-) {
-  return useApiMutation<TokenResponse, undefined>(isMock ? undefined : () => refreshToken(), {
+export function useRefreshToken(isMock = false, options?: ApiMutationOptions<TokenRes, undefined>) {
+  return useApiMutation<TokenRes, undefined>(isMock ? undefined : () => refreshToken(), {
     mockResponse: isMock ? { refreshToken: "mock-refresh", accessToken: "mock-access" } : undefined,
     ...options,
   });

@@ -3,21 +3,21 @@ import { useFetchQuery, FetchQueryOptions } from "@/lib/hooks/useFetchQuery";
 
 import { getMyReservations, cancelMyReservation, createMyReservationReview } from "./api";
 import {
-  GetMyReservationsRequest,
-  GetMyReservationsResponse,
-  CancelMyReservationRequest,
-  CancelMyReservationResponse,
-  CreateMyReservationReviewRequest,
-  CreateMyReservationReviewResponse,
+  GetMyResvsReq,
+  GetMyResvsRes,
+  CancelResvReq,
+  CancelResvRes,
+  CreateReviewReq,
+  CreateReviewRes,
 } from "./types";
 
 /** GET: 내 예약 리스트 조회 */
 export function useMyReservations(
-  params: GetMyReservationsRequest,
+  params: GetMyResvsReq,
   isMock = false,
-  options?: FetchQueryOptions<GetMyReservationsResponse>,
+  options?: FetchQueryOptions<GetMyResvsRes>,
 ) {
-  return useFetchQuery<GetMyReservationsResponse>(
+  return useFetchQuery<GetMyResvsRes>(
     ["myReservations", params],
     isMock ? undefined : () => getMyReservations(params),
     {
@@ -30,9 +30,9 @@ export function useMyReservations(
 /** PATCH: 내 예약 취소 */
 export function useCancelMyReservation(
   isMock = false,
-  options?: ApiMutationOptions<CancelMyReservationResponse, CancelMyReservationRequest>,
+  options?: ApiMutationOptions<CancelResvRes, CancelResvReq>,
 ) {
-  return useApiMutation<CancelMyReservationResponse, CancelMyReservationRequest>(
+  return useApiMutation<CancelResvRes, CancelResvReq>(
     isMock ? undefined : (data) => cancelMyReservation(data),
     {
       mockResponse: isMock
@@ -61,9 +61,9 @@ export function useCancelMyReservation(
 /** POST: 내 예약 리뷰 작성 */
 export function useCreateMyReservationReview(
   isMock = false,
-  options?: ApiMutationOptions<CreateMyReservationReviewResponse, CreateMyReservationReviewRequest>,
+  options?: ApiMutationOptions<CreateReviewRes, CreateReviewReq>,
 ) {
-  return useApiMutation<CreateMyReservationReviewResponse, CreateMyReservationReviewRequest>(
+  return useApiMutation<CreateReviewRes, CreateReviewReq>(
     isMock ? undefined : (data) => createMyReservationReview(data),
     {
       mockResponse: isMock

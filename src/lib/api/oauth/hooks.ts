@@ -2,42 +2,40 @@ import { useApiMutation, ApiMutationOptions } from "@/lib/hooks/useApiMutation";
 
 import { registerOAuthApp, oauthSignUp, oauthSignIn } from "./api";
 import {
-  OAuthRequest,
-  OAuthResponse,
-  OAuthSignUpRequest,
-  OAuthSignUpResponse,
-  OAuthLoginResponse,
+  OAuthReq,
+  OAuthRes,
+  OAuthSignUpReq,
+  OAuthSignUpRes,
+  OAuthLoginRes,
+  OAuthLoginReq,
 } from "./types";
 
 /** POST: App 등록/수정 */
 export function useRegisterOAuthApp(
   isMock = false,
-  options?: ApiMutationOptions<OAuthResponse, OAuthRequest>,
+  options?: ApiMutationOptions<OAuthRes, OAuthReq>,
 ) {
-  return useApiMutation<OAuthResponse, OAuthRequest>(
-    isMock ? undefined : (data) => registerOAuthApp(data),
-    {
-      mockResponse: isMock
-        ? {
-            id: 1,
-            appKey: "mockAppKey",
-            provider: "KAKAO",
-            teamId: "mockTeam",
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          }
-        : undefined,
-      ...options,
-    },
-  );
+  return useApiMutation<OAuthRes, OAuthReq>(isMock ? undefined : (data) => registerOAuthApp(data), {
+    mockResponse: isMock
+      ? {
+          id: 1,
+          appKey: "mockAppKey",
+          provider: "KAKAO",
+          teamId: "mockTeam",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+      : undefined,
+    ...options,
+  });
 }
 
 /** POST: 간편 회원가입 */
 export function useOAuthSignUp(
   isMock = false,
-  options?: ApiMutationOptions<OAuthSignUpResponse, OAuthSignUpRequest>,
+  options?: ApiMutationOptions<OAuthSignUpRes, OAuthSignUpReq>,
 ) {
-  return useApiMutation<OAuthSignUpResponse, OAuthSignUpRequest>(
+  return useApiMutation<OAuthSignUpRes, OAuthSignUpReq>(
     isMock ? undefined : (data) => oauthSignUp("kakao", data),
     {
       mockResponse: isMock
@@ -62,9 +60,9 @@ export function useOAuthSignUp(
 /** POST: 간편 로그인 */
 export function useOAuthSignIn(
   isMock = false,
-  options?: ApiMutationOptions<OAuthLoginResponse, OAuthSignUpRequest>,
+  options?: ApiMutationOptions<OAuthLoginRes, OAuthLoginReq>,
 ) {
-  return useApiMutation<OAuthLoginResponse, OAuthSignUpRequest>(
+  return useApiMutation<OAuthLoginRes, OAuthLoginReq>(
     isMock ? undefined : (data) => oauthSignIn("kakao", data),
     {
       mockResponse: isMock

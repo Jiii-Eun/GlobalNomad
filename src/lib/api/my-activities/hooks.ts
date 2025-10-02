@@ -11,27 +11,27 @@ import {
   updateMyActivity,
 } from "./api";
 import {
-  GetMyActivitiesRequest,
-  GetMyActivitiesResponse,
-  GetReservationDashboardResponse,
-  GetReservedScheduleRequest,
-  GetReservedScheduleResponse,
-  GetReservationsRequest,
-  GetReservationsResponse,
-  UpdateReservationStatusRequest,
-  UpdateReservationStatusResponse,
-  DeleteMyActivityRequest,
-  UpdateActivityRequest,
-  UpdateActivityResponse,
+  GetMyActivitiesReq,
+  GetMyActivitiesRes,
+  GetDashboardRes,
+  GetReservedScheduleReq,
+  GetReservedScheduleRes,
+  GetReservationsReq,
+  GetReservationsRes,
+  UpdateResvStatusReq,
+  UpdateResvStatusRes,
+  DeleteActivityReq,
+  UpdateActivityReq,
+  UpdateActivityRes,
 } from "./types";
 
 /** GET: 내 체험 리스트 조회 */
 export function useMyActivities(
-  params: GetMyActivitiesRequest,
+  params: GetMyActivitiesReq,
   isMock = false,
-  options?: FetchQueryOptions<GetMyActivitiesResponse>,
+  options?: FetchQueryOptions<GetMyActivitiesRes>,
 ) {
-  return useFetchQuery<GetMyActivitiesResponse>(
+  return useFetchQuery<GetMyActivitiesRes>(
     ["myActivities", params],
     isMock ? undefined : () => getMyActivities(params),
     {
@@ -47,9 +47,9 @@ export function useReservationDashboard(
   year: string,
   month: string,
   isMock = false,
-  options?: FetchQueryOptions<GetReservationDashboardResponse>,
+  options?: FetchQueryOptions<GetDashboardRes>,
 ) {
-  return useFetchQuery<GetReservationDashboardResponse>(
+  return useFetchQuery<GetDashboardRes>(
     ["reservationDashboard", activityId, year, month],
     isMock ? undefined : () => getReservationDashboard(activityId, year, month),
     {
@@ -63,11 +63,11 @@ export function useReservationDashboard(
 
 /** GET: 날짜별 예약 스케줄 */
 export function useReservedSchedule(
-  params: GetReservedScheduleRequest,
+  params: GetReservedScheduleReq,
   isMock = false,
-  options?: FetchQueryOptions<GetReservedScheduleResponse>,
+  options?: FetchQueryOptions<GetReservedScheduleRes>,
 ) {
-  return useFetchQuery<GetReservedScheduleResponse>(
+  return useFetchQuery<GetReservedScheduleRes>(
     ["reservedSchedule", params],
     isMock ? undefined : () => getReservedSchedule(params),
     {
@@ -88,11 +88,11 @@ export function useReservedSchedule(
 
 /** GET: 예약 내역 조회 */
 export function useReservations(
-  params: GetReservationsRequest,
+  params: GetReservationsReq,
   isMock = false,
-  options?: FetchQueryOptions<GetReservationsResponse>,
+  options?: FetchQueryOptions<GetReservationsRes>,
 ) {
-  return useFetchQuery<GetReservationsResponse>(
+  return useFetchQuery<GetReservationsRes>(
     ["reservations", params],
     isMock ? undefined : () => getReservations(params),
     {
@@ -105,9 +105,9 @@ export function useReservations(
 /** PATCH: 예약 상태 변경 */
 export function useUpdateReservationStatus(
   isMock = false,
-  options?: ApiMutationOptions<UpdateReservationStatusResponse, UpdateReservationStatusRequest>,
+  options?: ApiMutationOptions<UpdateResvStatusRes, UpdateResvStatusReq>,
 ) {
-  return useApiMutation<UpdateReservationStatusResponse, UpdateReservationStatusRequest>(
+  return useApiMutation<UpdateResvStatusRes, UpdateResvStatusReq>(
     isMock ? undefined : (data) => updateReservationStatus(data),
     {
       mockResponse: isMock
@@ -137,9 +137,9 @@ export function useUpdateReservationStatus(
 /** DELETE: 내 체험 삭제 */
 export function useDeleteMyActivity(
   isMock = false,
-  options?: ApiMutationOptions<null, DeleteMyActivityRequest>,
+  options?: ApiMutationOptions<null, DeleteActivityReq>,
 ) {
-  return useApiMutation<null, DeleteMyActivityRequest>(
+  return useApiMutation<null, DeleteActivityReq>(
     isMock ? undefined : (data) => deleteMyActivity(data),
     {
       mockResponse: isMock ? null : undefined,
@@ -151,9 +151,9 @@ export function useDeleteMyActivity(
 /** PATCH: 내 체험 수정 */
 export function useUpdateMyActivity(
   isMock = false,
-  options?: ApiMutationOptions<UpdateActivityResponse, UpdateActivityRequest>,
+  options?: ApiMutationOptions<UpdateActivityRes, UpdateActivityReq>,
 ) {
-  return useApiMutation<UpdateActivityResponse, UpdateActivityRequest>(
+  return useApiMutation<UpdateActivityRes, UpdateActivityReq>(
     isMock ? undefined : (data) => updateMyActivity(data),
     {
       mockResponse: isMock

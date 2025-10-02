@@ -3,35 +3,35 @@ import { z } from "zod";
 import {
   ActivityCategorySchema,
   ActivitySchema,
-  CreateActivityResponseSchema,
+  CreateActivityResSchema,
   ReservationStatusSchema,
   ScheduleTimeSchema,
 } from "@/lib/api/activities/types";
 
 // GET: 내 체험 리스트 조회 요청
-export const GetMyActivitiesRequestSchema = z.object({
+export const GetMyActivitiesReqSchema = z.object({
   teamId: z.string(),
   cursorId: z.number().optional(),
   size: z.number().optional(),
 });
-export type GetMyActivitiesRequest = z.infer<typeof GetMyActivitiesRequestSchema>;
+export type GetMyActivitiesReq = z.infer<typeof GetMyActivitiesReqSchema>;
 
 // GET: 내 체험 리스트 조회 응답
-export const GetMyActivitiesResponseSchema = z.object({
+export const GetMyActivitiesResSchema = z.object({
   cursorId: z.number(),
   totalCount: z.number(),
   activities: z.array(ActivitySchema),
 });
-export type GetMyActivitiesResponse = z.infer<typeof GetMyActivitiesResponseSchema>;
+export type GetMyActivitiesRes = z.infer<typeof GetMyActivitiesResSchema>;
 
 // GET: 월별 예약 현황 요청
-export const GetReservationDashboardRequestSchema = z.object({
+export const GetDashboardReqSchema = z.object({
   teamId: z.string(),
   activityId: z.number(),
   year: z.string(),
   month: z.string(),
 });
-export type GetReservationDashboardRequest = z.infer<typeof GetReservationDashboardRequestSchema>;
+export type GetDashboardReq = z.infer<typeof GetDashboardReqSchema>;
 
 // 월별 예약 현황 응답
 export const ReservationStatusCountSchema = z.object({
@@ -48,16 +48,16 @@ export const ReservationDashboardItemSchema = z.object({
 });
 export type ReservationDashboardItem = z.infer<typeof ReservationDashboardItemSchema>;
 
-export const GetReservationDashboardResponseSchema = z.array(ReservationDashboardItemSchema);
-export type GetReservationDashboardResponse = z.infer<typeof GetReservationDashboardResponseSchema>;
+export const GetDashboardResSchema = z.array(ReservationDashboardItemSchema);
+export type GetDashboardRes = z.infer<typeof GetDashboardResSchema>;
 
 // GET: 날짜별 예약 스케줄 요청
-export const GetReservedScheduleRequestSchema = z.object({
+export const GetReservedScheduleReqSchema = z.object({
   teamId: z.string(),
   activityId: z.number(),
   date: z.string(),
 });
-export type GetReservedScheduleRequest = z.infer<typeof GetReservedScheduleRequestSchema>;
+export type GetReservedScheduleReq = z.infer<typeof GetReservedScheduleReqSchema>;
 
 // 날짜별 예약 스케줄 응답
 export const ReservedScheduleItemSchema = z.object({
@@ -68,8 +68,8 @@ export const ReservedScheduleItemSchema = z.object({
 });
 export type ReservedScheduleItem = z.infer<typeof ReservedScheduleItemSchema>;
 
-export const GetReservedScheduleResponseSchema = z.array(ReservedScheduleItemSchema);
-export type GetReservedScheduleResponse = z.infer<typeof GetReservedScheduleResponseSchema>;
+export const GetReservedScheduleResSchema = z.array(ReservedScheduleItemSchema);
+export type GetReservedScheduleRes = z.infer<typeof GetReservedScheduleResSchema>;
 
 // GET: 예약 내역 조회 요청
 export const MyReservationStatusSchema = ReservationStatusSchema.extract([
@@ -79,7 +79,7 @@ export const MyReservationStatusSchema = ReservationStatusSchema.extract([
 ]);
 export type MyReservationStatus = z.infer<typeof MyReservationStatusSchema>;
 
-export const GetReservationsRequestSchema = z.object({
+export const GetReservationsReqSchema = z.object({
   teamId: z.string(),
   activityId: z.number(),
   cursorId: z.number().optional(),
@@ -87,7 +87,7 @@ export const GetReservationsRequestSchema = z.object({
   scheduleId: z.number(),
   status: MyReservationStatusSchema,
 });
-export type GetReservationsRequest = z.infer<typeof GetReservationsRequestSchema>;
+export type GetReservationsReq = z.infer<typeof GetReservationsReqSchema>;
 
 // GET: 예약 내역 조회 응답
 export const ReservationSchema = z.object({
@@ -109,35 +109,35 @@ export const ReservationSchema = z.object({
 });
 export type Reservation = z.infer<typeof ReservationSchema>;
 
-export const GetReservationsResponseSchema = z.object({
+export const GetReservationsResSchema = z.object({
   cursorId: z.number(),
   totalCount: z.number(),
   reservations: z.array(ReservationSchema),
 });
-export type GetReservationsResponse = z.infer<typeof GetReservationsResponseSchema>;
+export type GetReservationsRes = z.infer<typeof GetReservationsResSchema>;
 
 // PATCH: 예약 상태 변경 요청
-export const UpdateReservationStatusRequestSchema = z.object({
+export const UpdateResvStatusReqSchema = z.object({
   teamId: z.string(),
   activityId: z.number(),
   reservationId: z.number(),
   status: ReservationStatusSchema,
 });
-export type UpdateReservationStatusRequest = z.infer<typeof UpdateReservationStatusRequestSchema>;
+export type UpdateResvStatusReq = z.infer<typeof UpdateResvStatusReqSchema>;
 
 // PATCH: 예약 상태 변경 응답
-export const UpdateReservationStatusResponseSchema = ReservationSchema;
-export type UpdateReservationStatusResponse = z.infer<typeof UpdateReservationStatusResponseSchema>;
+export const UpdateResvStatusResSchema = ReservationSchema;
+export type UpdateResvStatusRes = z.infer<typeof UpdateResvStatusResSchema>;
 
 // DELETE: 내 체험 삭제 요청
-export const DeleteMyActivityRequestSchema = z.object({
+export const DeleteActivityReqSchema = z.object({
   teamId: z.string(),
   activityId: z.number(),
 });
-export type DeleteMyActivityRequest = z.infer<typeof DeleteMyActivityRequestSchema>;
+export type DeleteActivityReq = z.infer<typeof DeleteActivityReqSchema>;
 
 // PATCH: 내 체험 수정 요청
-export const UpdateActivityRequestSchema = z.object({
+export const UpdateActivityReqSchema = z.object({
   teamId: z.string(),
   activityId: z.number(),
   title: z.string().optional(),
@@ -151,8 +151,8 @@ export const UpdateActivityRequestSchema = z.object({
   scheduleIdsToRemove: z.array(z.number()).optional(),
   schedulesToAdd: z.array(ScheduleTimeSchema).optional(),
 });
-export type UpdateActivityRequest = z.infer<typeof UpdateActivityRequestSchema>;
+export type UpdateActivityReq = z.infer<typeof UpdateActivityReqSchema>;
 
 // PATCH: 내 체험 수정 응답
-export const UpdateActivityResponseSchema = CreateActivityResponseSchema;
-export type UpdateActivityResponse = z.infer<typeof UpdateActivityResponseSchema>;
+export const UpdateActivityResSchema = CreateActivityResSchema;
+export type UpdateActivityRes = z.infer<typeof UpdateActivityResSchema>;

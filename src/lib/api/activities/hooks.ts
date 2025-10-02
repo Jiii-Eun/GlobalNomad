@@ -11,25 +11,25 @@ import {
   uploadActivityImage,
 } from "./api";
 import {
-  GetActivitiesRequest,
-  GetActivitiesResponse,
+  GetActivitiesReq,
+  GetActivitiesRes,
   ActivityDetail,
-  CreateActivityRequest,
-  CreateActivityResponse,
+  CreateActivityReq,
+  CreateActivityRes,
   AvailableSchedule,
-  GetActivityReviewsResponse,
-  CreateReservationRequest,
-  CreateReservationResponse,
-  UploadActivityImageResponse,
+  GetReviewsRes,
+  CreateReservationReq,
+  CreateReservationRes,
+  UploadImageRes,
 } from "./types";
 
 /** GET: 체험 리스트 조회 */
 export function useActivities(
-  params: GetActivitiesRequest,
+  params: GetActivitiesReq,
   isMock = false,
-  options?: FetchQueryOptions<GetActivitiesResponse>,
+  options?: FetchQueryOptions<GetActivitiesRes>,
 ) {
-  return useFetchQuery<GetActivitiesResponse>(
+  return useFetchQuery<GetActivitiesRes>(
     ["activities", params],
     isMock ? undefined : () => getActivities(params),
     {
@@ -96,9 +96,9 @@ export function useActivityDetail(
 /** POST: 체험 등록 */
 export function useCreateActivity(
   isMock = false,
-  options?: ApiMutationOptions<CreateActivityResponse, CreateActivityRequest>,
+  options?: ApiMutationOptions<CreateActivityRes, CreateActivityReq>,
 ) {
-  return useApiMutation<CreateActivityResponse, CreateActivityRequest>(
+  return useApiMutation<CreateActivityRes, CreateActivityReq>(
     isMock ? undefined : (data) => createActivity(data),
     {
       mockResponse: isMock
@@ -150,9 +150,9 @@ export function useActivityReviews(
   page = 1,
   size = 3,
   isMock = false,
-  options?: FetchQueryOptions<GetActivityReviewsResponse>,
+  options?: FetchQueryOptions<GetReviewsRes>,
 ) {
-  return useFetchQuery<GetActivityReviewsResponse>(
+  return useFetchQuery<GetReviewsRes>(
     ["activityReviews", activityId, page, size],
     isMock ? undefined : () => getActivityReviews(activityId, page, size),
     {
@@ -182,9 +182,9 @@ export function useActivityReviews(
 export function useCreateReservation(
   activityId: number,
   isMock = false,
-  options?: ApiMutationOptions<CreateReservationResponse, CreateReservationRequest>,
+  options?: ApiMutationOptions<CreateReservationRes, CreateReservationReq>,
 ) {
-  return useApiMutation<CreateReservationResponse, CreateReservationRequest>(
+  return useApiMutation<CreateReservationRes, CreateReservationReq>(
     isMock ? undefined : (data) => createReservation(activityId, data),
     {
       mockResponse: isMock
@@ -213,9 +213,9 @@ export function useCreateReservation(
 /** POST: 체험 이미지 업로드 */
 export function useUploadActivityImage(
   isMock = false,
-  options?: ApiMutationOptions<UploadActivityImageResponse, FormData>,
+  options?: ApiMutationOptions<UploadImageRes, FormData>,
 ) {
-  return useApiMutation<UploadActivityImageResponse, FormData>(
+  return useApiMutation<UploadImageRes, FormData>(
     isMock ? undefined : (formData) => uploadActivityImage(formData),
     {
       mockResponse: isMock ? { activityImageUrl: "/mock/uploaded.jpg" } : undefined,

@@ -3,13 +3,13 @@ import { z } from "zod";
 import { ReservationStatusSchema } from "@/lib/api/activities/types";
 
 // GET: 내 예약 리스트 조회 요청
-export const GetMyReservationsRequestSchema = z.object({
+export const GetMyResvsReqSchema = z.object({
   teamId: z.string(),
   cursorId: z.number().optional(),
   size: z.number().optional(),
   status: ReservationStatusSchema.optional(),
 });
-export type GetMyReservationsRequest = z.infer<typeof GetMyReservationsRequestSchema>;
+export type GetMyResvsReq = z.infer<typeof GetMyResvsReqSchema>;
 
 // GET: 내 예약 리스트 조회 응답
 export const MyReservationSchema = z.object({
@@ -34,23 +34,23 @@ export const MyReservationSchema = z.object({
 });
 export type MyReservation = z.infer<typeof MyReservationSchema>;
 
-export const GetMyReservationsResponseSchema = z.object({
+export const GetMyResvsResSchema = z.object({
   cursorId: z.number(),
   reservations: z.array(MyReservationSchema),
   totalCount: z.number(),
 });
-export type GetMyReservationsResponse = z.infer<typeof GetMyReservationsResponseSchema>;
+export type GetMyResvsRes = z.infer<typeof GetMyResvsResSchema>;
 
 // PATCH: 내 예약 수정 (취소) 요청
-export const CancelMyReservationRequestSchema = z.object({
+export const CancelResvReqSchema = z.object({
   teamId: z.string(),
   reservationId: z.number(),
   status: ReservationStatusSchema.extract(["canceled"]),
 });
-export type CancelMyReservationRequest = z.infer<typeof CancelMyReservationRequestSchema>;
+export type CancelResvReq = z.infer<typeof CancelResvReqSchema>;
 
 // PATCH: 내 예약 수정 (취소) 응답
-export const CancelMyReservationResponseSchema = z.object({
+export const CancelResvResSchema = z.object({
   id: z.number(),
   teamId: z.string(),
   userId: z.number(),
@@ -66,21 +66,19 @@ export const CancelMyReservationResponseSchema = z.object({
   createdAt: z.string(),
   updatedAt: z.string(),
 });
-export type CancelMyReservationResponse = z.infer<typeof CancelMyReservationResponseSchema>;
+export type CancelResvRes = z.infer<typeof CancelResvResSchema>;
 
 // POST: 내 예약 리뷰 작성 요청
-export const CreateMyReservationReviewRequestSchema = z.object({
+export const CreateReviewReqSchema = z.object({
   teamId: z.string(),
   reservationId: z.number(),
   rating: z.number(),
   content: z.string(),
 });
-export type CreateMyReservationReviewRequest = z.infer<
-  typeof CreateMyReservationReviewRequestSchema
->;
+export type CreateReviewReq = z.infer<typeof CreateReviewReqSchema>;
 
 // POST: 내 예약 리뷰 작성 응답
-export const CreateMyReservationReviewResponseSchema = z.object({
+export const CreateReviewResSchema = z.object({
   id: z.number(),
   teamId: z.string(),
   userId: z.number(),
@@ -90,6 +88,4 @@ export const CreateMyReservationReviewResponseSchema = z.object({
   createdAt: z.string(),
   updatedAt: z.string(),
 });
-export type CreateMyReservationReviewResponse = z.infer<
-  typeof CreateMyReservationReviewResponseSchema
->;
+export type CreateReviewRes = z.infer<typeof CreateReviewResSchema>;
