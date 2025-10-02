@@ -10,7 +10,7 @@ const DropDownItem = ({ children, onClick }: DropDownItemProps) => (
   <motion.li
     whileHover={{ backgroundColor: "rgba(30, 162, 181, 0.2)" }}
     whileTap={{ scale: 0.9, backgroundColor: "rgba(25, 140, 160, 0.2)" }}
-    className="rounded-12 text-md-regular cursor-pointer pt-12 pb-11"
+    className="text-2lg w-full overflow-hidden px-4 py-[14px] text-ellipsis whitespace-nowrap"
     onClick={onClick}
   >
     {children}
