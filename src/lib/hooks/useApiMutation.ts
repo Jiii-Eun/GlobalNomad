@@ -1,11 +1,11 @@
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
 
-interface ApiMutationOptions<TResponse, TVariables>
-  extends UseMutationOptions<TResponse, Error, TVariables> {
+export interface ApiMutationOptions<TResponse, TVariables>
+  extends Omit<UseMutationOptions<TResponse, Error, TVariables>, "mutationFn"> {
   mockResponse?: TResponse;
 }
 
-export function useApiMutation<TResponse, TVariables = unknown>(
+export function useApiMutation<TResponse, TVariables = void>(
   mutationFn?: (data: TVariables) => Promise<TResponse>,
   options?: ApiMutationOptions<TResponse, TVariables>,
 ) {

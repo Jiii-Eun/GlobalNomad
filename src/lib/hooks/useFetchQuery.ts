@@ -1,6 +1,6 @@
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
-interface FetchQueryOptions<T> extends UseQueryOptions<T> {
+export interface FetchQueryOptions<T> extends Omit<UseQueryOptions<T>, "queryKey" | "queryFn"> {
   mockData?: T;
 }
 
