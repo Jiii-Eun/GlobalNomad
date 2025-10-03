@@ -25,7 +25,7 @@ import {
   UpdateActivityRes,
 } from "./types";
 
-/** GET: 내 체험 리스트 조회 */
+//GET: 내 체험 리스트 조회
 export function useMyActivities(
   params: GetMyActivitiesReq,
   isMock = false,
@@ -41,7 +41,7 @@ export function useMyActivities(
   );
 }
 
-/** GET: 월별 예약 현황 */
+//GET: 월별 예약 현황
 export function useReservationDashboard(
   activityId: number,
   year: string,
@@ -61,7 +61,7 @@ export function useReservationDashboard(
   );
 }
 
-/** GET: 날짜별 예약 스케줄 */
+//GET: 날짜별 예약 스케줄
 export function useReservedSchedule(
   params: GetReservedScheduleReq,
   isMock = false,
@@ -86,7 +86,7 @@ export function useReservedSchedule(
   );
 }
 
-/** GET: 예약 내역 조회 */
+//GET: 예약 내역 조회
 export function useReservations(
   params: GetReservationsReq,
   isMock = false,
@@ -102,7 +102,7 @@ export function useReservations(
   );
 }
 
-/** PATCH: 예약 상태 변경 */
+//PATCH: 예약 상태 변경
 export function useUpdateReservationStatus(
   isMock = false,
   options?: ApiMutationOptions<UpdateResvStatusRes, UpdateResvStatusReq>,
@@ -134,7 +134,7 @@ export function useUpdateReservationStatus(
   );
 }
 
-/** DELETE: 내 체험 삭제 */
+//DELETE: 내 체험 삭제
 export function useDeleteMyActivity(
   isMock = false,
   options?: ApiMutationOptions<null, DeleteActivityReq>,
@@ -148,7 +148,7 @@ export function useDeleteMyActivity(
   );
 }
 
-/** PATCH: 내 체험 수정 */
+//PATCH: 내 체험 수정
 export function useUpdateMyActivity(
   isMock = false,
   options?: ApiMutationOptions<UpdateActivityRes, UpdateActivityReq>,

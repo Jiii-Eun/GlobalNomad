@@ -11,7 +11,7 @@ import {
   CreateReviewRes,
 } from "./types";
 
-/** GET: 내 예약 리스트 조회 */
+//GET: 내 예약 리스트 조회
 export function useMyReservations(
   params: GetMyResvsReq,
   isMock = false,
@@ -27,7 +27,7 @@ export function useMyReservations(
   );
 }
 
-/** PATCH: 내 예약 취소 */
+//PATCH: 내 예약 취소
 export function useCancelMyReservation(
   isMock = false,
   options?: ApiMutationOptions<CancelResvRes, CancelResvReq>,
@@ -58,7 +58,7 @@ export function useCancelMyReservation(
   );
 }
 
-/** POST: 내 예약 리뷰 작성 */
+//POST: 내 예약 리뷰 작성
 export function useCreateMyReservationReview(
   isMock = false,
   options?: ApiMutationOptions<CreateReviewRes, CreateReviewReq>,

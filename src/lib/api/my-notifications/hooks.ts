@@ -4,7 +4,7 @@ import { useFetchQuery, FetchQueryOptions } from "@/lib/hooks/useFetchQuery";
 import { getMyNotifications, deleteMyNotification } from "./api";
 import { GetNotifsReq, GetNotifsRes, DeleteNotifReq } from "./types";
 
-/** GET: 내 알림 리스트 조회 */
+//GET: 내 알림 리스트 조회
 export function useMyNotifications(
   params: GetNotifsReq,
   isMock = false,
@@ -20,7 +20,7 @@ export function useMyNotifications(
   );
 }
 
-/** DELETE: 내 알림 삭제 */
+//DELETE: 내 알림 삭제
 export function useDeleteMyNotification(
   isMock = false,
   options?: ApiMutationOptions<null, DeleteNotifReq>,

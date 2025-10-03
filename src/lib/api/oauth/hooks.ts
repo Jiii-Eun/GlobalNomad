@@ -10,7 +10,7 @@ import {
   OAuthLoginReq,
 } from "./types";
 
-/** POST: App 등록/수정 */
+//POST: App 등록/수정
 export function useRegisterOAuthApp(
   isMock = false,
   options?: ApiMutationOptions<OAuthRes, OAuthReq>,
@@ -30,7 +30,7 @@ export function useRegisterOAuthApp(
   });
 }
 
-/** POST: 간편 회원가입 */
+//POST: 간편 회원가입
 export function useOAuthSignUp(
   isMock = false,
   options?: ApiMutationOptions<OAuthSignUpRes, OAuthSignUpReq>,
@@ -57,7 +57,7 @@ export function useOAuthSignUp(
   );
 }
 
-/** POST: 간편 로그인 */
+//POST: 간편 로그인
 export function useOAuthSignIn(
   isMock = false,
   options?: ApiMutationOptions<OAuthLoginRes, OAuthLoginReq>,

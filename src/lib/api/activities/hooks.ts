@@ -23,7 +23,7 @@ import {
   UploadImageRes,
 } from "./types";
 
-/** GET: 체험 리스트 조회 */
+//GET: 체험 리스트 조회
 export function useActivities(
   params: GetActivitiesReq,
   isMock = false,
@@ -60,7 +60,7 @@ export function useActivities(
   );
 }
 
-/** GET: 체험 상세 조회 */
+//GET: 체험 상세 조회
 export function useActivityDetail(
   activityId: number,
   isMock = false,
@@ -93,7 +93,7 @@ export function useActivityDetail(
   );
 }
 
-/** POST: 체험 등록 */
+//POST: 체험 등록
 export function useCreateActivity(
   isMock = false,
   options?: ApiMutationOptions<CreateActivityRes, CreateActivityReq>,
@@ -124,7 +124,7 @@ export function useCreateActivity(
   );
 }
 
-/** GET: 예약 가능일 조회 */
+//GET: 예약 가능일 조회
 export function useAvailableSchedule(
   activityId: number,
   year: string,
@@ -144,7 +144,7 @@ export function useAvailableSchedule(
   );
 }
 
-/** GET: 체험 리뷰 조회 */
+//GET: 체험 리뷰 조회
 export function useActivityReviews(
   activityId: number,
   page = 1,
@@ -178,7 +178,7 @@ export function useActivityReviews(
   );
 }
 
-/** POST: 체험 예약 신청 */
+//POST: 체험 예약 신청
 export function useCreateReservation(
   activityId: number,
   isMock = false,
@@ -210,7 +210,7 @@ export function useCreateReservation(
   );
 }
 
-/** POST: 체험 이미지 업로드 */
+//POST: 체험 이미지 업로드
 export function useUploadActivityImage(
   isMock = false,
   options?: ApiMutationOptions<UploadImageRes, FormData>,
