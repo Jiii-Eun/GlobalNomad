@@ -23,10 +23,10 @@ export default function Button({
 }: ButtonProps) {
   // default: r-6 , 폰트 16px, 굵기 medium
   const baseStyle =
-    "inline-flex justify-center items-center transition-all duration-150 rounded-b-md text-lg font-medium";
+    "inline-flex justify-center items-center transition-all duration-150 rounded-md text-lg font-medium";
 
   const variantStyle = {
-    b: "bg-brand-nomad-black text-white hover:bg-brand-gray-500",
+    b: "bg-brand-nomad-black text-white",
     w: "bg-white text-brand-nomad-black border border-brand-nomad-black hover:bg-brand-gray-200",
     g: "bg-brand-green-500 text-white hover:brightness-95",
   }[variant];

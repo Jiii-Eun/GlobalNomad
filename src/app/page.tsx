@@ -1,7 +1,8 @@
 import Link from "next/link";
 
-import { Arrow, Button } from "@/components/icons";
+import { Arrow, Btn } from "@/components/icons";
 import ToastTestPage from "@/components/ToastTestPage";
+import Button from "@/components/ui/button/Button";
 import { cn } from "@/lib/cn";
 
 export default function Home() {
@@ -22,9 +23,10 @@ export default function Home() {
       </Link>
       <Link href={"/signup"}>sign up</Link>
       <Arrow.DownFill className="svg-fill svg-stroke text-brand-red-500 hover:text-brand-blue-500 h-20 w-20" />
-      <Button.Add className="h-8 w-8" />
-      <Button.Add className="svg-fill hover:text-brand-blue-500 h-6 w-6" />
+      <Btn.Add className="h-8 w-8" />
+      <Btn.Add className="svg-fill hover:text-brand-blue-500 h-6 w-6" />
       <ToastTestPage />
+      <Button>테스트 버튼 확인</Button>
     </div>
   );
 }
