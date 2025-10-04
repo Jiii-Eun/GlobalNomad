@@ -1,34 +1,28 @@
 "use client";
 
+import { ToastProvider } from "@/components/provider/ToastProvider";
 import { cn } from "@/lib/cn";
-import useToast from "@/lib/hooks/useToast";
 
 interface ToastFrameProps {
   children: React.ReactNode;
   size?: "sm" | "md" | "lg";
   frameStyle?: string;
+  autoClose?: boolean;
+  textStyle?: string;
 }
 
-export default function ToastFrame({ children, size = "md", frameStyle }: ToastFrameProps) {
-  const { Toast } = useToast();
-
-  const frameClass = {
+export default function ToastFrame({ children, size = "lg", frameStyle }: ToastFrameProps) {
+  const FRAME_CLASS = {
     sm: "rounded-12 h-[184px] w-[296px] p-6",
     md: "w-[327px] h-[220px]",
-    lg: "w-[540px] h-[240px]",
+    lg: "w-[540px] h-[240px] mobile:w-[327px] mobile:h-[220px]",
   };
 
   return (
-    <Toast>
-      <div
-        className={cn(
-          "flex flex-col rounded-8 border bg-white shadow-[0_4px_16px_0_rgba(17,34,17,0.05)] p-7",
-          frameClass[size],
-          frameStyle,
-        )}
-      >
+    <ToastProvider>
+      <div className={cn("rounded-8 flex flex-col bg-white p-7", FRAME_CLASS[size], frameStyle)}>
         {children}
       </div>
-    </Toast>
+    </ToastProvider>
   );
 }
