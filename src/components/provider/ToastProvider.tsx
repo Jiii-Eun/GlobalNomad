@@ -3,16 +3,29 @@
 import { motion, AnimatePresence } from "motion/react";
 import { createContext, useContext, useState, useCallback, useRef, ReactNode } from "react";
 
+import useOutsideClick from "@/lib/hooks/useOutsideClick";
+
 interface ToastContextValue {
   toast: ReactNode | null;
-  openToast: (content: ReactNode) => void;
+  openToast: (content: ReactNode, options?: ToastOptions) => void;
   closeToast: () => void;
 }
 
 const ToastContext = createContext<ToastContextValue | undefined>(undefined);
 
+interface ToastOptions {
+  autoClose?: boolean;
+  duration?: number;
+}
+
+const DEFAULT_OPTIONS: Required<ToastOptions> = {
+  autoClose: true,
+  duration: 3000,
+};
+
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toast, setToast] = useState<ReactNode | null>(null);
+  const toastRef = useRef<HTMLDivElement | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const clearTimer = () => {
@@ -22,14 +35,20 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const openToast = useCallback((content: ReactNode) => {
+  const openToast = useCallback((content: ReactNode, options?: ToastOptions) => {
     clearTimer();
     setToast(content);
 
-    timerRef.current = setTimeout(() => {
-      setToast(null);
-      timerRef.current = null;
-    }, 3000);
+    const merged = { ...DEFAULT_OPTIONS, ...options };
+    const autoClose = merged.autoClose;
+    const duration = merged.duration;
+
+    if (autoClose) {
+      timerRef.current = setTimeout(() => {
+        setToast(null);
+        timerRef.current = null;
+      }, duration);
+    }
   }, []);
 
   const closeToast = useCallback(() => {
@@ -37,14 +56,18 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     setToast(null);
   }, []);
 
+  useOutsideClick(toastRef, closeToast);
+
   return (
     <ToastContext.Provider value={{ toast, openToast, closeToast }}>
       {children}
 
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="sync">
         {toast && (
           <motion.div
             key="toast"
+            ref={toastRef}
+            onClick={(e) => e.stopPropagation()}
             initial={{ opacity: 1, y: 20 }}
             animate={{
               opacity: 1,
@@ -56,7 +79,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               },
             }}
             exit={{
-              opacity: 0,
+              filter: "opacity(0)",
               y: 20,
               transition: { duration: 0.1 },
             }}

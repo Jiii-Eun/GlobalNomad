@@ -23,11 +23,11 @@ export default function Button({
 }: ButtonProps) {
   // default: r-6 , 폰트 16px, 굵기 medium
   const baseStyle =
-    "inline-flex justify-center items-center transition-all duration-150 rounded-md text-lg font-medium";
+    "flex-center transition-all duration-150 rounded-md text-lg font-medium leading-none";
 
   const variantStyle = {
     b: "bg-brand-nomad-black text-white",
-    w: "bg-white text-brand-nomad-black border border-brand-nomad-black hover:bg-brand-gray-200",
+    w: "bg-white text-brand-nomad-black border border-brand-nomad-black",
     g: "bg-brand-green-500 text-white hover:brightness-95",
   }[variant];
 
@@ -37,7 +37,7 @@ export default function Button({
   return (
     <button
       disabled={isdisabled}
-      className={cn(baseStyle, "", variantStyle, isdisabled && disabledStyle, className)}
+      className={cn(baseStyle, variantStyle, isdisabled && disabledStyle, className)}
       {...props}
     >
       {children}

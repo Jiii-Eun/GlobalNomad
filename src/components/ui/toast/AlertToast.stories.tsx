@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import { useToast } from "@/components/provider/ToastProvider";
 
+import { ALERT_CONFIG } from "./alertConfig";
 import AlertToast from "./AlertToast";
-import { ALERT_CONFIG } from "./constants";
 
 const meta: Meta<typeof AlertToast> = {
   title: "Components/Toast/AlertToast",

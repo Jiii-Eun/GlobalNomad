@@ -1,58 +1,83 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { Status } from "@/components/icons";
 import { useToast } from "@/components/provider/ToastProvider";
+import Button from "@/components/ui/button/Button";
+import {
+  TOAST_ALIGN_CLASS,
+  TOAST_BUTTON_ALIGN_CLASS,
+  TOAST_BUTTON_CLASS,
+  TOAST_FRAME_CLASS,
+} from "@/components/ui/toast/constants";
 import { cn } from "@/lib/cn";
 
-import { ALERT_CONFIG } from "./constants";
+import { ALERT_CONFIG } from "./alertConfig";
 
 interface AlertProps {
   variant: keyof typeof ALERT_CONFIG;
-  actions?: Record<string, () => void>;
+  onClick?: () => void;
+  frameClass?: string;
+  buttonClass?: string;
 }
 
-export default function AlertToast({ variant, actions = {} }: AlertProps) {
+export default function AlertToast({ variant, onClick, frameClass, buttonClass }: AlertProps) {
   const { closeToast } = useToast();
+  const router = useRouter();
   const config = ALERT_CONFIG[variant];
   const size = config.size ?? "lg";
 
   const icon = config.icon ? <Status.CheckMarkFill className="h-6 w-6" /> : null;
-
   const buttons = config.buttons ?? [{ label: "확인", primary: true }];
+  const message = config.message;
+  const btnAlign = config.btnAlign;
+
+  const frameStyle = TOAST_FRAME_CLASS[size];
+  const buttonAlignStyle = TOAST_BUTTON_ALIGN_CLASS[size];
+  const buttonStyle = TOAST_BUTTON_CLASS[size];
+
+  const alignStyle = btnAlign ? TOAST_ALIGN_CLASS[btnAlign] : "";
+
+  const handleButtonClick = (actionKey?: string) => {
+    closeToast();
+
+    onClick?.();
+
+    if (actionKey === "redirect" && config.redirectTo) {
+      router.prefetch(config.redirectTo);
+    }
+  };
 
   return (
-    <div
-      className={cn(
-        "rounded-8 flex flex-col bg-white p-7 shadow-[0_4px_16px_0_rgba(17,34,17,0.05)]",
-        size === "lg" && "mobile:w-[327px] mobile:h-[220px] h-[240px] w-[540px]",
-        size === "sm" && "rounded-12 h-[184px] w-[296px] p-6",
-      )}
-    >
-      {icon && <div className="flex justify-center">{icon}</div>}
-      <p className="text-center">{config.message}</p>
-
-      {/* 버튼 수정 */}
-      <div className={cn("mt-4 flex gap-2", size === "lg" ? "justify-end" : "justify-center")}>
-        {buttons.map((btn, i) => (
-          <button
-            key={i}
-            onClick={() => {
-              if (btn.actionKey && actions[btn.actionKey]) {
-                actions[btn.actionKey]();
-              }
-              closeToast();
-            }}
-            className={cn(
-              "rounded border px-4 py-2",
-              btn.primary
-                ? "bg-brand-nomad-black text-white"
-                : "border-brand-nomad-black text-brand-nomad-black",
-            )}
-          >
-            {btn.label}
-          </button>
-        ))}
+    <div className={cn("rounded-8 flex flex-col justify-end bg-white p-7", frameStyle, frameClass)}>
+      <div className="flex flex-col gap-4">
+        {icon && <div className="flex justify-center">{icon}</div>}
+        <p className="text-center">{message}</p>
       </div>
+
+      {buttons && (
+        <div className={cn("flex items-center justify-center gap-2", buttonAlignStyle, alignStyle)}>
+          {buttons.map((btn, i) => (
+            <Button
+              key={i}
+              onClick={() => {
+                handleButtonClick();
+              }}
+              className={cn(
+                "bg-white",
+                buttonStyle,
+                btn.primary
+                  ? "bg-brand-nomad-black text-white"
+                  : "border-brand-nomad-black text-brand-nomad-black border",
+                buttonClass,
+              )}
+            >
+              {btn.label}
+            </Button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
