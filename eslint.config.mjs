@@ -3,6 +3,7 @@
 import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
 import eslintConfigPrettier from "eslint-config-prettier";
+import vitestGlobals from "eslint-config-vitest-globals/flat";
 import eslintPluginImport from "eslint-plugin-import";
 import jsxA11y from "eslint-plugin-jsx-a11y";
 import prettier from "eslint-plugin-prettier";
@@ -46,6 +47,9 @@ const config = [
 
   // Prettier 충돌 방지
   eslintConfigPrettier,
+
+  // Vitest 전역 변수
+  vitestGlobals(),
 
   {
     plugins: {
