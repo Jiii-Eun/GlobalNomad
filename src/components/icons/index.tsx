@@ -68,7 +68,7 @@ export const Arrow = {
 };
 
 // 버튼
-export const Button = {
+export const Btn = {
   AddImage,
   Add,
   Edit,
