@@ -1,5 +1,5 @@
 import "@/styles/globals.css";
-import Providers from "../components/provider/providers";
+import QueryProviders from "@/components/provider/QueryProviders";
 
 export const metadata = {
   title: "GlobalNomad",
@@ -13,7 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko">
       <body>
-        <Providers>{children}</Providers>
+        <QueryProviders>{children}</QueryProviders>
       </body>
     </html>
   );
