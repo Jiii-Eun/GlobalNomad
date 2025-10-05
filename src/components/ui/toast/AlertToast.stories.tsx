@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { useToast } from "@/components/provider/ToastProvider";
+import Button from "@/components/ui/button/Button";
 
 import { ALERT_CONFIG } from "./alertConfig";
 import AlertToast from "./AlertToast";
@@ -17,12 +18,7 @@ const ToastWrapper = ({ variant }: { variant: keyof typeof ALERT_CONFIG }) => {
   const { openToast } = useToast();
 
   return (
-    <button
-      className="rounded bg-green-900 px-4 py-2 text-white"
-      onClick={() => openToast(<AlertToast variant={variant} />)}
-    >
-      Open {variant}
-    </button>
+    <Button onClick={() => openToast(<AlertToast variant={variant} />)}>Open {variant}</Button>
   );
 };
 

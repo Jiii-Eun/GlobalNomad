@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 import { Arrow, Btn } from "@/components/icons";
-import ToastTestPage from "@/components/ToastTestPage";
 import Button from "@/components/ui/button/Button";
+import ToastTestPage from "@/components/ui/toast/ToastTestPage";
 import { cn } from "@/lib/cn";
 
 export default function Home() {

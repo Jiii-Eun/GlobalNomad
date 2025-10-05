@@ -24,7 +24,6 @@ export default function ToastTestPage() {
                 autoClose: config.autoClose ?? true,
               })
             }
-            className="rounded bg-green-900 px-4 py-2 text-white"
           >
             Open {variant}
           </Button>
