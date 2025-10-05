@@ -3,6 +3,7 @@ import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
 import AddBtnImg from "@/assets/icons/buttons/button-add.svg";
+import RemoveBtnImg from "@/assets/icons/buttons/button-remove.svg";
 import CalendarImg from "@/assets/icons/ui/calendar.svg";
 
 interface TimeSlotProps {
@@ -112,7 +113,7 @@ const TimeSlotPicker: React.FC<TimeSlotPicker> = ({
   };
 
   return (
-    <div className="flex w-full flex-col">
+    <div className="flex w-fit flex-col">
       <div className="flex flex-wrap items-end gap-5">
         <div className="flex flex-col gap-[10px]">
           <label>날짜</label>
@@ -176,39 +177,49 @@ const TimeSlotPicker: React.FC<TimeSlotPicker> = ({
           <AddBtnImg className="h-[56px] w-[56px]" />
         </button>
       </div>
-      <div className="mt-2 flex flex-col gap-2">
+      {slots.length > 0 && (
+        <div
+          className="my-6 h-px w-full bg-[#E5E7EB]" // gray-200 정도
+          role="separator"
+          aria-hidden="true"
+        />
+      )}
+      <div className="flex flex-col gap-5">
         {slots.length === 0 && <p className="text-[13px] text-gray-500">추가된 시간이 없습니다.</p>}
 
         {slots.map((slot, idx) => (
           <div
             key={`${slot.start.toISOString()}-${slot.end.toISOString()}`}
-            className="flex items-center gap-3"
+            className="flex items-center gap-5"
           >
             <input
               readOnly
               value={fmtDateTime(slot.start)}
-              className="h-[40px] w-[220px] rounded-[6px] border border-[#E5E7EB] bg-white px-3 text-[14px] text-gray-700"
+              className="h-[56px] w-[379px] rounded-[4px] border border-[#79747E] px-4 py-2"
             />
-            <input
-              readOnly
-              value={`${String(slot.start.getHours()).padStart(2, "0")}:00`}
-              className="h-[40px] w-[140px] rounded-[6px] border border-[#E5E7EB] bg-white px-3 text-[14px] text-gray-700"
-            />
-            <input
-              readOnly
-              value={`${String(slot.end.getHours()).padStart(2, "0")}:${String(
-                slot.end.getMinutes(),
-              ).padStart(2, "0")}`}
-              className="h-[40px] w-[140px] rounded-[6px] border border-[#E5E7EB] bg-white px-3 text-[14px] text-gray-700"
-            />
+            <div>
+              <input
+                readOnly
+                value={`${String(slot.start.getHours()).padStart(2, "0")}:00`}
+                className="h-[56px] w-[140px] rounded-[4px] border border-[#79747E] px-4 py-1"
+              />
+              <span className="mx-2.5">~</span>
+              <input
+                readOnly
+                value={`${String(slot.end.getHours()).padStart(2, "0")}:${String(
+                  slot.end.getMinutes(),
+                ).padStart(2, "0")}`}
+                className="h-[56px] w-[140px] rounded-[4px] border border-[#79747E] px-4 py-1"
+              />
+            </div>
             <button
               type="button"
               onClick={() => handleRemove(idx)}
-              className="flex h-[40px] w-[40px] items-center justify-center rounded-[6px] border border-[#E5E7EB] text-[#6B7280] hover:bg-[#F9FAFB]"
+              className="hover:opacity-90 disabled:opacity-50"
               title="시간대 삭제"
               aria-label="시간대 삭제"
             >
-              –
+              <RemoveBtnImg className="h-[56px] w-[56px]" />
             </button>
           </div>
         ))}
