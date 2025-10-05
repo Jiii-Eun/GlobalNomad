@@ -2,8 +2,8 @@ import { useState, useRef, useMemo, useEffect } from "react";
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
-import AddBtnImg from "@/assets/icons/buttons/button-add.svg";
-import RemoveBtnImg from "@/assets/icons/buttons/button-remove.svg";
+import AddBtnImg from "@/assets/icons/buttons/button-plus.svg";
+import RemoveBtnImg from "@/assets/icons/buttons/button-minus.svg";
 import CalendarImg from "@/assets/icons/ui/calendar.svg";
 
 interface TimeSlotProps {
@@ -179,7 +179,7 @@ const TimeSlotPicker: React.FC<TimeSlotPicker> = ({
       </div>
       {slots.length > 0 && (
         <div
-          className="my-6 h-px w-full bg-[#E5E7EB]" // gray-200 정도
+          className="my-6 h-px w-full bg-[#E5E7EB]"
           role="separator"
           aria-hidden="true"
         />
