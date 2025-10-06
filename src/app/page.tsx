@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Arrow, Btn } from "@/components/icons";
 import Button from "@/components/ui/button/Button";
+import TestDrawer from "@/components/ui/modal/TestDrawer";
 import ToastTestPage from "@/components/ui/toast/ToastTestPage";
 import { cn } from "@/lib/cn";
 
@@ -27,6 +28,7 @@ export default function Home() {
       <Btn.Add className="svg-fill hover:text-brand-blue-500 h-6 w-6" />
       <ToastTestPage />
       <Button>테스트 버튼 확인</Button>
+      <TestDrawer />
     </div>
   );
 }

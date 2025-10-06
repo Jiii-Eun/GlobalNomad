@@ -11,14 +11,14 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   variant?: ButtonVariant;
   className?: string;
-  isdisabled?: boolean;
+  isDisabled?: boolean;
 }
 
 export default function Button({
   children,
   variant = "b",
   className,
-  isdisabled,
+  isDisabled,
   ...props
 }: ButtonProps) {
   // default: r-6 , 폰트 16px, 굵기 medium
@@ -36,8 +36,8 @@ export default function Button({
 
   return (
     <button
-      disabled={isdisabled}
-      className={cn(baseStyle, variantStyle, isdisabled && disabledStyle, className)}
+      disabled={isDisabled}
+      className={cn(baseStyle, variantStyle, isDisabled && disabledStyle, className)}
       {...props}
     >
       {children}
