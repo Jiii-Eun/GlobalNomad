@@ -21,7 +21,34 @@ export function useMyReservations(
     ["myReservations", params],
     isMock ? undefined : () => getMyReservations(params),
     {
-      mockData: isMock ? { cursorId: 0, totalCount: 1, reservations: [] } : undefined,
+      mockData: isMock
+        ? {
+            cursorId: 0,
+            totalCount: 1,
+            reservations: [
+              {
+                id: 1,
+                teamId: "mockTeam",
+                userId: 1,
+                activity: {
+                  id: 1,
+                  title: "모의 체험",
+                  bannerImageUrl: "/mock/activity.jpg",
+                },
+                scheduleId: 1,
+                status: "pending",
+                reviewSubmitted: false,
+                totalPrice: 10000,
+                headCount: 1,
+                date: "2025-10-05",
+                startTime: "14:00",
+                endTime: "16:00",
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+              },
+            ],
+          }
+        : undefined,
       ...options,
     },
   );

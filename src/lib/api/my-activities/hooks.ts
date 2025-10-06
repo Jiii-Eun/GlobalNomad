@@ -35,7 +35,28 @@ export function useMyActivities(
     ["myActivities", params],
     isMock ? undefined : () => getMyActivities(params),
     {
-      mockData: isMock ? { cursorId: 0, totalCount: 1, activities: [] } : undefined,
+      mockData: isMock
+        ? {
+            cursorId: 0,
+            totalCount: 1,
+            activities: [
+              {
+                id: 1,
+                userId: 1,
+                title: "모의 체험 제목",
+                description: "모의 체험 설명",
+                category: "문화 · 예술",
+                price: 10000,
+                address: "서울특별시",
+                bannerImageUrl: "/mock/activity.jpg",
+                rating: 4,
+                reviewCount: 12,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+              },
+            ],
+          }
+        : undefined,
       ...options,
     },
   );
@@ -96,7 +117,31 @@ export function useReservations(
     ["reservations", params],
     isMock ? undefined : () => getReservations(params),
     {
-      mockData: isMock ? { cursorId: 0, totalCount: 1, reservations: [] } : undefined,
+      mockData: isMock
+        ? {
+            cursorId: 0,
+            totalCount: 1,
+            reservations: [
+              {
+                id: 1,
+                nickname: "MockUser",
+                userId: 1,
+                teamId: "mockTeam",
+                activityId: 1,
+                scheduleId: 1,
+                status: "confirmed",
+                reviewSubmitted: false,
+                totalPrice: 15000,
+                headCount: 2,
+                date: "2025-10-05",
+                startTime: "10:00",
+                endTime: "12:00",
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+              },
+            ],
+          }
+        : undefined,
       ...options,
     },
   );
@@ -170,8 +215,27 @@ export function useUpdateMyActivity(
             reviewCount: 2,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            subImages: [],
-            schedules: [],
+            subImages: [
+              { id: 1, imageUrl: "/mock/sub1.jpg" },
+              { id: 2, imageUrl: "/mock/sub2.jpg" },
+            ],
+            schedules: [
+              {
+                date: "2025-10-10",
+                times: [
+                  {
+                    id: 1,
+                    startTime: "10:00",
+                    endTime: "12:00",
+                  },
+                  {
+                    id: 2,
+                    startTime: "14:00",
+                    endTime: "16:00",
+                  },
+                ],
+              },
+            ],
           }
         : undefined,
       ...options,

@@ -115,8 +115,34 @@ export function useCreateActivity(
             reviewCount: 0,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            subImages: [],
-            schedules: [],
+            subImages: [{ id: 3, imageUrl: "/mock/edit-sub1.jpg" }],
+            schedules: [
+              {
+                date: "2025-10-10",
+                times: [
+                  {
+                    id: 1,
+                    startTime: "10:00",
+                    endTime: "12:00",
+                  },
+                  {
+                    id: 2,
+                    startTime: "14:00",
+                    endTime: "16:00",
+                  },
+                ],
+              },
+              {
+                date: "2025-10-11",
+                times: [
+                  {
+                    id: 3,
+                    startTime: "09:00",
+                    endTime: "11:00",
+                  },
+                ],
+              },
+            ],
           }
         : undefined,
       ...options,
