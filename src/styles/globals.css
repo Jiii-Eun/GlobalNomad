@@ -75,10 +75,6 @@
   --text-xs--line-height: 1.125rem;
 }
 
-@custom-variant tablet (@media (max-width: 77.9375rem)); /* 1247px 이하 */
-@custom-variant mobile (@media (max-width: 46.4375rem)); /* 743px 이하 */
-
-
 body {
   /* 기본 스타일 */
   @apply bg-brand-gray-100 text-brand-black;

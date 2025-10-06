@@ -15,8 +15,6 @@ import Right from "@/assets/icons/arrows/arrow-right.svg";
 import AddImage from "@/assets/icons/buttons/button-add-image.svg";
 import Add from "@/assets/icons/buttons/button-add.svg";
 import Edit from "@/assets/icons/buttons/button-edit.svg";
-import Minus from "@/assets/icons/buttons/button-minus.svg";
-import Plus from "@/assets/icons/buttons/button-plus.svg";
 import Remove from "@/assets/icons/buttons/button-remove.svg";
 // Me
 import Register from "@/assets/icons/me-sns/me-register.svg";
@@ -73,8 +71,6 @@ export const Button = {
   Add,
   Edit,
   Remove,
-  Minus,
-  Plus,
 };
 
 // Me
