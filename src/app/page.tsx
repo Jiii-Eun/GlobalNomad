@@ -19,7 +19,7 @@ export default function Home() {
       >
         Home
       </h1>
-      <Link href={"/login"} className="mobile:text-9xl">
+      <Link href={"/login"} className="mobile:text-9xl text-xl">
         login
       </Link>
       <Link href={"/signup"}>sign up</Link>

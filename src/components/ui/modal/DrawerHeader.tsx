@@ -6,6 +6,7 @@ import { Drawer } from "vaul";
 import { Status } from "@/components/icons";
 import Button from "@/components/ui/button/Button";
 import { useDrawerContext } from "@/components/ui/modal/DrawerContext";
+import { cn } from "@/lib/cn";
 
 export default function DrawerHeader() {
   const { title, prevStep, onClose, isClose, isBack } = useDrawerContext();
@@ -24,11 +25,14 @@ export default function DrawerHeader() {
               duration: 0.18,
               ease: "easeInOut",
             }}
-            className="relative top-[0.5px] flex h-6 w-6 items-center overflow-hidden"
+            className={cn(
+              "relative top-[0.5px] flex h-8 w-8 items-center overflow-hidden",
+              "mobile:h-6 mobile:w-6",
+            )}
           >
             <Button
               onClick={prevStep}
-              className="flex h-full w-full items-center justify-center overflow-hidden rounded-full p-0 text-sm"
+              className="mobile:text-sm flex h-full w-full items-center justify-center overflow-hidden rounded-full text-lg"
             >
               ←
             </Button>
@@ -43,16 +47,14 @@ export default function DrawerHeader() {
           stiffness: 380,
           damping: 25,
         }}
-        className="flex-1 pl-1 text-lg font-semibold"
+        className="mobile:text-2lg flex-1 pl-1 text-xl font-bold"
       >
         {title}
       </motion.h2>
-      {isClose ? (
+      {isClose && (
         <Drawer.Close onClick={onClose}>
-          <Status.Close className="h-6 w-6" />
+          <Status.Close className="mobile:h-6 mobile:w-6 h-8 w-8" />
         </Drawer.Close>
-      ) : (
-        <div className="w-[1.5rem]" />
       )}
     </div>
   );
