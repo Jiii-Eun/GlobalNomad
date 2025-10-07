@@ -10,7 +10,7 @@ export function useDevice() {
     const check = () => {
       const width = window.innerWidth;
 
-      if (width <= 768) {
+      if (width <= 744) {
         setIsMobile(true);
         setIsTablet(false);
       } else if (width <= 1248) {
