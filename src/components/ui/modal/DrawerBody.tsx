@@ -34,7 +34,7 @@ const DrawerBody = forwardRef<HTMLDivElement, DrawerBodyProps>(({ frameClass, ch
       className="flex-1 overflow-hidden"
     >
       <div ref={contentRef}>
-        <div className="overflow-y-auto" style={{ maxHeight: "calc(80vh - 80px)" }}>
+        <div className="max-h-[calc(80vh-80px)] overflow-y-auto">
           <div className={cn("py-6", frameClass)}>
             {hasSteps ? <StepSlider /> : <div ref={ref}>{children}</div>}
           </div>
