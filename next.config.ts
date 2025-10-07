@@ -8,6 +8,6 @@ const nextConfig: NextConfig = {
 export default withSvgr({
   ...nextConfig,
   svgrOptions: {
-    dimensions: false,
+    dimensions: false, // width/height 제거 (Tailwind size로 제어)
   },
 });
