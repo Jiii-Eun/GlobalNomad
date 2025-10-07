@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Drawer } from "vaul";
 
+import { useDevice } from "@/lib/hooks/useDevice";
 import { useDirection } from "@/lib/hooks/useDirection";
 
 import DrawerContext from "./DrawerContext";
@@ -46,6 +47,14 @@ export default function DrawerLayout({
   const prevStep = () => {
     setStep((prev) => Math.max(prev - 1, 0));
   };
+
+  const { isMobile } = useDevice();
+
+  useEffect(() => {
+    if (!isMobile && step !== 0) {
+      setStep(0);
+    }
+  }, [isMobile, step]);
 
   const isBack = step > 0;
 
