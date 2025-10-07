@@ -42,7 +42,6 @@ export default function TestDrawer() {
         title="예약하기 테스트"
         steps={steps}
         isClose
-        isBack
       >
         <DrawerHeader />
         <DrawerBody />

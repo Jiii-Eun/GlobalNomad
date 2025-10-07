@@ -34,7 +34,6 @@ export default function DrawerLayout({
   onBack,
   onClose,
   isClose = true,
-  isBack = false,
 }: DrawerLayoutProps) {
   const [step, setStep] = useState(0);
   const direction = useDirection(step);
@@ -47,6 +46,8 @@ export default function DrawerLayout({
   const prevStep = () => {
     setStep((prev) => Math.max(prev - 1, 0));
   };
+
+  const isBack = step > 0;
 
   const contextValue = {
     title,
@@ -73,7 +74,7 @@ export default function DrawerLayout({
             <Drawer.Title className="sr-only">{title}</Drawer.Title>
 
             {/* Handle */}
-            <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-gray-300" />
+            <div className="bg-brand-deep-green-50 mx-auto mb-3 h-1.5 w-12 rounded-full" />
             <div>{children}</div>
           </Drawer.Content>
         </Drawer.Portal>
