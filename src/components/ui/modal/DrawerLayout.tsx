@@ -81,6 +81,7 @@ export default function DrawerLayout({
             className={`fixed bottom-0 left-1/2 z-[910] flex max-h-[96%] w-full -translate-x-1/2 flex-col rounded-t-[16px] bg-white p-6 shadow-lg ${widthMap[width]}`}
           >
             <Drawer.Title className="sr-only">{title}</Drawer.Title>
+            <Drawer.Description className="sr-only">{title}</Drawer.Description>
 
             {/* Handle */}
             <div className="bg-brand-deep-green-50 mx-auto mb-3 h-1.5 w-12 rounded-full" />
