@@ -7,7 +7,7 @@ export interface AlertAction {
 export interface AlertConfigItem {
   size?: "sm" | "lg";
   message: string;
-  icon?: boolean;
+  icon?: React.ReactNode | boolean;
   autoClose?: boolean;
   btnAlign?: "start" | "center" | "end";
   buttons?: AlertAction[];

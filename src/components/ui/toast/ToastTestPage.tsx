@@ -1,12 +1,11 @@
 "use client";
 
-import { useToast } from "@/components/provider/ToastProvider";
 import Button from "@/components/ui/button/Button";
 import { ALERT_CONFIG } from "@/components/ui/toast/alertConfig";
-import AlertToast from "@/components/ui/toast/AlertToast";
+import { useAlertToast } from "@/components/ui/toast/useAlertToast";
 
 export default function ToastTestPage() {
-  const { openToast } = useToast();
+  const { openAlertToast } = useAlertToast();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-6">
@@ -14,17 +13,9 @@ export default function ToastTestPage() {
 
       {Object.keys(ALERT_CONFIG).map((variant) => {
         const key = variant as keyof typeof ALERT_CONFIG;
-        const config = ALERT_CONFIG[key];
 
         return (
-          <Button
-            key={variant}
-            onClick={() =>
-              openToast(<AlertToast variant={key} />, {
-                autoClose: config.autoClose ?? true,
-              })
-            }
-          >
+          <Button key={variant} onClick={() => openAlertToast(key)}>
             Open {variant}
           </Button>
         );
