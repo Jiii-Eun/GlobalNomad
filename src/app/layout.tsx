@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
-import Providers from "../components/provider/providers";
+import QueryProviders from "@/components/provider/QueryProviders";
+import { ToastProvider } from "@/components/provider/ToastProvider";
 
 export const metadata = {
   title: "GlobalNomad",
@@ -13,7 +14,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko">
       <body>
-        <Providers>{children}</Providers>
+        <div id="portal" />
+        <QueryProviders>
+          <ToastProvider>{children}</ToastProvider>
+        </QueryProviders>
       </body>
     </html>
   );

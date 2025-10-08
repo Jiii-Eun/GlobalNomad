@@ -1,7 +1,9 @@
 import Link from "next/link";
 
-import TestMotions from "@/app/components/TestMotion";
-import { Arrow, Button } from "@/components/icons";
+import { Arrow, Btn } from "@/components/icons";
+import Button from "@/components/ui/button/Button";
+import TestDrawer from "@/components/ui/modal/TestDrawer";
+import ToastTestPage from "@/components/ui/toast/ToastTestPage";
 import { cn } from "@/lib/cn";
 
 export default function Home() {
@@ -17,12 +19,16 @@ export default function Home() {
       >
         Home
       </h1>
-      <Link href={"/login"}>login</Link>
+      <Link href={"/login"} className="mobile:text-9xl">
+        login
+      </Link>
       <Link href={"/signup"}>sign up</Link>
       <Arrow.DownFill className="svg-fill svg-stroke text-brand-red-500 hover:text-brand-blue-500 h-20 w-20" />
-      <Button.Add className="h-8 w-8" />
-      <Button.Add className="svg-fill hover:text-brand-blue-500 h-6 w-6" />
-      <TestMotions />
+      <Btn.Add className="h-8 w-8" />
+      <Btn.Add className="svg-fill hover:text-brand-blue-500 h-6 w-6" />
+      <ToastTestPage />
+      <Button>테스트 버튼 확인</Button>
+      <TestDrawer />
     </div>
   );
 }

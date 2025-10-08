@@ -3,6 +3,13 @@
 
 
 @theme inline {
+  /* border-radius */
+  --radius-4: 0.25rem;   /* 4px */
+  --radius-8: 0.5rem;    /* 8px */
+  --radius-12: 0.75rem;   /* 12px */
+  --radius-16: 1rem;      /* 16px */
+  --radius-24: 1.5rem;   /* 24px */
+
   /* primary colors */
   --color-brand-black: oklch(0.2221 0 0);
   --color-brand-nomad-black: oklch(0.2313 0.0394 144.17);
@@ -74,6 +81,10 @@
   --text-xs: 0.75rem;
   --text-xs--line-height: 1.125rem;
 }
+
+@custom-variant tablet (@media (max-width: 77.9375rem)); /* 1247px 이하 */
+@custom-variant mobile (@media (max-width: 46.4375rem)); /* 743px 이하 */
+
 
 body {
   /* 기본 스타일 */

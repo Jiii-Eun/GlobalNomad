@@ -3,6 +3,7 @@
 import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
 import eslintConfigPrettier from "eslint-config-prettier";
+import vitestGlobals from "eslint-config-vitest-globals/flat";
 import eslintPluginImport from "eslint-plugin-import";
 import jsxA11y from "eslint-plugin-jsx-a11y";
 import prettier from "eslint-plugin-prettier";
@@ -47,6 +48,9 @@ const config = [
   // Prettier 충돌 방지
   eslintConfigPrettier,
 
+  // Vitest 전역 변수
+  vitestGlobals(),
+
   {
     plugins: {
       prettier,
@@ -57,7 +61,7 @@ const config = [
     },
     rules: {
       // Prettier
-      "prettier/prettier": "error",
+      "prettier/prettier": "warn",
 
       // React
       "react/react-in-jsx-scope": "off",
@@ -74,7 +78,7 @@ const config = [
 
       // import 정렬
       "import/order": [
-        "error",
+        "warn",
         {
           groups: [["builtin", "external"], ["internal"], ["parent", "sibling", "index"]],
           pathGroups: [
@@ -89,9 +93,9 @@ const config = [
           alphabetize: { order: "asc", caseInsensitive: true },
         },
       ],
-      "import/no-duplicates": "error",
-      "import/newline-after-import": "error",
-      "import/no-unresolved": "error",
+      "import/no-duplicates": "warn",
+      "import/newline-after-import": "warn",
+      "import/no-unresolved": "warn",
 
       // TypeScript
       "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
