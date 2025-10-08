@@ -1,6 +1,6 @@
 {
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
   "files.eol": "\n",
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit",
