@@ -3,10 +3,7 @@
 import { useState } from "react";
 
 import Button from "@/components/ui/button/Button";
-import DrawerBody from "@/components/ui/modal/DrawerBody";
-import DrawerFooter from "@/components/ui/modal/DrawerFooter";
-import DrawerHeader from "@/components/ui/modal/DrawerHeader";
-import DrawerLayout from "@/components/ui/modal/DrawerLayout";
+import { DrawerBody, DrawerFooter, DrawerHeader, DrawerLayout } from "@/components/ui/modal";
 import { useDevice } from "@/lib/hooks/useDevice";
 
 export default function TestTime() {

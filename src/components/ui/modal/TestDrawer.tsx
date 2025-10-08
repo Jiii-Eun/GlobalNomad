@@ -1,10 +1,7 @@
 "use client";
 
 import Button from "@/components/ui/button/Button";
-import DrawerBody from "@/components/ui/modal/DrawerBody";
-import DrawerFooter from "@/components/ui/modal/DrawerFooter";
-import DrawerHeader from "@/components/ui/modal/DrawerHeader";
-import DrawerLayout from "@/components/ui/modal/DrawerLayout";
+import { DrawerLayout, DrawerHeader, DrawerBody, DrawerFooter } from "@/components/ui/modal";
 
 export default function TestDrawer() {
   const steps = [
