@@ -13,7 +13,7 @@ export default function Home() {
     <div>
       <h1
         className={cn(
-          "rounded-lg p-4",
+          "mt-5 rounded-lg p-4",
           "text-brand-green-500 bg-brand-blue-500",
           "text-3xl font-bold",
           "transition-all hover:shadow-lg",

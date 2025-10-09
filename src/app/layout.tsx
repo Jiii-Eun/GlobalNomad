@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import BaseLayout from "@/components/layout/BaseLayout";
 import QueryProviders from "@/components/provider/QueryProviders";
 import { ToastProvider } from "@/components/provider/ToastProvider";
 
@@ -16,7 +17,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <div id="portal" />
         <QueryProviders>
-          <ToastProvider>{children}</ToastProvider>
+          <ToastProvider>
+            <BaseLayout>{children}</BaseLayout>
+          </ToastProvider>
         </QueryProviders>
       </body>
     </html>

@@ -115,6 +115,11 @@ a {
   @apply flex justify-center items-center;
 }
 
+
+.container-base {
+  @apply flex mx-auto w-full max-w-[1200px];
+}
+
 /* svgr 색상 변경 클래스 */
 /* fill만 */
 .svg-fill path,

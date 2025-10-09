@@ -1,6 +1,6 @@
 import { useToast } from "@/components/provider/ToastProvider";
+import AlertToast from "@/components/ui/toast";
 import { ALERT_CONFIG } from "@/components/ui/toast/alertConfig";
-import AlertToast from "@/components/ui/toast/AlertToast";
 
 export function useAlertToast() {
   const { openToast } = useToast();
