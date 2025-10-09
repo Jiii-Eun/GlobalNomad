@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Drawer } from "vaul";
 
+import { cn } from "@/lib/cn";
 import { useDevice } from "@/lib/hooks/useDevice";
 import { useDirection } from "@/lib/hooks/useDirection";
 
@@ -19,6 +20,7 @@ interface DrawerLayoutProps {
   onClose?: () => void;
   isClose?: boolean;
   isBack?: boolean;
+  contentClass?: string;
 }
 
 const widthMap = {
@@ -35,6 +37,7 @@ export default function DrawerLayout({
   onBack,
   onClose,
   isClose = true,
+  contentClass,
 }: DrawerLayoutProps) {
   const [step, setStep] = useState(0);
   const direction = useDirection(step);
@@ -78,7 +81,12 @@ export default function DrawerLayout({
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 z-[900] bg-black/40" />
           <Drawer.Content
-            className={`fixed bottom-0 left-1/2 z-[910] flex max-h-[96%] w-full -translate-x-1/2 flex-col rounded-t-[16px] bg-white p-6 shadow-lg ${widthMap[width]}`}
+            className={cn(
+              "rounded-t-16 fixed bottom-0 left-1/2 z-[910] flex max-h-[96%] w-full -translate-x-1/2 flex-col bg-white p-6 shadow-lg",
+              "mobile:p-4",
+              `${widthMap[width]}`,
+              contentClass,
+            )}
           >
             <Drawer.Title className="sr-only">{title}</Drawer.Title>
             <Drawer.Description className="sr-only">{title}</Drawer.Description>

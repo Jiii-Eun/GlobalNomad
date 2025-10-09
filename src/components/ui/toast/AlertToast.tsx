@@ -45,7 +45,7 @@ export default function AlertToast({ variant, onClick, frameClass, buttonClass }
     onClick?.();
 
     if (actionKey === "redirect" && config.redirectTo) {
-      router.prefetch(config.redirectTo);
+      router.push(config.redirectTo);
     }
   };
 
@@ -61,17 +61,9 @@ export default function AlertToast({ variant, onClick, frameClass, buttonClass }
           {buttons.map((btn, i) => (
             <Button
               key={i}
-              onClick={() => {
-                handleButtonClick();
-              }}
-              className={cn(
-                "bg-white",
-                buttonStyle,
-                btn.primary
-                  ? "bg-brand-nomad-black text-white"
-                  : "border-brand-nomad-black text-brand-nomad-black border",
-                buttonClass,
-              )}
+              onClick={() => handleButtonClick(btn.actionKey)}
+              variant={btn.primary ? "b" : "w"}
+              className={cn(buttonStyle, buttonClass)}
             >
               {btn.label}
             </Button>
