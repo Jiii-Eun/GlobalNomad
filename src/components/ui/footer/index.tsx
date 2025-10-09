@@ -10,19 +10,21 @@ const SNS_LINKS = [
 
 export default function Footer() {
   const linkClass = "cursor-pointer transition-colors hover:text-white";
+  const fontClass = "font-arial text-lg";
 
   return (
     <div className="bg-brand-nomad-black h-40">
       <div
         className={cn(
-          "tablet:px-10 mx-auto w-full max-w-[1200px] pt-8 text-[#676767]",
+          "tablet:px-10 container-base pt-8 text-[#676767]",
           "mobile:justify-center flex flex-wrap justify-between gap-y-4 whitespace-nowrap",
+          fontClass,
         )}
       >
         <p>©codeit - 2023</p>
         <div className="flex flex-1 justify-center gap-[30px] text-sm">
-          <span className={linkClass}>Privacy Policy</span>
-          <span className={linkClass}>FAQ</span>
+          <span className={cn(linkClass, fontClass)}>Privacy Policy</span>
+          <span className={cn(linkClass, fontClass)}>FAQ</span>
         </div>
         <ol className="flex gap-3">
           {SNS_LINKS.map(({ href, Icon }) => (

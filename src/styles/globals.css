@@ -48,6 +48,7 @@
 
   /* 폰트 */
   --font-sans: "Pretendard", system-ui, sans-serif;
+  --font-arial: Arial, Helvetica, sans-serif;
   
   /* Text 3xl (32px / 42px) */
   --text-3xl: 2rem;
