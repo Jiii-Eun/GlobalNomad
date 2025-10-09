@@ -15,7 +15,8 @@ export default function Footer() {
     <div className="bg-brand-nomad-black h-40">
       <div
         className={cn(
-          "tablet:px-10 mobile:justify-center mx-auto flex w-full max-w-[1200px] flex-1 flex-wrap justify-between pt-8 whitespace-nowrap text-[#676767]",
+          "tablet:px-10 mx-auto w-full max-w-[1200px] pt-8 text-[#676767]",
+          "mobile:justify-center flex flex-wrap justify-between gap-y-4 whitespace-nowrap",
         )}
       >
         <p>©codeit - 2023</p>
