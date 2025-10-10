@@ -1,11 +1,9 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React from "react";
 
 import { Status } from "@/components/icons";
-// import { useRouter } from "next/router";
 
 interface Props {
   id: number;
@@ -17,7 +15,6 @@ interface Props {
 }
 
 const ActivityCardBase = ({ id, title, price, bannerImageUrl, rating, reviewCount }: Props) => {
-  const router = useRouter();
   return (
     <div className="text-black200 tablet:hover:-translate-y-3 mobile:hover:-translate-y-2 duration-500 hover:-translate-y-5">
       <Link href={`/activities/${id}`} className="block overflow-hidden rounded-3xl">

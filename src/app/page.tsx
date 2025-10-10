@@ -10,7 +10,6 @@ import { cn } from "@/lib/cn";
 
 import ActivityCardBase from "./activities/components/activity/ActivityCardBase";
 import MyActivityCard from "./activities/components/cards/MyActivityCard";
-import Datepickers from "./activities/components/datepicker/Datepicker";
 
 export default function Home() {
   return (
