@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import MainBenner from "@/app/conponents/MainBenner";
 import { Arrow, Btn } from "@/components/icons";
 import Button from "@/components/ui/button/Button";
 import TestImageUploader from "@/components/ui/image-uploader/TestImageUploader";
@@ -11,6 +12,7 @@ import { cn } from "@/lib/cn";
 export default function Home() {
   return (
     <div>
+      <MainBenner />
       <h1
         className={cn(
           "mt-5 rounded-lg p-4",

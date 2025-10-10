@@ -121,6 +121,29 @@ a {
   @apply flex mx-auto w-full max-w-[1200px];
 }
 
+
+@keyframes shimmer {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-brand-gray-400) 0%,
+    var(--color-brand-gray-300) 25%,
+    var(--color-brand-gray-200) 50%,
+    var(--color-brand-gray-300) 75%,
+    var(--color-brand-gray-400) 100%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 2.2s infinite linear;
+}
+
 /* svgr 색상 변경 클래스 */
 /* fill만 */
 .svg-fill path,
