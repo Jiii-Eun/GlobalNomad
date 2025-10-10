@@ -1,4 +1,5 @@
 import Link from "next/link";
+// import Datepicker from "react-tailwindcss-datepicker";
 
 import { Arrow, Btn } from "@/components/icons";
 import Button from "@/components/ui/button/Button";
@@ -6,6 +7,10 @@ import TestDrawer from "@/components/ui/modal/TestDrawer";
 import TestTime from "@/components/ui/modal/TestTime";
 import ToastTestPage from "@/components/ui/toast/ToastTestPage";
 import { cn } from "@/lib/cn";
+
+import ActivityCardBase from "./components/activity/ActivityCardBase";
+import MyActivityCard from "./components/cards/MyActivityCard";
+import Datepickers from "./components/datepicker/Datepicker";
 
 export default function Home() {
   return (
@@ -31,6 +36,24 @@ export default function Home() {
       <Button>테스트 버튼 확인</Button>
       <TestDrawer />
       <TestTime />
+      <ActivityCardBase
+        id={1}
+        title="Sample Activity"
+        price={100}
+        bannerImageUrl={"https://placehold.co/283x283/png?text=No+Image"}
+        rating={4.5}
+        reviewCount={120}
+        // Add other required props here if needed
+      />
+      <MyActivityCard
+        id={1}
+        title="Sample Activity"
+        totalPrice={100000}
+        bannerImageUrl={"https://placehold.co/283x283/png?text=No+Image"}
+        rating={4.5}
+        reviewCount={120}
+        activityId={1}
+      />
     </div>
   );
 }
