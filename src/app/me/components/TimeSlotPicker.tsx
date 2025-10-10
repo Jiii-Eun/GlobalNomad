@@ -2,9 +2,9 @@ import { useState, useRef, useMemo, useEffect } from "react";
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
-import AddBtnImg from "@/assets/icons/buttons/button-plus.svg";
-import RemoveBtnImg from "@/assets/icons/buttons/button-minus.svg";
-import CalendarImg from "@/assets/icons/ui/calendar.svg";
+import { Button, Misc } from "@/components/icons";
+
+
 
 interface TimeSlotProps {
   start: Date;
@@ -127,7 +127,7 @@ const TimeSlotPicker: React.FC<TimeSlotPicker> = ({
               minDate={minDate}
               placeholderText="YY/MM/DD"
             />
-            <CalendarImg
+            <Misc.Calendar
               className="pointer-events-auto absolute top-1/2 right-3 h-8 w-8 -translate-y-1/2 cursor-pointer"
               onClick={() => datePickerRef.current?.setFocus()}
             />
@@ -174,7 +174,7 @@ const TimeSlotPicker: React.FC<TimeSlotPicker> = ({
           title="시간대 추가"
           aria-label="시간대 추가"
         >
-          <AddBtnImg className="h-[56px] w-[56px]" />
+          <Button.Plus className="h-[56px] w-[56px]" />
         </button>
       </div>
       {slots.length > 0 && (
@@ -219,7 +219,7 @@ const TimeSlotPicker: React.FC<TimeSlotPicker> = ({
               title="시간대 삭제"
               aria-label="시간대 삭제"
             >
-              <RemoveBtnImg className="h-[56px] w-[56px]" />
+              <Button.Minus className="h-[56px] w-[56px]" />
             </button>
           </div>
         ))}
