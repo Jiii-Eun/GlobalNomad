@@ -24,9 +24,27 @@ export default function Menu({ id: activityId }: { id: number }) {
 
   return (
     <div onClick={(e) => e.stopPropagation()} className="relative">
-      <button onClick={handleKebabToggle}>
+      <span
+        role="button"
+        tabIndex={0}
+        aria-haspopup="menu"
+        aria-expanded={isKebabOpen}
+        aria-label="메뉴 열기"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleKebabToggle();
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            e.stopPropagation();
+            handleKebabToggle();
+          }
+        }}
+        className="inline-flex items-center justify-center rounded-md p-2 hover:bg-gray-100"
+      >
         <Misc.MenuDot className="svg-fill text-gray600 h-6 w-6" />
-      </button>
+      </span>
       {isKebabOpen && (
         <div
           className="border-gray200 absolute right-0 z-[1] w-40 rounded-md border bg-white"
