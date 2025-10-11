@@ -5,8 +5,7 @@ import { cloneElement, isValidElement, ReactElement } from "react";
 const cn = (...xs: (string | false | null | undefined)[]) =>
   xs.filter((v): v is string => Boolean(v)).join(" ");
 
-const baseField = "w-full border rounded";
-const invalidField = "border-red-500 focus:border-red-500";
+const invalidField = "is-error";
 
 interface FieldChildProps {
   id?: string;
@@ -32,19 +31,19 @@ export default function Field({ id, label, error, className, children }: FieldPr
     id,
     isInvalid,
     "aria-describedby": isInvalid ? errorId : children.props["aria-describedby"],
-    className: cn(baseField, isInvalid && invalidField, children.props.className),
+    className: cn(isInvalid && invalidField, children.props.className),
   });
 
   return (
     <div className={className}>
       {label && (
-        <label htmlFor={id} className="mb-2 block text-lg text-[#1B1B1B]">
+        <label htmlFor={id} className="mb-2 block text-lg text-brand-black">
           {label}
         </label>
       )}
       {child}
       {error && (
-        <p id={errorId} role="alert" aria-live="polite" className="mt-2 text-sm text-red-600">
+        <p id={errorId} role="alert" aria-live="polite" className="mt-2 text-sm text-brand-red-500">
           {error}
         </p>
       )}

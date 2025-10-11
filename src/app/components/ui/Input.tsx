@@ -1,6 +1,15 @@
 "use client";
 
 import { ComponentPropsWithoutRef, Ref, useState } from "react";
+import Visibility from "@/assets/icons/status/visibility.svg";
+import VisibilityOff from "@/assets/icons/status/visibility-off.svg";
+
+const INPUT_BASE = 
+"w-[640px] max-w-full h-[58px] px-5 bg-white border border-brand-gray-400 rounded " +
+"text-lg placeholder:text=brand-gray-500/60";
+
+const padIfRightIcon = (has:boolean) => (has ? "pr-12" :"pr-5 ");
+const padIfLeftIcon = (has:boolean) => (has ? "pr-10" :"pr-5 ");
 
 type NativeInputProps = ComponentPropsWithoutRef<"input">;
 type NativeSelectProps = ComponentPropsWithoutRef<"select">;
@@ -61,7 +70,11 @@ export default function Input(props: Props) {
         <select
           id={id}
           ref={ref as Ref<HTMLSelectElement>}
-          className={className}
+          className={[INPUT_BASE,
+            padIfLeftIcon(Boolean(leftIcon)),
+            padIfRightIcon(Boolean(rightIcon)),
+            className,].join(" ")
+          }
           aria-invalid={isInvalid || undefined}
           {...rest}
         >
@@ -100,13 +113,16 @@ export default function Input(props: Props) {
   const isPassword = (type ?? "text") === "password";
   const resolvedType = isPassword ? (showPw ? "text" : "password") : type;
 
+  const rightPad = padIfRightIcon(isPassword || Boolean(rightIcon));
+  const leftPad = padIfLeftIcon(Boolean(leftIcon));
+
   return (
     <div className="relative">
       {leftIcon}
       <input
         id={id}
         ref={ref as Ref<HTMLInputElement>}
-        className={className}
+        className={[INPUT_BASE, leftPad, rightPad, className].join(" ")}
         type={resolvedType}
         aria-invalid={isInvalid || undefined}
         {...inputDomProps}
@@ -116,9 +132,13 @@ export default function Input(props: Props) {
           type="button"
           onClick={() => setShowPw((v) => !v)}
           aria-label={showPw ? "비밀번호 숨기기" : "비밀번호 표시"}
-          className="absolute inset-y-0 right-2 flex items-center px-2 text-sm text-gray-500"
+          className="absolute inset-y-0 right-5 flex items-center px-2 text-sm text-gray-500"
         >
-          {showPw ? "숨기기" : "표시"}
+          {showPw ? (
+            <VisibilityOff className="h-6 w-6 svg-fill" />
+          ) : (
+          <Visibility className="h-6 w-6 svg-fill" />
+          )}
         </button>
       ) : (
         rightIcon && (
