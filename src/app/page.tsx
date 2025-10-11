@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Arrow, Btn } from "@/components/icons";
 import Button from "@/components/ui/button/Button";
 import TestDrawer from "@/components/ui/modal/TestDrawer";
+import TestTime from "@/components/ui/modal/TestTime";
 import ToastTestPage from "@/components/ui/toast/ToastTestPage";
 import { cn } from "@/lib/cn";
 
@@ -19,7 +20,7 @@ export default function Home() {
       >
         Home
       </h1>
-      <Link href={"/login"} className="mobile:text-9xl">
+      <Link href={"/login"} className="mobile:text-9xl text-xl">
         login
       </Link>
       <Link href={"/signup"}>sign up</Link>
@@ -29,6 +30,7 @@ export default function Home() {
       <ToastTestPage />
       <Button>테스트 버튼 확인</Button>
       <TestDrawer />
+      <TestTime />
     </div>
   );
 }

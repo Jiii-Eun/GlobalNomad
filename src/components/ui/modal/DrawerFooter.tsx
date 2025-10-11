@@ -35,7 +35,7 @@ export default function DrawerFooter({
         children
       ) : (
         <Button
-          className={cn("flex-center h-13 w-full rounded-[6px]", buttonClass)}
+          className={cn("mobile:h-12 h-13 w-full", buttonClass)}
           onClick={handleClick}
           isDisabled={isDisabled}
         >

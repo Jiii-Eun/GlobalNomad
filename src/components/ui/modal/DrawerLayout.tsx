@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Drawer } from "vaul";
 
+import { cn } from "@/lib/cn";
+import { useDevice } from "@/lib/hooks/useDevice";
 import { useDirection } from "@/lib/hooks/useDirection";
 
 import DrawerContext from "./DrawerContext";
@@ -18,6 +20,7 @@ interface DrawerLayoutProps {
   onClose?: () => void;
   isClose?: boolean;
   isBack?: boolean;
+  contentClass?: string;
 }
 
 const widthMap = {
@@ -34,7 +37,7 @@ export default function DrawerLayout({
   onBack,
   onClose,
   isClose = true,
-  isBack = false,
+  contentClass,
 }: DrawerLayoutProps) {
   const [step, setStep] = useState(0);
   const direction = useDirection(step);
@@ -47,6 +50,16 @@ export default function DrawerLayout({
   const prevStep = () => {
     setStep((prev) => Math.max(prev - 1, 0));
   };
+
+  const { isMobile } = useDevice();
+
+  useEffect(() => {
+    if (!isMobile && step !== 0) {
+      setStep(0);
+    }
+  }, [isMobile, step]);
+
+  const isBack = step > 0;
 
   const contextValue = {
     title,
@@ -68,12 +81,18 @@ export default function DrawerLayout({
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 z-[900] bg-black/40" />
           <Drawer.Content
-            className={`fixed bottom-0 left-1/2 z-[910] flex max-h-[96%] w-full -translate-x-1/2 flex-col rounded-t-[16px] bg-white p-6 shadow-lg ${widthMap[width]}`}
+            className={cn(
+              "rounded-t-16 fixed bottom-0 left-1/2 z-[910] flex max-h-[96%] w-full -translate-x-1/2 flex-col bg-white p-6 shadow-lg",
+              "mobile:p-4",
+              `${widthMap[width]}`,
+              contentClass,
+            )}
           >
             <Drawer.Title className="sr-only">{title}</Drawer.Title>
+            <Drawer.Description className="sr-only">{title}</Drawer.Description>
 
             {/* Handle */}
-            <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-gray-300" />
+            <div className="bg-brand-deep-green-50 mx-auto mb-3 h-1.5 w-12 rounded-full" />
             <div>{children}</div>
           </Drawer.Content>
         </Drawer.Portal>
