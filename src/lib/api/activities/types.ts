@@ -115,7 +115,7 @@ export type AvailableSchedule = z.infer<typeof AvailableScheduleSchema>;
 export const UserSummarySchema = z.object({
   id: z.number(),
   nickname: z.string(),
-  profileImageUrl: z.string(),
+  profileImageUrl: z.string().nullable(),
 });
 export type UserSummary = z.infer<typeof UserSummarySchema>;
 
