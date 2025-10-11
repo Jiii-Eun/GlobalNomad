@@ -1,6 +1,8 @@
 import Link from "next/link";
 
+import BestActivities from "@/app/conponents/BestActivities";
 import MainBenner from "@/app/conponents/MainBenner";
+import Search from "@/app/conponents/Search";
 import { Arrow, Btn } from "@/components/icons";
 import Button from "@/components/ui/button/Button";
 import TestImageUploader from "@/components/ui/image-uploader/TestImageUploader";
@@ -13,6 +15,11 @@ export default function Home() {
   return (
     <div>
       <MainBenner />
+      <div className="container-base tablet:px-6 mobile:px-4">
+        <Search />
+        <BestActivities />
+      </div>
+
       <h1
         className={cn(
           "mt-5 rounded-lg p-4",

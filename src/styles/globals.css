@@ -81,6 +81,27 @@
   /* Text xs (12px / 18px) */
   --text-xs: 0.75rem;
   --text-xs--line-height: 1.125rem;
+
+  --transition-props:
+    color,
+    background-color,
+    border-color,
+    opacity,
+    transform,
+    box-shadow,
+    width,
+    height,
+    max-height,
+    margin,
+    padding,
+    font-size,
+    line-height,
+    letter-spacing,
+    word-spacing;
+
+    
+  --shadow-base: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-green: 0 4px 16px rgba(17,34,17, 0.05);
 }
 
 @custom-variant tablet (@media (max-width: 78rem)); /* 1248px 이하 */
@@ -118,7 +139,7 @@ a {
 
 
 .container-base {
-  @apply flex mx-auto w-full max-w-[1200px];
+  @apply mx-auto w-full max-w-[1200px];
 }
 
 
@@ -143,6 +164,13 @@ a {
   background-size: 400% 100%;
   animation: shimmer 2.2s infinite linear;
 }
+
+.transition-base {
+  transition-property: var(--transition-props);
+  transition-duration: 250ms;
+  transition-timing-function: ease-in-out;
+}
+
 
 /* svgr 색상 변경 클래스 */
 /* fill만 */
