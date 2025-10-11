@@ -14,7 +14,23 @@ export function useMyNotifications(
     ["myNotifications", params],
     isMock ? undefined : () => getMyNotifications(params),
     {
-      mockData: isMock ? { cursorId: 0, totalCount: 1, notifications: [] } : undefined,
+      mockData: isMock
+        ? {
+            cursorId: 0,
+            totalCount: 1,
+            notifications: [
+              {
+                id: 1,
+                teamId: "mockTeam",
+                userId: 1,
+                content: "Mock 알림 메시지입니다.",
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                deletedAt: undefined,
+              },
+            ],
+          }
+        : undefined,
       ...options,
     },
   );
