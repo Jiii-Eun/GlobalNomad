@@ -6,10 +6,10 @@ import VisibilityOff from "@/assets/icons/status/visibility-off.svg";
 
 const INPUT_BASE = 
 "w-[640px] max-w-full h-[58px] px-5 bg-white border border-brand-gray-400 rounded " +
-"text-lg placeholder:text=brand-gray-500/60";
+"text-lg placeholder:text-brand-gray-500/60";
 
 const padIfRightIcon = (has:boolean) => (has ? "pr-12" :"pr-5 ");
-const padIfLeftIcon = (has:boolean) => (has ? "pr-10" :"pr-5 ");
+const padIfLeftIcon = (has:boolean) => (has ? "pl-10" :"pl-5 ");
 
 type NativeInputProps = ComponentPropsWithoutRef<"input">;
 type NativeSelectProps = ComponentPropsWithoutRef<"select">;
