@@ -1,26 +1,15 @@
-"use client";
-
-import Image from "next/image";
-import { useState } from "react";
+import BackgroundImage from "@/app/components/BackgroundImage";
 
 export default function MainBanner() {
-  const [isLoaded, setIsLoaded] = useState(false);
-
   return (
     <div
-      className={`transition-base mobile:h-[240px] relative mx-auto h-[550px] w-full max-w-[1920px] overflow-hidden`}
+      className={`mobile:h-[240px] relative mx-auto h-[550px] w-full max-w-[1920px] overflow-hidden`}
     >
-      <div className={`absolute inset-0 ${isLoaded ? "opacity-0" : "shimmer opacity-100"}`} />
-      <Image
+      <BackgroundImage
         src="/images/street-dance-banner.png"
         alt="10월에 가장 인기 있는 체험"
-        fill
-        className={`transition-base object-cover ${isLoaded ? "opacity-100" : "opacity-0"}`}
-        priority
-        onLoadingComplete={() => setIsLoaded(true)}
+        overlay="rgba(0,0,0,0.5)"
       />
-
-      <div className="absolute inset-0 bg-black/50" />
 
       <div className="container-base tablet:pl-8 mobile:pl-6 tablet:gap-2 transition-base absolute inset-0 flex flex-col items-start justify-center gap-5 text-center text-white">
         <h2 className="mobile:text-2xl tablet:text-[54px] transition-base text-left text-[68px] font-bold">

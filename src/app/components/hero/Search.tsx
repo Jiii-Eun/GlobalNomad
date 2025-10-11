@@ -1,4 +1,4 @@
-import SearchForm from "@/app/conponents/SearchForm";
+import SearchForm from "@/app/components/hero/SearchForm";
 import { cn } from "@/lib/cn";
 
 export default function Search() {
