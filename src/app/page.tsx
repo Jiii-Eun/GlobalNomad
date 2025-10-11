@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { Arrow, Btn } from "@/components/icons";
 import Button from "@/components/ui/button/Button";
+import TestImageUploader from "@/components/ui/image-uploader/TestImageUploader";
 import TestDrawer from "@/components/ui/modal/TestDrawer";
 import TestTime from "@/components/ui/modal/TestTime";
 import ToastTestPage from "@/components/ui/toast/ToastTestPage";
@@ -16,7 +17,7 @@ export default function Home() {
     <div>
       <h1
         className={cn(
-          "rounded-lg p-4",
+          "mt-5 rounded-lg p-4",
           "text-brand-green-500 bg-brand-blue-500",
           "text-3xl font-bold",
           "transition-all hover:shadow-lg",
@@ -53,6 +54,7 @@ export default function Home() {
         reviewCount={120}
         activityId={1}
       />
+      <TestImageUploader />
     </div>
   );
 }
