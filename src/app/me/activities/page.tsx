@@ -14,7 +14,7 @@ export default function Activities() {
       <header className="h-[70px] bg-white"></header>
       <main className="bg-[#FAFAFA] py-18">
         <div className="mx-auto flex max-w-[1320px] gap-5">
-          <div className="flex w-[384px] flex-col gap-6 rounded-xl border border-[#DDDDDD] bg-white px-6 py-6">
+          <div className="flex h-fit w-[384px] flex-col gap-6 rounded-xl border border-[#DDDDDD] bg-white px-6 py-6">
             <div className="w-full">
               <div className="relative mx-auto w-fit">
                 <Image
@@ -46,7 +46,7 @@ export default function Activities() {
               </div>
             </div>
           </div>
-          <div className="flex h-[204px] w-[800px] flex-col gap-10">
+          <div className="flex h-fit w-[800px] flex-col gap-10">
             <div className="flex justify-between text-3xl font-bold">
               내 체험 관리
               <button className="text-brand-gray-100 rounded-4 w-30 bg-black text-center text-lg">
