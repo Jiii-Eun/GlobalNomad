@@ -1,7 +1,7 @@
 // # 내 체험 관리 (/me/activities)
 "use client";
 import Image from "next/image";
-import { Button, MeIcon, Status, Misc } from "@/components/icons";
+import { Btn, MeIcon, Status, Misc } from "@/components/icons";
 import { mockMyExperiences } from "./mock/myExperiences";
 import DropDown from "../components/DropDown/Dropdown";
 import { useState } from "react";
@@ -25,7 +25,7 @@ export default function Activities() {
                   height={160}
                   className="rounded-full"
                 />
-                <Button.Edit className="absolute right-0 bottom-0 h-11 w-11 rounded-full" />
+                <Btn.Edit className="absolute right-0 bottom-0 h-11 w-11 rounded-full" />
               </div>
             </div>
             <div className="flex w-full flex-col gap-2">
