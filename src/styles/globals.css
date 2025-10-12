@@ -142,6 +142,10 @@ a {
   @apply mx-auto w-full max-w-[1200px];
 }
 
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 
 @keyframes shimmer {
   0% {

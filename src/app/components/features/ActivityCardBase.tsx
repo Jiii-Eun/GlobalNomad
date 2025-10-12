@@ -70,7 +70,7 @@ export default function ActivityCardBase({
         </Link>
 
         <div className="mobile:text-xl mt-3 text-3xl">
-          ₩ {price.toLocaleString("ko-KR")}{" "}
+          ₩ {price.toLocaleString("ko-KR")}
           <span className="text-gray400 mobile:text-base text-xl">/ 인</span>
         </div>
       </div>

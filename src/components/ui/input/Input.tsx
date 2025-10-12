@@ -1,15 +1,16 @@
 "use client";
 
 import { ComponentPropsWithoutRef, Ref, useState } from "react";
-import Visibility from "@/assets/icons/status/visibility.svg";
+
 import VisibilityOff from "@/assets/icons/status/visibility-off.svg";
+import Visibility from "@/assets/icons/status/visibility.svg";
 
-const INPUT_BASE = 
-"w-[640px] max-w-full h-[58px] px-5 bg-white border border-brand-gray-400 rounded " +
-"text-lg placeholder:text-brand-gray-500/60";
+const INPUT_BASE =
+  "w-[640px] max-w-full h-[58px] px-5 bg-white border border-brand-gray-400 rounded " +
+  "text-lg placeholder:text-brand-gray-500/60";
 
-const padIfRightIcon = (has:boolean) => (has ? "pr-12" :"pr-5 ");
-const padIfLeftIcon = (has:boolean) => (has ? "pl-10" :"pl-5 ");
+const padIfRightIcon = (has: boolean) => (has ? "pr-12" : "pr-5 ");
+const padIfLeftIcon = (has: boolean) => (has ? "pl-10" : "pl-5 ");
 
 type NativeInputProps = ComponentPropsWithoutRef<"input">;
 type NativeSelectProps = ComponentPropsWithoutRef<"select">;
@@ -70,11 +71,12 @@ export default function Input(props: Props) {
         <select
           id={id}
           ref={ref as Ref<HTMLSelectElement>}
-          className={[INPUT_BASE,
+          className={[
+            INPUT_BASE,
             padIfLeftIcon(Boolean(leftIcon)),
             padIfRightIcon(Boolean(rightIcon)),
-            className,].join(" ")
-          }
+            className,
+          ].join(" ")}
           aria-invalid={isInvalid || undefined}
           {...rest}
         >
@@ -135,9 +137,9 @@ export default function Input(props: Props) {
           className="absolute inset-y-0 right-5 flex items-center px-2 text-sm text-gray-500"
         >
           {showPw ? (
-            <VisibilityOff className="h-6 w-6 svg-fill" />
+            <VisibilityOff className="svg-fill h-6 w-6" />
           ) : (
-          <Visibility className="h-6 w-6 svg-fill" />
+            <Visibility className="svg-fill h-6 w-6" />
           )}
         </button>
       ) : (
