@@ -8,7 +8,6 @@ import { useState } from "react";
 
 export default function Activities() {
   const [isOpen, setIsOpen] = useState(false);
-  const [openId, setOpenId] = useState<number | null>(null);
 
   return (
     <>
