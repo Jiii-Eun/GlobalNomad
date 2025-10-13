@@ -62,7 +62,7 @@ export default function Login() {
           type="submit"
           variant="b"
           isDisabled={!isValid || isSubmitting}
-          className="w-full text-lg"
+          className="h-12 w-full text-lg"
         >
           {isSubmitting ? "로그인 중..." : "로그인"}
         </Button>

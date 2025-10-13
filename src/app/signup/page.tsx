@@ -108,7 +108,7 @@ export default function Signup() {
           type="submit"
           variant="b"
           isDisabled={!isValid || isSubmitting}
-          className="w-full text-lg"
+          className="h-12 w-full text-lg"
         >
           {isSubmitting ? "가입 중..." : "회원가입"}
         </Button>
