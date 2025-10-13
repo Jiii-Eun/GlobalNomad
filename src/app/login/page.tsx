@@ -45,8 +45,10 @@ export default function Login() {
             {...register("email", {
               setValueAs: (v) => (typeof v === "string" ? v.trim() : v),
               required: "이메일을 입력해 주세요.",
-              validate: (v) =>
-                /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) || "이메일 형식이 올바르지 않습니다.",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "이메일을 입력해 주세요.",
+              },
             })}
           />
         </Field>
