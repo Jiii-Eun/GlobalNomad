@@ -1,5 +1,3 @@
-"use client";
-
 import ActivityCardBase from "@/app/components/features/ActivityCardBase";
 import { Activity } from "@/lib/api/activities/types";
 import { cn } from "@/lib/cn";

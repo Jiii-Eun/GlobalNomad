@@ -1,6 +1,7 @@
 "use client";
 
 import ActivityCardBase from "@/app/components/features/ActivityCardBase";
+import ActivitiesPagination from "@/app/components/features/all/ActivitiesPagination";
 import { useActivityParams } from "@/app/components/useActivityParams";
 import { useActivities } from "@/lib/api/activities/hooks";
 import { cn } from "@/lib/cn";
@@ -51,6 +52,8 @@ export default function AllActivitiesList() {
       {!isLoading && activities?.length === 0 && (
         <p className="col-span-full py-10 text-center text-gray-500">검색 결과가 없습니다.</p>
       )}
+
+      <ActivitiesPagination size={LENGTH} />
     </div>
   );
 }

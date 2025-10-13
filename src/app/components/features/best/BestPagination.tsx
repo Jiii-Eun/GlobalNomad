@@ -1,16 +1,13 @@
-"use client";
-
-import { useState } from "react";
-
 import { Arrow } from "@/components/icons";
 import PaginationButton from "@/components/ui/pagination/PaginationButton";
 
 interface PaginationProps {
   totalCount: number;
+  page: number;
+  setPage: (page: number) => void;
 }
 
-export default function BestPagination({ totalCount }: PaginationProps) {
-  const [page, setPage] = useState(1);
+export default function BestPagination({ totalCount, page, setPage }: PaginationProps) {
   const pageSize = 3;
 
   const totalPages = Math.ceil(totalCount / pageSize);
