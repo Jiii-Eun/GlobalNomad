@@ -1,9 +1,9 @@
 export type ExperienceStatus = "published" | "draft" | "paused";
 
-export type ExperienceCard = {
+export interface ExperienceCard {
   id: number;
   title: string;
-  thumbnail: string; 
+  thumbnail: string;
   rating: number;
   reviewsCount: number;
   pricePerPerson: string;
@@ -23,4 +23,4 @@ export type ExperienceCard = {
   };
 
   slug: string;
-};
+}
