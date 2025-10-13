@@ -20,7 +20,10 @@ export default function BestACtivitiesList() {
             <div key={i} className={cn("shimmer rounded-[20px]", listClass)} />
           ))
         : activities?.map((item) => (
-            <div key={item.id} className={cn("relative", listClass)}>
+            <div
+              key={item.id}
+              className={cn("mobile:min-w-[186px] relative min-w-[384px]", listClass)}
+            >
               <ActivityCardBase
                 id={item.id}
                 title={item.title}
@@ -28,6 +31,7 @@ export default function BestACtivitiesList() {
                 bannerImageUrl={"/images/street-dance-banner.png"}
                 rating={item.rating}
                 reviewCount={item.reviewCount}
+                variant="best"
               />
             </div>
           ))}

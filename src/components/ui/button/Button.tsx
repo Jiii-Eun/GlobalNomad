@@ -27,7 +27,7 @@ export default function Button({
 
   const variantStyle = {
     b: "bg-brand-nomad-black text-white hover:bg-brand-deep-green-500",
-    w: "bg-white text-brand-nomad-black border border-brand-nomad-black hover:bg-brand-gray-200",
+    w: "bg-white text-brand-nomad-black border border-brand-nomad-black hover:bg-brand-deep-green-50",
     g: "bg-brand-green-500 text-white hover:bg-brand-deep-green-50",
   }[variant];
 

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { sharedButtonClass } from "@/app/components/features/all/Categories";
 import DropDown from "@/app/me/components/DropDown/Dropdown";
 import Button from "@/components/ui/button/Button";
+import { cn } from "@/lib/cn";
 
 export default function ArrayActivities() {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +24,7 @@ export default function ArrayActivities() {
 
       <DropDown handleClose={() => setIsOpen(false)}>
         <DropDown.Trigger onClick={() => setIsOpen((prev) => !prev)}>
-          <Button variant="w" className={sharedButtonClass}>
+          <Button variant="w" className={cn(sharedButtonClass, "hover:bg-transparent")}>
             {selectedSort}
           </Button>
         </DropDown.Trigger>

@@ -24,7 +24,7 @@ export default function Categories() {
             key={category}
             variant="w"
             onClick={() => setSelected(category)}
-            className={sharedButtonClass}
+            className={cn(sharedButtonClass, "hover:border-0 hover:text-white")}
           >
             {category}
           </Button>

@@ -12,10 +12,15 @@ interface dataProps {
 export default function Pagination({ page, setPage, totalPages, className }: dataProps) {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
+  const firstPage = page === 1;
+  const lastPage = page === totalPages;
+
+  const arrowClass = cn("svg-fill hover:text-white");
+
   return (
     <div className={cn("mt-4 flex justify-center gap-[10px]", className)}>
-      <PaginationButton disabled={page === 1} onClick={() => setPage(page - 1)}>
-        <Arrow.LeftFill className={cn("size-5", !(page === 1) && "svg-fill hover:text-white")} />
+      <PaginationButton disabled={firstPage} onClick={() => setPage(page - 1)}>
+        <Arrow.LeftFill className={cn("size-5", !firstPage && arrowClass)} />
       </PaginationButton>
       {pages.map((num) => (
         <PaginationButton
@@ -28,10 +33,8 @@ export default function Pagination({ page, setPage, totalPages, className }: dat
         </PaginationButton>
       ))}
 
-      <PaginationButton disabled={page === totalPages} onClick={() => setPage(page + 1)}>
-        <Arrow.RightFill
-          className={cn("size-5", !(page === totalPages) && "svg-fill hover:text-white")}
-        />
+      <PaginationButton disabled={lastPage} onClick={() => setPage(page + 1)}>
+        <Arrow.RightFill className={cn("size-5", !lastPage && arrowClass)} />
       </PaginationButton>
     </div>
   );
