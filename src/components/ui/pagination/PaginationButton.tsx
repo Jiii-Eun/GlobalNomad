@@ -15,7 +15,7 @@ export default function PaginationButton({
   className,
 }: paginationprops) {
   const buttonClass = cn(
-    "border-brand-deep-green-500 border flex h-[55px] w-[55px] justify-center items-center px-2 py-1 bg-white rounded-[15px]",
+    "flex h-[55px] w-[55px] justify-center items-center bg-white rounded-[15px]",
     "disabled:opacity-50 disabled:cursor-default disabled:border-brand-gray-300",
     "mobile:h-10 mobile:w-10",
     !disabled && "hover:bg-brand-deep-green-50 hover:text-white hover:border-0",
