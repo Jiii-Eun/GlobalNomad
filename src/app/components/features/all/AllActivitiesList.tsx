@@ -4,14 +4,19 @@ import ActivityCardBase from "@/app/components/features/ActivityCardBase";
 import { useActivityParams } from "@/app/components/useActivityParams";
 import { useActivities } from "@/lib/api/activities/hooks";
 import { cn } from "@/lib/cn";
+import { useDevice } from "@/lib/hooks/useDevice";
 
 export default function AllActivitiesList() {
   const params = useActivityParams();
   const { data, isLoading } = useActivities(params, true);
 
+  const { isTablet, isMobile } = useDevice();
+
   const activities = data?.activities;
 
   const listClass = "w-full max-w-[384px] aspect-square";
+
+  const LENGTH = isMobile ? 4 : isTablet ? 9 : 8;
 
   return (
     <div
@@ -21,8 +26,15 @@ export default function AllActivitiesList() {
       )}
     >
       {isLoading
-        ? Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className={cn("shimmer rounded-[20px]", listClass)} />
+        ? Array.from({ length: LENGTH }).map((_, index) => (
+            <div
+              key={index}
+              className={cn(
+                "shimmer rounded-[20px]",
+                "tablet:mb-[184px] mobile:mb-[130px] mb-[200px]",
+                listClass,
+              )}
+            />
           ))
         : activities?.map((item) => (
             <div key={item.id} className={cn("relative", listClass)}>

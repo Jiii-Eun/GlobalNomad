@@ -7,34 +7,71 @@ interface dataProps {
   setPage: (page: number) => void;
   totalPages: number;
   className?: string;
+  variant?: "default" | "none";
 }
 
-export default function Pagination({ page, setPage, totalPages, className }: dataProps) {
+export default function Pagination({
+  page,
+  setPage,
+  totalPages,
+  className,
+  variant = "default",
+}: dataProps) {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   const firstPage = page === 1;
   const lastPage = page === totalPages;
 
+  const isNone = variant === "none";
+
+  const handlePrev = () => {
+    setPage(page - 1);
+  };
+  const handleNext = () => {
+    setPage(page + 1);
+  };
+
   const arrowClass = cn("svg-fill hover:text-white");
 
   return (
     <div className={cn("mt-4 flex justify-center gap-[10px]", className)}>
-      <PaginationButton disabled={firstPage} onClick={() => setPage(page - 1)}>
-        <Arrow.LeftFill className={cn("size-5", !firstPage && arrowClass)} />
+      <PaginationButton
+        disabled={firstPage}
+        onClick={handlePrev}
+        variant={isNone ? "none" : "default"}
+      >
+        {isNone ? (
+          <Arrow.Left className="size-11" />
+        ) : (
+          <Arrow.LeftFill className={cn("size-5", !firstPage && arrowClass)} />
+        )}
       </PaginationButton>
-      {pages.map((num) => (
-        <PaginationButton
-          key={num}
-          onClick={() => setPage(num)}
-          aria-current={page === num ? "page" : undefined}
-          className={cn(page === num && "bg-brand-deep-green-500 text-white")}
-        >
-          {num}
-        </PaginationButton>
-      ))}
+      {!isNone &&
+        pages.map((num) => {
+          const isNum = page === num;
 
-      <PaginationButton disabled={lastPage} onClick={() => setPage(page + 1)}>
-        <Arrow.RightFill className={cn("size-5", !lastPage && arrowClass)} />
+          return (
+            <PaginationButton
+              key={num}
+              onClick={() => setPage(num)}
+              aria-current={isNum ? "page" : undefined}
+              className={cn(isNum && "bg-brand-deep-green-500 text-white")}
+            >
+              {num}
+            </PaginationButton>
+          );
+        })}
+
+      <PaginationButton
+        disabled={lastPage}
+        onClick={handleNext}
+        variant={isNone ? "none" : "default"}
+      >
+        {isNone ? (
+          <Arrow.Right className="size-11" />
+        ) : (
+          <Arrow.RightFill className={cn("size-5", !lastPage && arrowClass)} />
+        )}
       </PaginationButton>
     </div>
   );

@@ -16,19 +16,26 @@ export default function Categories() {
   const [selected, setSelected] = useState("모두");
 
   return (
-    // 케러셀 활용
     <div className="scrollbar-hide scrollbar-hide w-full overflow-x-auto">
       <div className="flex min-w-max gap-4 px-2">
-        {categories.map((category) => (
-          <Button
-            key={category}
-            variant="w"
-            onClick={() => setSelected(category)}
-            className={cn(sharedButtonClass, "hover:border-0 hover:text-white")}
-          >
-            {category}
-          </Button>
-        ))}
+        {categories.map((category) => {
+          const isSelected = selected === category;
+
+          return (
+            <Button
+              key={category}
+              variant="w"
+              onClick={() => setSelected(category)}
+              className={cn(
+                sharedButtonClass,
+                "hover:border-0 hover:text-white",
+                isSelected && "bg-brand-deep-green-500 text-white",
+              )}
+            >
+              {category}
+            </Button>
+          );
+        })}
       </div>
     </div>
   );
