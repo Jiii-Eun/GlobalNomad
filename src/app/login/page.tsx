@@ -27,7 +27,13 @@ export default function Login() {
   return (
     <main className="mx-auto mt-28 w-full max-w-[640px]">
       <Link href="/" aria-label="홈으로 이동" className="inline-block">
-        <MainLogo className="mx-auto mb-14" alt="GlobalNomad" width={340} height={192} />
+        <MainLogo
+          className="mx-auto mb-14"
+          role="img"
+          aria-label="GlobalNomad"
+          width={340}
+          height={192}
+        />
       </Link>
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-7">
         <Field id="email" label="이메일" error={errors.email?.message}>
