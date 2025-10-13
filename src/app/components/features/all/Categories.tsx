@@ -6,6 +6,11 @@ import Button from "@/components/ui/button/Button";
 import { ActivityCategorySchema } from "@/lib/api/activities/types";
 import { cn } from "@/lib/cn";
 
+export const sharedButtonClass = cn(
+  "text-2lg h-[58px] w-[127px] rounded-[15px] whitespace-nowrap",
+  "mobile:w-[100px] mobile:h-[41px] tablet:w-[120px]",
+);
+
 export default function Categories() {
   const categories = ["모두", ...ActivityCategorySchema.options];
   const [selected, setSelected] = useState("모두");
@@ -19,10 +24,7 @@ export default function Categories() {
             key={category}
             variant="w"
             onClick={() => setSelected(category)}
-            className={cn(
-              "text-2lg h-[58px] w-[127px] rounded-[15px] whitespace-nowrap",
-              "mobile:w-[100px] mobile:h-[41px] tablet:w-[120px]",
-            )}
+            className={sharedButtonClass}
           >
             {category}
           </Button>

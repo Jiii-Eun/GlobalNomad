@@ -7,7 +7,7 @@ import { cn } from "@/lib/cn";
 export default function AllActivities() {
   return (
     <div className="">
-      <div className="mt-[60px]">
+      <div className="mt-[60px] flex justify-between">
         <Categories />
         <ArrayActivities />
       </div>
