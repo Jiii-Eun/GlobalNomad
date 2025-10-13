@@ -9,7 +9,7 @@ export default function ActivitiesPagenation() {
 
   return (
     <>
-      <Pagination page={page} setPage={setPage} totalPages={9} />
+      <Pagination page={page} setPage={setPage} totalPages={21} />
     </>
   );
 }

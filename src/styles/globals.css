@@ -118,6 +118,10 @@ button {
   @apply cursor-pointer;
 }
 
+button:disabled {
+  @apply cursor-default;
+}
+
 /* 링크 기본 스타일 */
 a {
   @apply block no-underline text-brand-black w-full h-full;

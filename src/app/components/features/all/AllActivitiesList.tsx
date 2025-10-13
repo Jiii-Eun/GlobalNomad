@@ -8,7 +8,7 @@ import { useDevice } from "@/lib/hooks/useDevice";
 
 export default function AllActivitiesList() {
   const params = useActivityParams();
-  const { data, isLoading } = useActivities(params, true);
+  const { data, isLoading } = useActivities(params);
 
   const { isTablet, isMobile } = useDevice();
 
@@ -48,6 +48,9 @@ export default function AllActivitiesList() {
               />
             </div>
           ))}
+      {!isLoading && activities?.length === 0 && (
+        <p className="col-span-full py-10 text-center text-gray-500">검색 결과가 없습니다.</p>
+      )}
     </div>
   );
 }

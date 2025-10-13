@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div>
       <MainBenner />
-      <div className="container-base tablet:px-6 mobile:px-4">
+      <div className="container-base tablet:px-6 mobile:px-4 mb-52">
         <Search />
         <Features />
       </div>

@@ -1,16 +1,15 @@
 "use client";
 
 import ActivityCardBase from "@/app/components/features/ActivityCardBase";
-import { useActivityParams } from "@/app/components/useActivityParams";
-import { useActivities } from "@/lib/api/activities/hooks";
+import { Activity } from "@/lib/api/activities/types";
 import { cn } from "@/lib/cn";
 
-export default function BestACtivitiesList() {
-  const params = useActivityParams();
-  const { data, isLoading } = useActivities(params, true);
+interface BestProps {
+  activities: Activity[];
+  isLoading: boolean;
+}
 
-  const activities = data?.activities;
-
+export default function BestACtivitiesList({ activities, isLoading }: BestProps) {
   const listClass = "w-full max-w-[384px] aspect-square";
 
   return (

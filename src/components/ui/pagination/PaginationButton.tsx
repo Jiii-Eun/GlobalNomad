@@ -29,13 +29,9 @@ export default function PaginationButton({
   return (
     <Button
       variant="w"
-      disabled={disabled}
+      isDisabled={disabled}
       onClick={onClick}
-      className={cn(
-        isNone ? noneClass : buttonClass,
-        "disabled:border-brand-gray-300 disabled:cursor-default disabled:opacity-50",
-        className,
-      )}
+      className={cn(isNone ? noneClass : buttonClass, "disabled:bg-transparent", className)}
     >
       {children}
     </Button>
