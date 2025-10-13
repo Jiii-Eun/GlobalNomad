@@ -7,7 +7,7 @@ import { cn } from "@/lib/cn";
 export default function AllActivities() {
   return (
     <div className="">
-      <div>
+      <div className="mt-[60px]">
         <Categories />
         <ArrayActivities />
       </div>
