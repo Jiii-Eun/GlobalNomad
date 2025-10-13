@@ -21,7 +21,7 @@ export default function AllActivitiesList() {
       )}
     >
       {isLoading
-        ? Array.from({ length: 9 }).map((_, i) => (
+        ? Array.from({ length: 8 }).map((_, i) => (
             <div key={i} className={cn("shimmer rounded-[20px]", listClass)} />
           ))
         : activities?.map((item) => (

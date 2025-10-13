@@ -1,7 +1,7 @@
+import ActivitiesPagenation from "@/app/components/features/all/ActivitiesPagenation";
 import AllActivitiesList from "@/app/components/features/all/AllActivitiesList";
 import ArrayActivities from "@/app/components/features/all/ArrayActivities";
 import Categories from "@/app/components/features/all/Categories";
-import Pagination from "@/components/ui/pagination/Pagination";
 import { cn } from "@/lib/cn";
 
 export default function AllActivities() {
@@ -17,7 +17,7 @@ export default function AllActivities() {
       </div>
       <AllActivitiesList />
 
-      <Pagination />
+      <ActivitiesPagenation />
     </div>
   );
 }
