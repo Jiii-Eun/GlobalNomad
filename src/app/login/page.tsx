@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useForm } from "react-hook-form";
 
-import MainLogo from "@/assets/brand/logo-big.svg";
+import Logo from "@/components/ui/brand/Logo";
 import Button from "@/components/ui/button/Button";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
@@ -26,15 +25,8 @@ export default function Login() {
 
   return (
     <main className="mx-auto mt-28 w-full max-w-[640px]">
-      <Link href="/" aria-label="홈으로 이동" className="inline-block">
-        <MainLogo
-          className="mx-auto mb-14"
-          role="img"
-          aria-label="GlobalNomad"
-          width={340}
-          height={192}
-        />
-      </Link>
+      <Logo />
+
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-7">
         <Field id="email" label="이메일" error={errors.email?.message}>
           <Input
