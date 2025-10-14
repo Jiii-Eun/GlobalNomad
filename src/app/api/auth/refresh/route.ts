@@ -65,18 +65,23 @@ async function proxy(req: NextRequest, method: string, params: string[]) {
   });
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function GET(req: NextRequest, context: any) {
   return proxy(req, "GET", context.params.proxy);
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function POST(req: NextRequest, context: any) {
   return proxy(req, "POST", context.params.proxy);
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function PUT(req: NextRequest, context: any) {
   return proxy(req, "PUT", context.params.proxy);
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function PATCH(req: NextRequest, context: any) {
   return proxy(req, "PATCH", context.params.proxy);
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function DELETE(req: NextRequest, context: any) {
   return proxy(req, "DELETE", context.params.proxy);
 }
