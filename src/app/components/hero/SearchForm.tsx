@@ -16,7 +16,9 @@ export default function SearchForm() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setGlobalKeyword(keyword.trim());
+    const trimmed = keyword.trim();
+    setGlobalKeyword(trimmed.length > 0 ? trimmed : undefined);
+
     setPage(1);
   };
 

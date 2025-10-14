@@ -67,7 +67,7 @@ export default function ActivityCardBase({
         <Link href={`/activities/${id}`} className="mt-1 line-clamp-2 block overflow-hidden">
           <span
             className={cn(
-              "text-2xl font-bold",
+              "text-2xl font-bold break-keep",
               best && "mobile:text-2lg text-3xl font-bold text-white",
             )}
           >

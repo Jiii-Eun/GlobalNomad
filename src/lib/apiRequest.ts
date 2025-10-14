@@ -1,4 +1,5 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const BASE_URL = process.env.NODE_ENV === "development" ? "/api" : process.env.NEXT_PUBLIC_API_URL;
+
 import { ZodType } from "zod";
 
 interface FetchOptions<T> extends Omit<RequestInit, "body"> {

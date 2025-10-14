@@ -107,90 +107,92 @@
 @custom-variant tablet (@media (max-width: 78rem)); /* 1248px 이하 */
 @custom-variant mobile (@media (max-width: 46.5rem)); /* 744px 이하 */
 
-
-body {
-  /* 기본 스타일 */
-  @apply bg-brand-gray-100 text-brand-black;
-}
-
-/* 버튼 커서 */
-button {
-  @apply cursor-pointer;
-}
-
-button:disabled {
-  @apply cursor-default;
-}
-
-/* 링크 기본 스타일 */
-a {
-  @apply block no-underline text-brand-black w-full h-full;
-}
-
-/* 포커스인 테두리 */
-:focus {
-  @apply outline-brand-nomad-black;
-}
-
-/* 에러 테두리 */
-.is-error {
-  @apply border-brand-red-500 ring-1 ring-brand-red-500;
-}
-
-.flex-center {
-  @apply flex justify-center items-center;
-}
-
-
-.container-base {
-  @apply mx-auto w-full max-w-[1200px];
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-
-@keyframes shimmer {
-  0% {
-    background-position: -100% 0;
+@layer base{
+  
+  body {
+    /* 기본 스타일 */
+    @apply bg-brand-gray-100 text-brand-black;
   }
-  100% {
-    background-position: 200% 0;
+
+  /* 버튼 커서 */
+  button {
+    @apply cursor-pointer;
   }
-}
 
-.shimmer {
-  background: linear-gradient(
-    90deg,
-    var(--color-brand-gray-400) 0%,
-    var(--color-brand-gray-300) 25%,
-    var(--color-brand-gray-200) 50%,
-    var(--color-brand-gray-300) 75%,
-    var(--color-brand-gray-400) 100%
-  );
-  background-size: 400% 100%;
-  animation: shimmer 2.2s infinite linear;
-}
+  button:disabled {
+    @apply cursor-default;
+  }
 
-.transition-base {
-  transition-property: var(--transition-props);
-  transition-duration: 250ms;
-  transition-timing-function: ease-in-out;
-}
+  /* 링크 기본 스타일 */
+  a {
+    @apply block no-underline text-brand-black w-full h-full;
+  }
+
+  /* 포커스인 테두리 */
+  :focus {
+    @apply outline-brand-nomad-black;
+  }
+
+  /* 에러 테두리 */
+  .is-error {
+    @apply border-brand-red-500 ring-1 ring-brand-red-500;
+  }
+
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
 
 
-/* svgr 색상 변경 클래스 */
-/* fill만 */
-.svg-fill path,
-.svg-fill rect,
-.svg-fill circle {
-  fill: currentColor;
-}
+  .container-base {
+    @apply mx-auto w-full max-w-[1200px];
+  }
 
-/* stroke만 */
-.svg-stroke path,
-.svg-stroke rect,
-.svg-stroke circle {
-  stroke: currentColor;
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+
+  @keyframes shimmer {
+    0% {
+      background-position: -100% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--color-brand-gray-400) 0%,
+      var(--color-brand-gray-300) 25%,
+      var(--color-brand-gray-200) 50%,
+      var(--color-brand-gray-300) 75%,
+      var(--color-brand-gray-400) 100%
+    );
+    background-size: 400% 100%;
+    animation: shimmer 2.2s infinite linear;
+  }
+
+  .transition-base {
+    transition-property: var(--transition-props);
+    transition-duration: 250ms;
+    transition-timing-function: ease-in-out;
+  }
+
+
+  /* svgr 색상 변경 클래스 */
+  /* fill만 */
+  .svg-fill path,
+  .svg-fill rect,
+  .svg-fill circle {
+    fill: currentColor;
+  }
+
+  /* stroke만 */
+  .svg-stroke path,
+  .svg-stroke rect,
+  .svg-stroke circle {
+    stroke: currentColor;
+  }
 }
