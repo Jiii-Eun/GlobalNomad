@@ -1,49 +1,82 @@
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
-export async function POST() {
-  const refreshToken = (await cookies()).get("refreshToken")?.value;
+async function proxy(req: NextRequest, method: string, params: string[]) {
+  const targetUrl = `${BASE_URL}/${params.join("/")}${req.nextUrl.search}`;
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
+  const refreshToken = cookieStore.get("refreshToken")?.value;
 
-  if (!refreshToken) {
-    return NextResponse.json(
-      { message: "리프레시 토큰이 없습니다. 다시 로그인하세요." },
-      { status: 401 },
-    );
+  const headers = new Headers(req.headers);
+  if (accessToken) headers.set("Authorization", `Bearer ${accessToken}`);
+  headers.delete("accept-encoding");
+
+  let body: BodyInit | undefined = undefined;
+  if (method !== "GET" && method !== "HEAD") {
+    const contentType = headers.get("content-type") || "";
+    if (contentType.includes("multipart/form-data")) {
+      body = await req.formData();
+      headers.delete("content-type");
+      headers.delete("content-length");
+    } else {
+      body = await req.text();
+    }
   }
 
-  const res = await fetch(`${BASE_URL}/auth/tokens`, {
-    method: "POST",
+  let res = await fetch(targetUrl, { method, headers, body });
+
+  if (res.status === 401 && refreshToken) {
+    const refreshRes = await fetch(`${BASE_URL}/auth/tokens`, {
+      method: "POST",
+      headers: { Cookie: `refreshToken=${refreshToken}` },
+      credentials: "include",
+    });
+
+    if (refreshRes.ok) {
+      const tokens = await refreshRes.json();
+      const nextRes = NextResponse.next();
+
+      nextRes.cookies.set("accessToken", tokens.accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+      });
+      nextRes.cookies.set("refreshToken", tokens.refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+      });
+
+      headers.set("Authorization", `Bearer ${tokens.accessToken}`);
+      res = await fetch(targetUrl, { method, headers, body });
+    }
+  }
+
+  const text = await res.text();
+  return new NextResponse(text, {
+    status: res.status,
     headers: {
-      Cookie: `refreshToken=${refreshToken}`,
+      "content-type": res.headers.get("content-type") ?? "application/json",
     },
-    credentials: "include",
   });
+}
 
-  if (!res.ok) {
-    return NextResponse.json({ message: "토큰 갱신 실패. 다시 로그인하세요." }, { status: 401 });
-  }
-
-  const data = await res.json();
-
-  const response = NextResponse.json({
-    accessToken: data.accessToken,
-    refreshToken: data.refreshToken,
-  });
-
-  response.cookies.set("accessToken", data.accessToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "strict",
-    path: "/",
-  });
-  response.cookies.set("refreshToken", data.refreshToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "strict",
-    path: "/",
-  });
-
-  return response;
+export async function GET(req: NextRequest, context: any) {
+  return proxy(req, "GET", context.params.proxy);
+}
+export async function POST(req: NextRequest, context: any) {
+  return proxy(req, "POST", context.params.proxy);
+}
+export async function PUT(req: NextRequest, context: any) {
+  return proxy(req, "PUT", context.params.proxy);
+}
+export async function PATCH(req: NextRequest, context: any) {
+  return proxy(req, "PATCH", context.params.proxy);
+}
+export async function DELETE(req: NextRequest, context: any) {
+  return proxy(req, "DELETE", context.params.proxy);
 }

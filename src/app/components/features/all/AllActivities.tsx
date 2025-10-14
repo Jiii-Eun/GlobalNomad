@@ -1,4 +1,3 @@
-import ActivitiesPagenation from "@/app/components/features/all/ActivitiesPagenation";
 import AllActivitiesList from "@/app/components/features/all/AllActivitiesList";
 import ArrayActivities from "@/app/components/features/all/ArrayActivities";
 import Categories from "@/app/components/features/all/Categories";
@@ -16,8 +15,6 @@ export default function AllActivities() {
         <h2 className={cn("text-4xl font-bold", "mobile:text-2lg")}>🛼 모든 체험</h2>
       </div>
       <AllActivitiesList />
-
-      <ActivitiesPagenation />
     </div>
   );
 }
