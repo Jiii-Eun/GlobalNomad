@@ -1,6 +1,8 @@
 // # 내 체험 관리 (/me/activities)
 "use client";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Btn, MeIcon, Status, Misc } from "@/components/icons";
@@ -9,13 +11,19 @@ import { mockMyExperiences } from "./mock/myExperiences";
 import DropDown from "../components/DropDown/Dropdown";
 
 export default function Activities() {
+  const router = useRouter();
   const [openId, setOpenId] = useState<number | null>(null);
   const toggleMenu = (id: number) => setOpenId((prev) => (prev === id ? null : id));
   const closeMenu = () => setOpenId(null);
 
+  const moveEdit = (id: number) => {
+    closeMenu();
+    router.push(`/me/activities/${id}/edit`);
+  };
+
   return (
     <>
-      <main className="bg-[#FAFAFA] py-18">
+      <main className="bg-brand-gray-100 py-18">
         <div className="mx-auto flex max-w-[1320px] gap-5">
           <div className="flex h-fit w-[384px] flex-col gap-6 rounded-xl border border-[#DDDDDD] bg-white px-6 py-6">
             <div className="w-full">
@@ -50,11 +58,14 @@ export default function Activities() {
             </div>
           </div>
           <div className="flex h-fit min-h-[800px] w-[800px] flex-col gap-10">
-            <div className="flex justify-between text-3xl font-bold">
-              내 체험 관리
-              <button className="text-brand-gray-100 rounded-4 w-30 bg-black text-center text-lg">
+            <div className="flex justify-between">
+              <h1 className="text-3xl font-bold">내 체험 관리</h1>
+              <Link
+                href="./activities/register"
+                className="text-brand-gray-100 rounded-4 w-[120px] bg-black px-4 py-2 text-center text-lg"
+              >
                 체험 등록하기
-              </button>
+              </Link>
             </div>
             <div>
               <ul className="flex list-none flex-col gap-6">
@@ -86,7 +97,9 @@ export default function Activities() {
                                 <Misc.MenuDot className="h-10 w-10" />
                               </DropDown.Trigger>
                               <DropDown.Menu isOpen={openId === exp.id}>
-                                <DropDown.Item onClick={closeMenu}>수정하기</DropDown.Item>
+                                <DropDown.Item onClick={() => moveEdit(exp.id)}>
+                                  수정하기
+                                </DropDown.Item>
                                 <DropDown.Item onClick={closeMenu}>삭제하기</DropDown.Item>
                               </DropDown.Menu>
                             </DropDown>

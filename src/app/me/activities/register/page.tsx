@@ -3,7 +3,7 @@
 export default function Register() {
   return (
     <>
-      <div className=""></div>
+      <div className="">등록페이지</div>
     </>
   );
 }
