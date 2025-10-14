@@ -37,13 +37,13 @@ export default function Field({ id, label, error, className, children }: FieldPr
   return (
     <div className={className}>
       {label && (
-        <label htmlFor={id} className="mb-2 block text-lg text-brand-black">
+        <label htmlFor={id} className="text-brand-black mb-2 block text-lg">
           {label}
         </label>
       )}
       {child}
       {error && (
-        <p id={errorId} role="alert" aria-live="polite" className="mt-2 text-sm text-brand-red-500">
+        <p id={errorId} role="alert" aria-live="polite" className="text-brand-red-500 mt-2 text-sm">
           {error}
         </p>
       )}
