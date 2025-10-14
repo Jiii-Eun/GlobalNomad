@@ -10,8 +10,8 @@ import Input from "@/components/ui/input/Input";
 interface FormValues {
   nickname: string;
   email: string;
-  password: string;
-  confirm: string;
+  password?: string;
+  confirm?: string;
 }
 
 export default function Mypage() {
@@ -42,10 +42,10 @@ export default function Mypage() {
   };
 
   return (
-    <main className="mx-auto mt-20 w-full max-w-[792px]">
+    <main className="mx-auto mt-20 mb-[88px] w-full max-w-[792px]">
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-8">
         <div className="flex justify-between">
-          <h1>내정보</h1>
+          <h1 className="text-brand-black text-3xl font-bold">내정보</h1>
           <Button
             type="submit"
             variant="b"
@@ -72,27 +72,14 @@ export default function Mypage() {
         </Field>
 
         <Field id="email" label="이메일" error={errors.email?.message}>
-          <Input
-            id="email"
-            type="email"
-            placeholder="이메일을 입력해 주세요."
-            aria-invalid={!!errors.email}
-            {...register("email", {
-              setValueAs: (v) => (typeof v === "string" ? v.trim() : v),
-              required: "이메일을 입력해 주세요.",
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "이메일을 입력해 주세요.",
-              },
-            })}
-          />
+          <Input id="email" type="email" placeholder="이메일" readOnly {...register("email")} />
         </Field>
 
         <Field id="password" label="비밀번호" error={errors.password?.message}>
           <Input
             id="password"
             type="password"
-            placeholder="비밀번호를 입력해 주세요."
+            placeholder="8자 이상 입력해 주세요."
             aria-invalid={!!errors.password}
             {...register("password", {
               required: "비밀번호를 입력해 주세요.",
@@ -105,7 +92,7 @@ export default function Mypage() {
           <Input
             id="confirm"
             type="password"
-            placeholder="비밀번호를 다시 입력해 주세요."
+            placeholder="비밀번호를 한번 더 입력해 주세요."
             aria-invalid={!!errors.confirm}
             {...register("confirm", {
               required: "비밀번호를 다시 입력해 주세요.",
