@@ -1,6 +1,10 @@
 import Link from "next/link";
 // import Datepicker from "react-tailwindcss-datepicker";
 
+import ActivityCardBase from "@/app/components/features/ActivityCardBase";
+import Features from "@/app/components/features/Features";
+import MainBenner from "@/app/components/hero/MainBenner";
+import Search from "@/app/components/hero/Search";
 import { Arrow, Btn } from "@/components/icons";
 import Button from "@/components/ui/button/Button";
 import TestImageUploader from "@/components/ui/image-uploader/TestImageUploader";
@@ -9,12 +13,17 @@ import TestTime from "@/components/ui/modal/TestTime";
 import ToastTestPage from "@/components/ui/toast/ToastTestPage";
 import { cn } from "@/lib/cn";
 
-import ActivityCardBase from "./activities/components/activity/ActivityCardBase";
 import MyActivityCard from "./activities/components/cards/MyActivityCard";
 
 export default function Home() {
   return (
     <div>
+      <MainBenner />
+      <div className="container-base tablet:px-6 mobile:px-4">
+        <Search />
+        <Features />
+      </div>
+
       <h1
         className={cn(
           "mt-5 rounded-lg p-4",
