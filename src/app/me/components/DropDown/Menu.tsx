@@ -6,7 +6,11 @@ interface DropDownMenuProps {
   position?: string;
 }
 
-const DropDownMenu = ({ children, isOpen, position }: DropDownMenuProps) => (
+const DropDownMenu = ({
+  children,
+  isOpen,
+  position = "right-0 top-full mt-2",
+}: DropDownMenuProps) => (
   <AnimatePresence>
     {isOpen && (
       <motion.div

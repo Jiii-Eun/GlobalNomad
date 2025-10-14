@@ -1,7 +1,7 @@
 import DropDownItem from "./Item";
 import DropDownMenu from "./Menu";
 import DropDownTrigger from "./Trigger";
-import useClickOutside from "./useClickOutside";
+import useClickOutside from "@/lib/hooks/useClickOutside";
 
 interface DropDownProps {
   children: React.ReactNode;
