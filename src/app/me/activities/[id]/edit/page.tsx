@@ -1,9 +1,10 @@
 // # 내 체험 관리 (/me/activities)
 "use client";
 import Image from "next/image";
-import { Btn, MeIcon, Status } from "@/components/icons";
 import { useState } from "react";
+
 import TimeSlotPicker from "@/app/me/components/TimeSlotPicker";
+import { Btn, MeIcon, Status } from "@/components/icons";
 
 export default function Edit() {
   const [parentSelectedDate, setParentSelectedDate] = useState<Date | null>(null);
@@ -11,7 +12,7 @@ export default function Edit() {
 
   return (
     <>
-      <main className="bg-[#FAFAFA] py-18">
+      <main className="bg-brand-gray-100 py-18">
         <div className="mx-auto flex max-w-[1320px] gap-5">
           <div className="flex h-fit w-[384px] flex-col gap-6 rounded-xl border border-[#DDDDDD] bg-white px-6 py-6">
             <div className="w-full">

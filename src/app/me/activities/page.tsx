@@ -9,7 +9,9 @@ import { mockMyExperiences } from "./mock/myExperiences";
 import DropDown from "../components/DropDown/Dropdown";
 
 export default function Activities() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [openId, setOpenId] = useState<number | null>(null);
+  const toggleMenu = (id: number) => setOpenId((prev) => (prev === id ? null : id));
+  const closeMenu = () => setOpenId(null);
 
   return (
     <>
@@ -79,17 +81,13 @@ export default function Activities() {
                         <div className="text-brand-gray-800 flex justify-between text-2xl font-medium">
                           ₩{exp.pricePerPerson} / 인
                           <div className="relative">
-                            <DropDown handleClose={() => setIsOpen(false)}>
-                              <DropDown.Trigger onClick={() => setIsOpen((v) => !v)}>
+                            <DropDown handleClose={closeMenu}>
+                              <DropDown.Trigger onClick={() => toggleMenu(exp.id)}>
                                 <Misc.MenuDot className="h-10 w-10" />
                               </DropDown.Trigger>
-                              <DropDown.Menu isOpen={isOpen}>
-                                <DropDown.Item onClick={() => setIsOpen(false)}>
-                                  수정하기
-                                </DropDown.Item>
-                                <DropDown.Item onClick={() => setIsOpen(false)}>
-                                  삭제하기
-                                </DropDown.Item>
+                              <DropDown.Menu isOpen={openId === exp.id}>
+                                <DropDown.Item onClick={closeMenu}>수정하기</DropDown.Item>
+                                <DropDown.Item onClick={closeMenu}>삭제하기</DropDown.Item>
                               </DropDown.Menu>
                             </DropDown>
                           </div>
