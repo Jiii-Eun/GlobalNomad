@@ -42,6 +42,7 @@ import VisibilityOff from "@/assets/icons/status/visibility-off.svg";
 import Visibility from "@/assets/icons/status/visibility.svg";
 // UI
 import Calendar from "@/assets/icons/ui/calendar.svg";
+import Location from "@/assets/icons/ui/location.svg";
 import MenuDot from "@/assets/icons/ui/menu-dot.svg";
 import NotificationBell from "@/assets/icons/ui/notification-bell.svg";
 import NotingPage from "@/assets/icons/ui/noting-page.svg";
@@ -115,4 +116,5 @@ export const Misc = {
   NotificationBell,
   NotingPage,
   Search,
+  Location,
 };
