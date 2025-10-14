@@ -3,25 +3,69 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { Drawer } from "vaul";
 
 import { Btn, MeIcon, Status, Misc } from "@/components/icons";
+import { DrawerLayout, DrawerBody, DrawerFooter, DrawerHeader } from "@/components/ui/modal";
+import { getMyActivities } from "@/lib/api/my-activities/api";
+import { useFetchQuery } from "@/lib/hooks/useFetchQuery";
 
 import { mockMyExperiences } from "./mock/myExperiences";
 import DropDown from "../components/DropDown/Dropdown";
 import NotingPage from "../components/NotingPage";
+
+interface ActivitiesRes {
+  items: typeof mockMyExperiences;
+  totalCount: number;
+}
 
 export default function Activities() {
   const router = useRouter();
   const [openId, setOpenId] = useState<number | null>(null);
   const toggleMenu = (id: number) => setOpenId((prev) => (prev === id ? null : id));
   const closeMenu = () => setOpenId(null);
-  const hasData = Array.isArray(mockMyExperiences) && mockMyExperiences.length > 0;
 
   const moveEdit = (id: number) => {
     closeMenu();
     router.push(`/me/activities/${id}/edit`);
   };
+
+  const { data, isLoading, isError } = useFetchQuery<ActivitiesRes>(
+    ["activities", "mock"],
+    undefined,
+    {
+      mockData: {
+        items: mockMyExperiences,
+        totalCount: mockMyExperiences.length,
+      },
+      staleTime: 60_000,
+    },
+  );
+
+  const [targetId, setTargetId] = useState<number | null>(null);
+  const deleteTriggerRef = useRef<HTMLButtonElement>(null);
+
+  const openDelete = (id: number) => {
+    setTargetId(id);
+    closeMenu();
+    deleteTriggerRef.current?.click();
+  };
+
+  const handleConfirmDelete = async () => {
+    if (targetId === null) return;
+    try {
+      // TODO: 실제 삭제 API 연동
+      // await deleteMyActivity(targetId);
+      // TODO: 성공 시 refetch/낙관적 갱신 등 처리
+      // queryClient.invalidateQueries({ queryKey: ["activities"] });
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const items = data?.items ?? [];
+  const hasData = items.length > 0;
 
   return (
     <>
@@ -70,56 +114,90 @@ export default function Activities() {
               </Link>
             </div>
             <div>
-              {hasData ? (
-                <ul className="flex list-none flex-col gap-6">
-                  {mockMyExperiences.map((exp) => (
-                    <li key={exp.id} className="flex h-[204px] w-[800px] rounded-3xl bg-white">
-                      <div className="h-[204px] w-[204px] overflow-hidden rounded-l-3xl">
-                        <Image
-                          src={exp.thumbnail}
-                          alt="썸네일"
-                          width={204}
-                          height={204}
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                      <div className="flex w-full flex-col gap-1.5 px-4 py-4">
-                        <div className="flex items-center gap-1.5">
-                          <Status.StarFill className="h-[19px] w-[19px]" />
-                          <span>
-                            {exp.rating} ({exp.reviewsCount})
-                          </span>
+              {!isLoading &&
+                !isError &&
+                (hasData ? (
+                  <ul className="flex list-none flex-col gap-6">
+                    {mockMyExperiences.map((exp) => (
+                      <li key={exp.id} className="flex h-[204px] w-[800px] rounded-3xl bg-white">
+                        <div className="h-[204px] w-[204px] overflow-hidden rounded-l-3xl">
+                          <Image
+                            src={exp.thumbnail}
+                            alt="썸네일"
+                            width={204}
+                            height={204}
+                            className="h-full w-full object-cover"
+                          />
                         </div>
-                        <div className="flex h-full flex-col justify-between text-xl font-bold">
-                          {exp.title}
-                          <div className="text-brand-gray-800 flex justify-between text-2xl font-medium">
-                            ₩{exp.pricePerPerson} / 인
-                            <div className="relative">
-                              <DropDown handleClose={closeMenu}>
-                                <DropDown.Trigger onClick={() => toggleMenu(exp.id)}>
-                                  <Misc.MenuDot className="h-10 w-10" />
-                                </DropDown.Trigger>
-                                <DropDown.Menu isOpen={openId === exp.id}>
-                                  <DropDown.Item onClick={() => moveEdit(exp.id)}>
-                                    수정하기
-                                  </DropDown.Item>
-                                  <DropDown.Item onClick={closeMenu}>삭제하기</DropDown.Item>
-                                </DropDown.Menu>
-                              </DropDown>
+                        <div className="flex w-full flex-col gap-1.5 px-4 py-4">
+                          <div className="flex items-center gap-1.5">
+                            <Status.StarFill className="h-[19px] w-[19px]" />
+                            <span>
+                              {exp.rating} ({exp.reviewsCount})
+                            </span>
+                          </div>
+                          <div className="flex h-full flex-col justify-between text-xl font-bold">
+                            {exp.title}
+                            <div className="text-brand-gray-800 flex justify-between text-2xl font-medium">
+                              ₩{exp.pricePerPerson} / 인
+                              <div className="relative">
+                                <DropDown handleClose={closeMenu}>
+                                  <DropDown.Trigger onClick={() => toggleMenu(exp.id)}>
+                                    <Misc.MenuDot className="h-10 w-10" />
+                                  </DropDown.Trigger>
+                                  <DropDown.Menu isOpen={openId === exp.id}>
+                                    <DropDown.Item onClick={() => moveEdit(exp.id)}>
+                                      수정하기
+                                    </DropDown.Item>
+                                    <DropDown.Item onClick={() => openDelete(exp.id)}>
+                                      삭제하기
+                                    </DropDown.Item>
+                                  </DropDown.Menu>
+                                </DropDown>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <NotingPage />
-              )}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <NotingPage />
+                ))}
             </div>
           </div>
         </div>
       </main>
+      <DrawerLayout
+        trigger={<button ref={deleteTriggerRef} className="sr-only" aria-hidden />}
+        width="md"
+        isClose
+      >
+        <DrawerHeader />
+        <DrawerBody frameClass="flex flex-col gap-4">
+          <p className="text-brand-gray-700 text-sm">
+            이 작업은 되돌릴 수 없습니다. 해당 체험과 관련된 데이터가 모두 삭제될 수 있어요.
+          </p>
+        </DrawerBody>
+        <DrawerFooter frameClass="mt-2 flex gap-2">
+          <div className="flex w-full gap-2">
+            <Drawer.Close asChild>
+              <button type="button" className="h-13 w-1/2 rounded-md border border-[#DDD]">
+                취소
+              </button>
+            </Drawer.Close>
+            <Drawer.Close asChild>
+              <button
+                type="button"
+                onClick={handleConfirmDelete}
+                className="h-13 w-1/2 rounded-md bg-black text-white"
+              >
+                삭제
+              </button>
+            </Drawer.Close>
+          </div>
+        </DrawerFooter>
+      </DrawerLayout>
     </>
   );
 }
