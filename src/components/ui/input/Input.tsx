@@ -6,7 +6,7 @@ import VisibilityOff from "@/assets/icons/status/visibility-off.svg";
 import Visibility from "@/assets/icons/status/visibility.svg";
 
 const INPUT_BASE =
-  "w-[640px] max-w-full h-[58px] px-5 bg-white border border-brand-gray-400 rounded " +
+  "w-full h-[58px] px-5 bg-white border border-brand-gray-400 rounded " +
   "text-lg placeholder:text-brand-gray-500/60";
 
 const padIfRightIcon = (has: boolean) => (has ? "pr-12" : "pr-5 ");
@@ -120,7 +120,11 @@ export default function Input(props: Props) {
 
   return (
     <div className="relative">
-      {leftIcon}
+      {leftIcon && (
+        <span className="absolute inset-y-0 left-3 flex items-center text-gray-400">
+          {leftIcon}
+        </span>
+      )}
       <input
         id={id}
         ref={ref as Ref<HTMLInputElement>}
