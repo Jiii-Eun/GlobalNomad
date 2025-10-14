@@ -39,7 +39,7 @@ export default function ProfileImageUploader({ initialUrl }: { initialUrl?: stri
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <div className={cn(baseClass, "relative shadow-[0_4px_16px_rgba(0,0,0,0.08)]")}>
+      <div className={cn(baseClass, "shadow-base relative")}>
         <ImagePreview
           src={preview}
           onDelete={!isDefault ? handleDelete : undefined}

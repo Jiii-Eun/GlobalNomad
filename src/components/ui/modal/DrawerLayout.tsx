@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Drawer } from "vaul";
 
 import { cn } from "@/lib/cn";
-import { useDevice } from "@/lib/hooks/useDevice";
 import { useDirection } from "@/lib/hooks/useDirection";
 
 import DrawerContext from "./DrawerContext";
@@ -51,13 +50,11 @@ export default function DrawerLayout({
     setStep((prev) => Math.max(prev - 1, 0));
   };
 
-  const { isMobile } = useDevice();
-
   useEffect(() => {
-    if (!isMobile && step !== 0) {
+    if (!steps || steps.length <= 1) {
       setStep(0);
     }
-  }, [isMobile, step]);
+  }, [steps]);
 
   const isBack = step > 0;
 

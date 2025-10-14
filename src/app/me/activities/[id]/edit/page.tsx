@@ -11,7 +11,6 @@ export default function Edit() {
 
   return (
     <>
-      <header className="h-[70px] bg-white"></header>
       <main className="bg-[#FAFAFA] py-18">
         <div className="mx-auto flex max-w-[1320px] gap-5">
           <div className="flex h-fit w-[384px] flex-col gap-6 rounded-xl border border-[#DDDDDD] bg-white px-6 py-6">

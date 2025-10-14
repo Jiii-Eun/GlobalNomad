@@ -10,7 +10,7 @@ import { useGetMe } from "@/lib/api/users/hooks";
 export default function Header() {
   const { data: user } = useGetMe(true);
 
-  const hasLogin = !user;
+  const hasLogin = !!user;
 
   return (
     <div className="border-b-brand-gray-300 border-b">
