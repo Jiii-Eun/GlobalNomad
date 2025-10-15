@@ -2,10 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ proxy: string[] }> }) {
+interface ProxyContext {
+  params: Promise<{ proxy: string[] }>;
+}
+
+export async function GET(req: NextRequest, { params }: ProxyContext) {
   const endpoint = (await params).proxy.join("/");
-  const query = req.nextUrl.search;
-  const url = `${BASE_URL}/${endpoint}${query}`;
+  const url = `${BASE_URL}/${endpoint}${req.nextUrl.search}`;
 
   try {
     const res = await fetch(url, {
@@ -25,8 +28,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ prox
   }
 }
 
-export async function POST(req: NextRequest, { params }: { params: { proxy: string[] } }) {
-  const endpoint = params.proxy.join("/");
+export async function POST(req: NextRequest, { params }: ProxyContext) {
+  const endpoint = (await params).proxy.join("/");
   const url = `${BASE_URL}/${endpoint}`;
   const body = await req.text();
 

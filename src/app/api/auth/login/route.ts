@@ -5,7 +5,6 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-
     const res = await fetch(`${BASE_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -15,10 +14,12 @@ export async function POST(req: NextRequest) {
     const data = await res.json();
     const nextRes = NextResponse.json(data, { status: res.status });
 
+    const isProd = process.env.NODE_ENV === "production";
+
     if (data.refreshToken) {
       nextRes.cookies.set("refreshToken", data.refreshToken, {
         httpOnly: true,
-        secure: false,
+        secure: isProd,
         sameSite: "lax",
         path: "/",
       });
@@ -27,7 +28,7 @@ export async function POST(req: NextRequest) {
     if (data.accessToken) {
       nextRes.cookies.set("accessToken", data.accessToken, {
         httpOnly: true,
-        secure: false,
+        secure: isProd,
         sameSite: "lax",
         path: "/",
       });

@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
-async function proxy(req: NextRequest, method: string, params: string[]) {
+async function proxy(req: NextRequest, method: string, params: string[]): Promise<NextResponse> {
   const targetUrl = `${BASE_URL}/${params.join("/")}${req.nextUrl.search}`;
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("accessToken")?.value;
@@ -13,7 +13,7 @@ async function proxy(req: NextRequest, method: string, params: string[]) {
   if (accessToken) headers.set("Authorization", `Bearer ${accessToken}`);
   headers.delete("accept-encoding");
 
-  let body: BodyInit | undefined = undefined;
+  let body: BodyInit | undefined;
   if (method !== "GET" && method !== "HEAD") {
     const contentType = headers.get("content-type") || "";
     if (contentType.includes("multipart/form-data")) {
@@ -35,21 +35,17 @@ async function proxy(req: NextRequest, method: string, params: string[]) {
     });
 
     if (refreshRes.ok) {
-      const tokens = await refreshRes.json();
+      const tokens: { accessToken: string; refreshToken: string } = await refreshRes.json();
       const nextRes = NextResponse.next();
 
-      nextRes.cookies.set("accessToken", tokens.accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
-      });
-      nextRes.cookies.set("refreshToken", tokens.refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
-      });
+      for (const [key, value] of Object.entries(tokens)) {
+        nextRes.cookies.set(key, value, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          path: "/",
+        });
+      }
 
       headers.set("Authorization", `Bearer ${tokens.accessToken}`);
       res = await fetch(targetUrl, { method, headers, body });
@@ -59,34 +55,26 @@ async function proxy(req: NextRequest, method: string, params: string[]) {
   const text = await res.text();
   return new NextResponse(text, {
     status: res.status,
-    headers: {
-      "content-type": res.headers.get("content-type") ?? "application/json",
-    },
+    headers: { "content-type": res.headers.get("content-type") ?? "application/json" },
   });
 }
 
 interface ProxyRouteContext {
-  params: {
-    proxy: string[];
-  };
+  params: { proxy: string[] };
 }
 
 export async function GET(req: NextRequest, context: ProxyRouteContext) {
   return proxy(req, "GET", context.params.proxy);
 }
-
 export async function POST(req: NextRequest, context: ProxyRouteContext) {
   return proxy(req, "POST", context.params.proxy);
 }
-
 export async function PUT(req: NextRequest, context: ProxyRouteContext) {
   return proxy(req, "PUT", context.params.proxy);
 }
-
 export async function PATCH(req: NextRequest, context: ProxyRouteContext) {
   return proxy(req, "PATCH", context.params.proxy);
 }
-
 export async function DELETE(req: NextRequest, context: ProxyRouteContext) {
   return proxy(req, "DELETE", context.params.proxy);
 }
