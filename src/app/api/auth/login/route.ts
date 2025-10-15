@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
+import { BASE_URL } from "@/lib/server/constants";
+import { setAuthCookies } from "@/lib/server/tokens";
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,34 +13,18 @@ export async function POST(req: NextRequest) {
     });
 
     const data = await res.json();
-    const nextRes = NextResponse.json(data, { status: res.status });
+    let nextRes = NextResponse.json(data, { status: res.status });
 
-    const isProd = process.env.NODE_ENV === "production";
-
-    if (data.refreshToken) {
-      nextRes.cookies.set("refreshToken", data.refreshToken, {
-        httpOnly: true,
-        secure: isProd,
-        sameSite: "lax",
-        path: "/",
-      });
-    }
-
-    if (data.accessToken) {
-      nextRes.cookies.set("accessToken", data.accessToken, {
-        httpOnly: true,
-        secure: isProd,
-        sameSite: "lax",
-        path: "/",
+    if (data.accessToken && data.refreshToken) {
+      nextRes = setAuthCookies(nextRes, {
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
       });
     }
 
     return nextRes;
   } catch (error) {
     console.error("[/api/auth/login] Error:", error);
-    return NextResponse.json(
-      { message: "로그인 요청 실패", error: String(error) },
-      { status: 500 },
-    );
+    return NextResponse.json({ message: "로그인 실패", error: String(error) }, { status: 500 });
   }
 }

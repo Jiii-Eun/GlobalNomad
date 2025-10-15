@@ -1,4 +1,6 @@
-const BASE_URL = process.env.NODE_ENV === "development" ? "/api" : process.env.NEXT_PUBLIC_API_URL;
+const isServer = typeof window === "undefined";
+
+const BASE_URL = isServer ? process.env.NEXT_PUBLIC_API_URL : "/api";
 
 import { ZodType } from "zod";
 
