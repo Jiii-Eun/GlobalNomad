@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
-async function proxy(req: NextRequest, method: string, params: string[]): Promise<NextResponse> {
-  const targetUrl = `${BASE_URL}/${params.join("/")}${req.nextUrl.search}`;
+async function proxy(req: NextRequest, method: string): Promise<NextResponse> {
+  const targetUrl = `${BASE_URL}/auth/refresh${req.nextUrl.search}`;
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("accessToken")?.value;
   const refreshToken = cookieStore.get("refreshToken")?.value;
@@ -27,6 +27,7 @@ async function proxy(req: NextRequest, method: string, params: string[]): Promis
 
   let res = await fetch(targetUrl, { method, headers, body });
 
+  // 토큰 재발급 처리
   if (res.status === 401 && refreshToken) {
     const refreshRes = await fetch(`${BASE_URL}/auth/tokens`, {
       method: "POST",
@@ -59,22 +60,18 @@ async function proxy(req: NextRequest, method: string, params: string[]): Promis
   });
 }
 
-interface ProxyRouteContext {
-  params: { proxy: string[] };
+export async function GET(req: NextRequest) {
+  return proxy(req, "GET");
 }
-
-export async function GET(req: NextRequest, context: ProxyRouteContext) {
-  return proxy(req, "GET", context.params.proxy);
+export async function POST(req: NextRequest) {
+  return proxy(req, "POST");
 }
-export async function POST(req: NextRequest, context: ProxyRouteContext) {
-  return proxy(req, "POST", context.params.proxy);
+export async function PUT(req: NextRequest) {
+  return proxy(req, "PUT");
 }
-export async function PUT(req: NextRequest, context: ProxyRouteContext) {
-  return proxy(req, "PUT", context.params.proxy);
+export async function PATCH(req: NextRequest) {
+  return proxy(req, "PATCH");
 }
-export async function PATCH(req: NextRequest, context: ProxyRouteContext) {
-  return proxy(req, "PATCH", context.params.proxy);
-}
-export async function DELETE(req: NextRequest, context: ProxyRouteContext) {
-  return proxy(req, "DELETE", context.params.proxy);
+export async function DELETE(req: NextRequest) {
+  return proxy(req, "DELETE");
 }

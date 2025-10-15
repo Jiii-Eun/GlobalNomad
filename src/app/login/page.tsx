@@ -68,7 +68,6 @@ export default function Login() {
           {isSubmitting ? "로그인 중..." : "로그인"}
         </Button>
       </form>
-      <TestLoginPage />
     </main>
   );
 }
