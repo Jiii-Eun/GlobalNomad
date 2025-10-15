@@ -6,9 +6,8 @@ import Notification from "@/components/ui/header/Notification";
 import UserMenu from "@/components/ui/header/UserMenu";
 import { useGetMe } from "@/lib/api/users/hooks";
 
-// MyNotifications 내 알림 리스트 조회 연동
 export default function Header() {
-  const { data: user } = useGetMe(true);
+  const { data: user } = useGetMe();
 
   const hasLogin = !!user;
 

@@ -38,7 +38,7 @@ export function useRefreshToken(isMock = false, options?: ApiMutationOptions<Tok
 export function useLogout(options?: ApiMutationOptions<undefined, undefined>) {
   const queryClient = useQueryClient();
 
-  return useApiMutation<undefined, undefined>(() => logout(), {
+  const mutation = useApiMutation<undefined, undefined>(() => logout(), {
     onSuccess: () => {
       queryClient.clear();
       window.location.reload();
@@ -48,4 +48,10 @@ export function useLogout(options?: ApiMutationOptions<undefined, undefined>) {
     },
     ...options,
   });
+
+  return {
+    ...mutation,
+    mutate: () => mutation.mutate(undefined),
+    mutateAsync: () => mutation.mutateAsync(undefined),
+  };
 }

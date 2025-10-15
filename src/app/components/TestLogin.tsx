@@ -35,7 +35,7 @@ export default function TestLoginPage() {
 
   // 로그아웃 버튼 클릭
   const handleLogout = () => {
-    logoutMutation.mutate(undefined);
+    logoutMutation.mutate();
   };
 
   return (

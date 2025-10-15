@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import DropDown from "@/app/me/components/DropDown/Dropdown";
+import { useLogout } from "@/lib/api/auth/hooks";
 import { UserRes } from "@/lib/api/users/types";
 
 interface UserMenuProps {
@@ -17,9 +18,16 @@ export default function UserMenu({ user }: UserMenuProps) {
 
   const [isUserMenu, setIsUserMenu] = useState(false);
 
+  const { mutate: logout } = useLogout();
+
   const onToggleUserMenu = () => setIsUserMenu((prev) => !prev);
 
   const handleCloseUserMenu = () => setIsUserMenu(false);
+
+  const handleLogout = () => {
+    setIsUserMenu(false);
+    logout();
+  };
 
   return (
     <>
@@ -42,7 +50,7 @@ export default function UserMenu({ user }: UserMenuProps) {
               <Link href="/me">마이 페이지</Link>
             </DropDown.Item>
             {/* 로그아웃 구현 */}
-            <DropDown.Item onClick={handleCloseUserMenu}>
+            <DropDown.Item onClick={handleLogout}>
               <div className="cursor-pointer">로그아웃</div>
             </DropDown.Item>
           </DropDown.Menu>
