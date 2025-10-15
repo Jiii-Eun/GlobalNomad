@@ -1,15 +1,16 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
+import DropDown from "@/app/me/components/DropDown/Dropdown";
 import { UserRes } from "@/lib/api/users/types";
 
 interface UserMenuProps {
   user: UserRes | undefined;
 }
 
-// 공통 드롭다운으로 변경
 export default function UserMenu({ user }: UserMenuProps) {
   const userProfile = user?.profileImageUrl;
   const userNick = user?.nickname;
@@ -17,6 +18,8 @@ export default function UserMenu({ user }: UserMenuProps) {
   const [isUserMenu, setIsUserMenu] = useState(false);
 
   const onToggleUserMenu = () => setIsUserMenu((prev) => !prev);
+
+  const handleCloseUserMenu = () => setIsUserMenu(false);
 
   return (
     <>
@@ -28,9 +31,22 @@ export default function UserMenu({ user }: UserMenuProps) {
           height={32}
           className="rounded-full border object-cover"
         />
-        <button onClick={onToggleUserMenu} className="text-md ml-2.5 font-medium">
-          {userNick}
-        </button>
+
+        <DropDown handleClose={handleCloseUserMenu}>
+          <DropDown.Trigger onClick={onToggleUserMenu}>
+            <div className="text-md ml-2.5 font-medium">{userNick}</div>
+          </DropDown.Trigger>
+
+          <DropDown.Menu isOpen={isUserMenu}>
+            <DropDown.Item onClick={handleCloseUserMenu}>
+              <Link href="/me">마이 페이지</Link>
+            </DropDown.Item>
+            {/* 로그아웃 구현 */}
+            <DropDown.Item onClick={handleCloseUserMenu}>
+              <div className="cursor-pointer">로그아웃</div>
+            </DropDown.Item>
+          </DropDown.Menu>
+        </DropDown>
       </div>
     </>
   );
