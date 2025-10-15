@@ -65,18 +65,28 @@ async function proxy(req: NextRequest, method: string, params: string[]) {
   });
 }
 
-export async function GET(req: NextRequest, context: any) {
+interface ProxyRouteContext {
+  params: {
+    proxy: string[];
+  };
+}
+
+export async function GET(req: NextRequest, context: ProxyRouteContext) {
   return proxy(req, "GET", context.params.proxy);
 }
-export async function POST(req: NextRequest, context: any) {
+
+export async function POST(req: NextRequest, context: ProxyRouteContext) {
   return proxy(req, "POST", context.params.proxy);
 }
-export async function PUT(req: NextRequest, context: any) {
+
+export async function PUT(req: NextRequest, context: ProxyRouteContext) {
   return proxy(req, "PUT", context.params.proxy);
 }
-export async function PATCH(req: NextRequest, context: any) {
+
+export async function PATCH(req: NextRequest, context: ProxyRouteContext) {
   return proxy(req, "PATCH", context.params.proxy);
 }
-export async function DELETE(req: NextRequest, context: any) {
+
+export async function DELETE(req: NextRequest, context: ProxyRouteContext) {
   return proxy(req, "DELETE", context.params.proxy);
 }
