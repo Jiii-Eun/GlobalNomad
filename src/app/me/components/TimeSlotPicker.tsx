@@ -2,9 +2,7 @@ import { useState, useRef, useMemo, useEffect } from "react";
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
-import AddBtnImg from "@/assets/icons/buttons/button-plus.svg";
-import RemoveBtnImg from "@/assets/icons/buttons/button-minus.svg";
-import CalendarImg from "@/assets/icons/ui/calendar.svg";
+import { Btn, Misc } from "@/components/icons";
 
 interface TimeSlotProps {
   start: Date;
@@ -113,7 +111,7 @@ const TimeSlotPicker: React.FC<TimeSlotPicker> = ({
   };
 
   return (
-    <div className="flex w-fit flex-col">
+    <div className="flex w-[792px] flex-col">
       <div className="flex flex-wrap items-end gap-5">
         <div className="flex flex-col gap-[10px]">
           <label>날짜</label>
@@ -127,7 +125,7 @@ const TimeSlotPicker: React.FC<TimeSlotPicker> = ({
               minDate={minDate}
               placeholderText="YY/MM/DD"
             />
-            <CalendarImg
+            <Misc.Calendar
               className="pointer-events-auto absolute top-1/2 right-3 h-8 w-8 -translate-y-1/2 cursor-pointer"
               onClick={() => datePickerRef.current?.setFocus()}
             />
@@ -174,15 +172,11 @@ const TimeSlotPicker: React.FC<TimeSlotPicker> = ({
           title="시간대 추가"
           aria-label="시간대 추가"
         >
-          <AddBtnImg className="h-[56px] w-[56px]" />
+          <Btn.Plus className="h-[56px] w-[56px]" />
         </button>
       </div>
       {slots.length > 0 && (
-        <div
-          className="my-6 h-px w-full bg-[#E5E7EB]"
-          role="separator"
-          aria-hidden="true"
-        />
+        <div className="my-6 h-px w-full bg-[#E5E7EB]" role="separator" aria-hidden="true" />
       )}
       <div className="flex flex-col gap-5">
         {slots.length === 0 && <p className="text-[13px] text-gray-500">추가된 시간이 없습니다.</p>}
@@ -219,7 +213,7 @@ const TimeSlotPicker: React.FC<TimeSlotPicker> = ({
               title="시간대 삭제"
               aria-label="시간대 삭제"
             >
-              <RemoveBtnImg className="h-[56px] w-[56px]" />
+              <Btn.Minus className="h-[56px] w-[56px]" />
             </button>
           </div>
         ))}

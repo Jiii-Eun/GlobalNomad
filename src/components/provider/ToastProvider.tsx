@@ -83,7 +83,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               y: 20,
               transition: { duration: 0.15, ease: "easeInOut" },
             }}
-            className="fixed top-1/2 left-1/2 z-[999] -translate-x-1/2 -translate-y-1/2 shadow-[0_4px_16px_0_rgba(17,34,17,0.05)]"
+            className="shadow-green fixed top-1/2 left-1/2 z-[999] -translate-x-1/2 -translate-y-1/2"
           >
             {toast}
           </motion.div>
