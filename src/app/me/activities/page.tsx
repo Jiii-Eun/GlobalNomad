@@ -3,11 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useRef } from "react";
-import { Drawer } from "vaul";
+import { useState, useEffect } from "react";
 
 import { Btn, MeIcon, Status, Misc } from "@/components/icons";
-import { DrawerLayout, DrawerBody, DrawerFooter, DrawerHeader } from "@/components/ui/modal";
+import { useAlertToast } from "@/components/ui/toast/useAlertToast";
 import { getMyActivities } from "@/lib/api/my-activities/api";
 import { useFetchQuery } from "@/lib/hooks/useFetchQuery";
 
@@ -20,8 +19,12 @@ interface ActivitiesRes {
   totalCount: number;
 }
 
+const PENDING_DELETE_KEY = "pendingDeleteActivityId";
+
 export default function Activities() {
   const router = useRouter();
+  const { openAlertToast } = useAlertToast();
+  const [targetId, setTargetId] = useState<number | null>(null);
   const [openId, setOpenId] = useState<number | null>(null);
   const toggleMenu = (id: number) => setOpenId((prev) => (prev === id ? null : id));
   const closeMenu = () => setOpenId(null);
@@ -43,29 +46,56 @@ export default function Activities() {
     },
   );
 
-  const [targetId, setTargetId] = useState<number | null>(null);
-  const deleteTriggerRef = useRef<HTMLButtonElement>(null);
+  const items = data?.items ?? [];
+  const hasData = items.length > 0;
 
   const openDelete = (id: number) => {
     setTargetId(id);
     closeMenu();
-    deleteTriggerRef.current?.click();
+
+    const url = new URL(window.location.href);
+    url.searchParams.set("confirmDelete", String(id));
+    router.replace(`${url.pathname}?${url.searchParams.toString()}`);
+
+    openAlertToast("isDelete");
   };
 
-  const handleConfirmDelete = async () => {
-    if (targetId === null) return;
+  const handleConfirmDelete = async (id: number) => {
     try {
       // TODO: 실제 삭제 API 연동
-      // await deleteMyActivity(targetId);
-      // TODO: 성공 시 refetch/낙관적 갱신 등 처리
+      // await deleteMyActivity(id);
+      // TODO: 성공 후 refetch/낙관적 갱신 등
       // queryClient.invalidateQueries({ queryKey: ["activities"] });
     } catch (e) {
       console.error(e);
+    } finally {
+      setTargetId(null);
     }
   };
 
-  const items = data?.items ?? [];
-  const hasData = items.length > 0;
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const pending = window.localStorage.getItem(PENDING_DELETE_KEY);
+    if (!pending) return;
+
+    const id = Number(pending);
+    if (!Number.isNaN(id)) {
+      handleConfirmDelete(id).finally(() => {
+        try {
+          window.localStorage.removeItem(PENDING_DELETE_KEY);
+        } catch (e) {
+          console.log(e);
+        }
+      });
+    } else {
+      try {
+        window.localStorage.removeItem(PENDING_DELETE_KEY);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }, []);
 
   return (
     <>
@@ -168,36 +198,6 @@ export default function Activities() {
           </div>
         </div>
       </main>
-      <DrawerLayout
-        trigger={<button ref={deleteTriggerRef} className="sr-only" aria-hidden />}
-        width="md"
-        isClose
-      >
-        <DrawerHeader />
-        <DrawerBody frameClass="flex flex-col gap-4">
-          <p className="text-brand-gray-700 text-sm">
-            이 작업은 되돌릴 수 없습니다. 해당 체험과 관련된 데이터가 모두 삭제될 수 있어요.
-          </p>
-        </DrawerBody>
-        <DrawerFooter frameClass="mt-2 flex gap-2">
-          <div className="flex w-full gap-2">
-            <Drawer.Close asChild>
-              <button type="button" className="h-13 w-1/2 rounded-md border border-[#DDD]">
-                취소
-              </button>
-            </Drawer.Close>
-            <Drawer.Close asChild>
-              <button
-                type="button"
-                onClick={handleConfirmDelete}
-                className="h-13 w-1/2 rounded-md bg-black text-white"
-              >
-                삭제
-              </button>
-            </Drawer.Close>
-          </div>
-        </DrawerFooter>
-      </DrawerLayout>
     </>
   );
 }
