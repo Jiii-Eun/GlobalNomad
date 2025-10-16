@@ -65,7 +65,7 @@ export default function NotificationDropDown({ isOpen, onClose }: NotificationDr
         <Status.Close onClick={onClose} className={cn(closeClass, "text-brand-black svg-stroke")} />
       </div>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-scroll">
+      <div ref={scrollRef} className="scrollbar-hide flex-1 overflow-y-scroll">
         {notifications.length > 0 ? (
           notifications.map((notification: Notification, index: number) => {
             const { id, content, updatedAt } = notification;
@@ -97,7 +97,7 @@ export default function NotificationDropDown({ isOpen, onClose }: NotificationDr
             );
           })
         ) : (
-          <div className="py-12 text-center text-sm text-gray-500">알림이 없습니다.</div>
+          <div className="text-brand-gray-600 py-16 text-center text-sm">알림이 없습니다.</div>
         )}
       </div>
     </div>
