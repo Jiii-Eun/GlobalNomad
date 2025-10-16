@@ -36,6 +36,7 @@ export default function BackgroundImage({
       <Image
         src={src}
         alt={alt}
+        loader={({ src }) => src}
         fill
         className={cn(
           "object-cover transition-opacity duration-700 ease-out",

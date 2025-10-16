@@ -1,16 +1,25 @@
 "use client";
 
+import { useSetAtom } from "jotai";
 import { useState } from "react";
 
 import { Misc } from "@/components/icons";
 import Button from "@/components/ui/button/Button";
+import { activityKeywordAtom, activityPageAtom } from "@/lib/api/activities/atoms";
 import { cn } from "@/lib/cn";
 
 export default function SearchForm() {
   const [keyword, setKeyword] = useState("");
+  const setGlobalKeyword = useSetAtom(activityKeywordAtom);
+  const setPage = useSetAtom(activityPageAtom);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const trimmed = keyword.trim();
+    setGlobalKeyword(trimmed.length > 0 ? trimmed : undefined);
+
+    setPage(1);
   };
 
   const isActive = keyword.trim().length > 0;
