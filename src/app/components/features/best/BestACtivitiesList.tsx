@@ -1,36 +1,35 @@
-"use client";
-
 import ActivityCardBase from "@/app/components/features/ActivityCardBase";
-import { useActivityParams } from "@/app/components/useActivityParams";
-import { useActivities } from "@/lib/api/activities/hooks";
+import type { Activity } from "@/lib/api/activities/types";
 import { cn } from "@/lib/cn";
 
-export default function BestACtivitiesList() {
-  const params = useActivityParams();
-  const { data, isLoading } = useActivities(params, true);
+interface Props {
+  activities: Activity[];
+  isLoading?: boolean;
+  targetRef?: (node?: Element | null) => void;
+}
 
-  const activities = data?.activities;
-
-  const listClass = "w-full max-w-[384px] aspect-square";
+export default function BestActivitiesList({ activities, isLoading, targetRef }: Props) {
+  const listClass = "w-full max-w-[384px] aspect-square mobile:min-w-[186px] min-w-[384px]";
 
   return (
-    <div className="no-scrollbar mobile:gap-4 flex gap-6 pb-2">
-      {isLoading
-        ? Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className={cn("shimmer rounded-[20px]", listClass)} />
-          ))
-        : activities?.map((item) => (
-            <div key={item.id} className={cn("relative", listClass)}>
-              <ActivityCardBase
-                id={item.id}
-                title={item.title}
-                price={item.price}
-                bannerImageUrl={"/images/street-dance-banner.png"}
-                rating={item.rating}
-                reviewCount={item.reviewCount}
-              />
-            </div>
-          ))}
+    <div className="mobile:gap-4 tablet:overflow-x-scroll flex gap-6 py-4">
+      {activities.map((activity, index) => {
+        const isLast = index === activities.length - 1;
+        return (
+          <div
+            key={activity.id}
+            ref={isLast ? targetRef : undefined}
+            className={cn("relative", listClass)}
+          >
+            <ActivityCardBase {...activity} variant="best" />
+          </div>
+        );
+      })}
+
+      {isLoading &&
+        Array.from({ length: 3 }).map((_, index) => (
+          <div key={index} className={cn("shimmer rounded-[20px]", listClass)} />
+        ))}
     </div>
   );
 }

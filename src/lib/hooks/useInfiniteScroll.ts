@@ -1,58 +1,94 @@
-import { useInfiniteQuery, UseInfiniteQueryOptions } from "@tanstack/react-query";
+"use client";
 
-export interface InfiniteQueryOptions<TResponse>
-  extends Omit<
-    UseInfiniteQueryOptions<TResponse, Error, TResponse, unknown[]>,
-    "queryKey" | "queryFn" | "getNextPageParam"
-  > {
-  mockData?: TResponse;
-}
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useInView } from "react-intersection-observer";
 
-interface InfiniteScrollProps<
-  TResponse extends Record<string, unknown>,
-  TItem extends Record<string, unknown>,
+interface InfiniteScrollOptions<
+  TResponse extends { cursorId?: number | null },
+  TItem,
+  TParams extends Record<string, unknown>,
 > {
-  queryKey: unknown[];
-  fetchData: (params: Record<string, unknown>) => Promise<TResponse>;
-  selectItems: (response: TResponse) => TItem[];
-  limit: number;
-  cursorKey?: keyof TItem;
-  totalCountKey?: keyof TResponse;
-  options?: InfiniteQueryOptions<TResponse>;
+  fetchFn: (params: TParams) => Promise<TResponse>;
+  selectItems: (res: TResponse) => TItem[];
+  initialParams: TParams;
+  initialData?: TItem[];
+  initialCursorId?: number | null;
+  enabled?: boolean;
+  size?: number;
 }
 
 export function useInfiniteScroll<
-  TResponse extends Record<string, unknown>,
-  TItem extends Record<string, unknown>,
+  TResponse extends { cursorId?: number | null },
+  TItem,
+  TParams extends Record<string, unknown>,
 >({
-  queryKey,
-  fetchData,
+  fetchFn,
   selectItems,
-  limit,
-  cursorKey = "id",
-  totalCountKey,
-  options,
-}: InfiniteScrollProps<TResponse, TItem>) {
-  const { mockData, ...queryOptions } = options ?? {};
+  initialParams,
+  initialData = [],
+  initialCursorId = null,
+  enabled = true,
+  size = 5,
+}: InfiniteScrollOptions<TResponse, TItem, TParams>) {
+  const [items, setItems] = useState<TItem[]>(initialData);
+  const [cursorId, setCursorId] = useState<number | null>(initialCursorId);
+  const [hasNextPage, setHasNextPage] = useState(true);
 
-  return useInfiniteQuery<TResponse, Error, TResponse, unknown[]>({
-    queryKey,
-    queryFn: async ({ pageParam = 0 }) => {
-      if (mockData) return mockData;
-      return fetchData({ cursorId: pageParam });
-    },
-    getNextPageParam: (lastPage, allPages) => {
-      const items = selectItems(lastPage);
-      const totalCount = totalCountKey ? (lastPage[totalCountKey] as number) : undefined;
-      const loadedCount = allPages.flatMap(selectItems).length;
+  const isFetchingRef = useRef(false);
 
-      if (totalCount !== undefined && loadedCount >= totalCount) return undefined;
-      if (items.length < limit) return undefined;
-
-      const lastItem = items[items.length - 1];
-      return (lastItem?.[cursorKey] as number) ?? undefined;
-    },
-    initialPageParam: 0,
-    ...queryOptions,
+  const { ref: targetRef, inView } = useInView({
+    threshold: 0.9,
   });
+
+  const stableParams = useMemo(
+    () => ({
+      ...initialParams,
+      cursorId,
+      size,
+    }),
+    [initialParams, cursorId, size],
+  );
+
+  const fetchNext = useCallback(async () => {
+    if (!enabled || isFetchingRef.current || !hasNextPage) return;
+    isFetchingRef.current = true;
+
+    try {
+      const response = await fetchFn(stableParams);
+      const newItems = selectItems(response);
+
+      setItems((prev) => [...prev, ...newItems]);
+      setCursorId(response.cursorId ?? null);
+      setHasNextPage(Boolean(response.cursorId && newItems.length > 0));
+    } catch (error) {
+      console.error("Infinite scroll fetch error:", error);
+      setHasNextPage(false);
+    } finally {
+      isFetchingRef.current = false;
+    }
+  }, [enabled, hasNextPage, stableParams, fetchFn, selectItems]);
+
+  useEffect(() => {
+    if (enabled) fetchNext();
+  }, [enabled]);
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingRef.current) {
+      fetchNext();
+    }
+  }, [inView, hasNextPage, fetchNext]);
+
+  const reset = useCallback(() => {
+    setItems([]);
+    setCursorId(null);
+    setHasNextPage(true);
+  }, []);
+
+  return {
+    data: items,
+    fetchNext,
+    hasNextPage,
+    targetRef,
+    reset,
+  };
 }

@@ -16,7 +16,7 @@ export type ActivitySort = z.infer<typeof ActivitySortSchema>;
 
 export const GetActivitiesReqSchema = z.object({
   method: z.enum(["offset", "cursor"]),
-  cursorId: z.number().optional(),
+  cursorId: z.number().nullable().optional(),
   category: ActivityCategorySchema.optional(),
   keyword: z.string().optional(),
   sort: ActivitySortSchema.optional(),
@@ -43,7 +43,7 @@ export const ActivitySchema = z.object({
 export type Activity = z.infer<typeof ActivitySchema>;
 
 export const GetActivitiesResSchema = z.object({
-  cursorId: z.number(),
+  cursorId: z.number().nullable().optional(),
   totalCount: z.number(),
   activities: z.array(ActivitySchema),
 });
@@ -102,8 +102,8 @@ export const ScheduleSchema = ScheduleTimeSchema.extend({
 export type Schedule = z.infer<typeof ScheduleSchema>;
 
 export const ActivityDetailSchema = ActivitySchema.extend({
-  subImages: z.array(SubImageSchema),
-  schedules: z.array(ScheduleSchema),
+  subImages: z.array(SubImageSchema).optional(),
+  schedules: z.array(ScheduleSchema).optional(),
 });
 export type ActivityDetail = z.infer<typeof ActivityDetailSchema>;
 
@@ -124,7 +124,7 @@ export const ReviewSchema = z.object({
   user: UserSummarySchema,
   activityId: z.number(),
   rating: z.number(),
-  content: z.string(),
+  content: z.string().optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
 });

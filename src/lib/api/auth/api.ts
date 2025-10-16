@@ -18,3 +18,14 @@ export function refreshToken() {
     schema: TokenResSchema,
   });
 }
+
+// POST: 로그아웃
+export async function logout() {
+  const res = await fetch("/api/auth/logout", { method: "POST" });
+
+  if (!res.ok) {
+    throw new Error("로그아웃 실패");
+  }
+
+  return res.json();
+}
