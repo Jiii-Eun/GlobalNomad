@@ -76,7 +76,7 @@ export default function ProfileSidebar({
   };
 
   return (
-    <aside className="rounded-12 border-brand-gray-300 h-fit w-96 border bg-white p-6">
+    <aside className="rounded-12 border-brand-gray-300 h-fit max-w-96 border bg-white p-6">
       <div className="flex w-full flex-col items-center gap-6">
         <ProfileImageUploader initialUrl={initialProfileUrl} />
       </div>
