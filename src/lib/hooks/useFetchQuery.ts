@@ -1,6 +1,6 @@
 import { useQuery, UseQueryOptions, UseQueryResult, QueryKey } from "@tanstack/react-query";
 
-interface FetchQueryOptions<TData, TError extends Error = Error>
+export interface FetchQueryOptions<TData, TError extends Error = Error>
   extends Omit<UseQueryOptions<TData, TError, TData, QueryKey>, "queryKey" | "queryFn"> {
   mockData?: TData;
   onError?: (error: TError) => void;
