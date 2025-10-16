@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 
-import { useLogin } from "@/lib/api/auth/hooks";
+import { useLogin, useLogout } from "@/lib/api/auth/hooks";
 
 export default function TestLoginPage() {
   const [email, setEmail] = useState("test00@email.com");
   const [password, setPassword] = useState("12345678");
 
-  // 실제 API 호출 훅 (mock=false)
+  // ✅ 로그인 훅
   const loginMutation = useLogin(false, {
     onSuccess: (data) => {
       alert("✅ 로그인 성공!");
@@ -20,13 +20,27 @@ export default function TestLoginPage() {
     },
   });
 
+  // ✅ 로그아웃 훅
+  const logoutMutation = useLogout({
+    onSuccess: () => {
+      alert("👋 로그아웃 완료!");
+    },
+  });
+
+  // 로그인 폼 제출
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     loginMutation.mutate({ email, password });
   };
 
+  // 로그아웃 버튼 클릭
+  const handleLogout = () => {
+    logoutMutation.mutate();
+  };
+
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50">
+    <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-gray-50">
+      {/* 로그인 폼 */}
       <form
         onSubmit={handleSubmit}
         className="w-[360px] rounded-lg border border-gray-300 bg-white p-6 shadow-md"
@@ -67,6 +81,15 @@ export default function TestLoginPage() {
           {loginMutation.isPending ? "로그인 중..." : "로그인"}
         </button>
       </form>
+
+      {/* 로그아웃 버튼 */}
+      <button
+        onClick={handleLogout}
+        disabled={logoutMutation.isPending}
+        className="w-[360px] rounded-md bg-red-500 py-2 font-semibold text-white transition-colors hover:bg-red-600"
+      >
+        {logoutMutation.isPending ? "로그아웃 중..." : "로그아웃"}
+      </button>
     </main>
   );
 }

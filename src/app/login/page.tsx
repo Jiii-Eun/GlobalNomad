@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form";
 
-import TestLoginPage from "@/app/components/TestLogin";
 import Logo from "@/components/ui/brand/Logo";
 import Button from "@/components/ui/button/Button";
 import Field from "@/components/ui/input/Field";
@@ -68,7 +67,6 @@ export default function Login() {
           {isSubmitting ? "로그인 중..." : "로그인"}
         </Button>
       </form>
-      <TestLoginPage />
     </main>
   );
 }

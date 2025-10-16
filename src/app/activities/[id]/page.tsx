@@ -6,7 +6,7 @@ import { Status, Misc } from "@/components/icons";
 
 import ReservationContent from "../components/reservations/ReservationContent";
 
-export default function ActivitiesDetailPage({ params }: { params: { id: number } }) {
+export default function ActivitiesDetailPage() {
   return (
     <>
       <main className="mx-auto mb-24 max-w-[1200px] px-[24px]">
