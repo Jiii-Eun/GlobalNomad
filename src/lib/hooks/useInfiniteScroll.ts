@@ -1,94 +1,68 @@
-"use client";
-
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useInfiniteQuery, type InfiniteData } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 
-interface InfiniteScrollOptions<
+interface InfiniteScrollQueryOptions<
   TResponse extends { cursorId?: number | null },
-  TItem,
   TParams extends Record<string, unknown>,
 > {
+  queryKey: readonly unknown[];
   fetchFn: (params: TParams) => Promise<TResponse>;
-  selectItems: (res: TResponse) => TItem[];
   initialParams: TParams;
-  initialData?: TItem[];
-  initialCursorId?: number | null;
   enabled?: boolean;
   size?: number;
+  rootRef?: React.RefObject<Element | null>;
 }
 
-export function useInfiniteScroll<
+export function useInfiniteScrollQuery<
   TResponse extends { cursorId?: number | null },
-  TItem,
   TParams extends Record<string, unknown>,
 >({
+  queryKey,
   fetchFn,
-  selectItems,
   initialParams,
-  initialData = [],
-  initialCursorId = null,
   enabled = true,
   size = 5,
-}: InfiniteScrollOptions<TResponse, TItem, TParams>) {
-  const [items, setItems] = useState<TItem[]>(initialData);
-  const [cursorId, setCursorId] = useState<number | null>(initialCursorId);
-  const [hasNextPage, setHasNextPage] = useState(true);
-
-  const isFetchingRef = useRef(false);
-
-  const { ref: targetRef, inView } = useInView({
+  rootRef,
+}: InfiniteScrollQueryOptions<TResponse, TParams>) {
+  const { ref, inView } = useInView({
     threshold: 0.9,
+    root: rootRef?.current ?? null,
+    rootMargin: "40px",
   });
 
-  const stableParams = useMemo(
-    () => ({
-      ...initialParams,
-      cursorId,
-      size,
-    }),
-    [initialParams, cursorId, size],
-  );
+  const observerDisabled = useRef(false);
 
-  const fetchNext = useCallback(async () => {
-    if (!enabled || isFetchingRef.current || !hasNextPage) return;
-    isFetchingRef.current = true;
-
-    try {
-      const response = await fetchFn(stableParams);
-      const newItems = selectItems(response);
-
-      setItems((prev) => [...prev, ...newItems]);
-      setCursorId(response.cursorId ?? null);
-      setHasNextPage(Boolean(response.cursorId && newItems.length > 0));
-    } catch (error) {
-      console.error("Infinite scroll fetch error:", error);
-      setHasNextPage(false);
-    } finally {
-      isFetchingRef.current = false;
-    }
-  }, [enabled, hasNextPage, stableParams, fetchFn, selectItems]);
+  const query = useInfiniteQuery<TResponse, Error, TResponse, readonly unknown[], number | null>({
+    queryKey,
+    queryFn: async ({ pageParam = null }) => {
+      const params = {
+        ...initialParams,
+        size,
+        cursorId: pageParam,
+      } as TParams;
+      return fetchFn(params);
+    },
+    getNextPageParam: (lastPage) => lastPage.cursorId ?? null,
+    enabled,
+    initialPageParam: null,
+  });
 
   useEffect(() => {
-    if (enabled) fetchNext();
-  }, [enabled]);
+    if (!inView || observerDisabled.current) return;
+    if (!query.hasNextPage || query.isFetchingNextPage) return;
 
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingRef.current) {
-      fetchNext();
-    }
-  }, [inView, hasNextPage, fetchNext]);
-
-  const reset = useCallback(() => {
-    setItems([]);
-    setCursorId(null);
-    setHasNextPage(true);
-  }, []);
+    observerDisabled.current = true;
+    query.fetchNextPage().finally(() => {
+      setTimeout(() => {
+        observerDisabled.current = false;
+      }, 500);
+    });
+  }, [inView, query.hasNextPage, query.isFetchingNextPage]);
 
   return {
-    data: items,
-    fetchNext,
-    hasNextPage,
-    targetRef,
-    reset,
+    ...query,
+    data: (query.data as InfiniteData<TResponse> | undefined)?.pages ?? [],
+    targetRef: ref,
   };
 }

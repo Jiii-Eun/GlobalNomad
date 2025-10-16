@@ -7,7 +7,7 @@ import UserMenu from "@/components/ui/header/UserMenu";
 import { useGetMe } from "@/lib/api/users/hooks";
 
 export default function Header() {
-  const { data: user } = useGetMe();
+  const { data: user, isLoading } = useGetMe();
 
   const hasLogin = !!user;
 
@@ -20,7 +20,7 @@ export default function Header() {
           </Link>
         </h1>
         <div className="flex-center">
-          {hasLogin ? (
+          {hasLogin && !isLoading ? (
             <>
               <Notification />
               <div className="mobile:mx-3 mx-[25px] h-[22px] w-[1px] bg-gray-300" />

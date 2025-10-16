@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { BASE_URL } from "./constants";
-import { setAuthCookies } from "./tokens";
+import { BASE_URL } from "@/lib/server/constants";
+import { setAuthCookies } from "@/lib/server/tokens";
 
 export async function proxyRequest(req: NextRequest, method: string, endpoint: string) {
   try {
@@ -13,10 +13,10 @@ export async function proxyRequest(req: NextRequest, method: string, endpoint: s
     const accessToken = cookieHeader.match(/accessToken=([^;]+)/)?.[1];
     const refreshToken = cookieHeader.match(/refreshToken=([^;]+)/)?.[1];
 
-    const headers: Record<string, string> = {
-      Cookie: cookieHeader,
-    };
-    if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
+    const headers: Record<string, string> = {};
+    if (accessToken) {
+      headers["Authorization"] = `Bearer ${accessToken}`;
+    }
 
     let body: BodyInit | undefined;
     if (!["GET", "HEAD", "DELETE"].includes(method)) {
@@ -51,10 +51,18 @@ export async function proxyRequest(req: NextRequest, method: string, endpoint: s
         return setAuthCookies(nextRes, tokens);
       }
     }
+    const contentType = res.headers.get("content-type");
+    const text = await res.text();
 
-    return new NextResponse(await res.text(), {
+    if (res.status === 204 || !text) {
+      return new NextResponse(null, { status: res.status });
+    }
+
+    return new NextResponse(text, {
       status: res.status,
-      headers: { "content-type": res.headers.get("content-type") ?? "application/json" },
+      headers: {
+        "content-type": contentType ?? "application/json",
+      },
     });
   } catch (error) {
     console.error("[proxyRequest] Error:", error);
