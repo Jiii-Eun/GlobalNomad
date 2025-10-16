@@ -102,6 +102,7 @@
     
   --shadow-base: 0 4px 16px rgba(0, 0, 0, 0.08);
   --shadow-green: 0 4px 16px rgba(17,34,17, 0.05);
+  --shadow-blue: 0 2px 8px rgba(120,116,135, 0.25);
 }
 
 @custom-variant tablet (@media (max-width: 78rem)); /* 1248px 이하 */

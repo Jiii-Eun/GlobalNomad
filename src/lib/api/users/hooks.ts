@@ -1,5 +1,7 @@
+import { FetchQueryOptions } from "@tanstack/react-query";
+
 import { useApiMutation, ApiMutationOptions } from "@/lib/hooks/useApiMutation";
-import { useFetchQuery, FetchQueryOptions } from "@/lib/hooks/useFetchQuery";
+import { useFetchQuery } from "@/lib/hooks/useFetchQuery";
 
 import { signUp, getMe, editMe, uploadProfileImage } from "./api";
 import { SignUpReq, UserRes, EditUserReq, UploadProfileImageRes } from "./types";
