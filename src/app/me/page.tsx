@@ -1,11 +1,14 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import Button from "@/components/ui/button/Button";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
+
+import ProfileSidebar from "./components/ProfileSidebar";
 
 interface FormValues {
   nickname: string;
@@ -15,6 +18,13 @@ interface FormValues {
 }
 
 export default function Mypage() {
+  // mock데이터
+  const me = {
+    nickname: "노마드유저",
+    email: "user@example.com",
+    profileImageUrl: null as string | null,
+  };
+
   const {
     register,
     handleSubmit,
@@ -40,10 +50,19 @@ export default function Mypage() {
   const onSubmit = async () => {
     // 추후 api 연동
   };
+  const pathname = usePathname();
+  const selectedActivityId = pathname.match(/\/me\/activities\/([^/]+)/)?.[1] ?? "mock-activity-id"; // TODO: 실제 값으로 교체
 
   return (
-    <main className="mx-auto mt-20 mb-[88px] w-full max-w-[792px]">
-      <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-8">
+    <main className="mx-auto mt-20 mb-[88px] flex w-full max-w-[1200px]">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-[24rem_1fr]">
+        <ProfileSidebar
+          initialProfileUrl={me.profileImageUrl}
+          selectedActivityId={selectedActivityId}
+        />
+      </div>
+
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="w-full max-w-[792px] space-y-8">
         <div className="flex justify-between">
           <h1 className="text-brand-black text-3xl font-bold">내정보</h1>
           <Button
