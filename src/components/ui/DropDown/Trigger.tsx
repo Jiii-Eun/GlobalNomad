@@ -1,9 +1,10 @@
 interface DropDownTriggerProps {
   children: React.ReactNode;
   onClick: () => void;
+  className?: string;
 }
 
-const DropDownTrigger = ({ children, onClick }: DropDownTriggerProps) => (
+const DropDownTrigger = ({ children, onClick, className }: DropDownTriggerProps) => (
   <button
     type="button"
     onClick={onClick}
@@ -12,6 +13,7 @@ const DropDownTrigger = ({ children, onClick }: DropDownTriggerProps) => (
         onClick();
       }
     }}
+    className={className}
   >
     {children}
   </button>
