@@ -4,7 +4,7 @@ import { useSetAtom } from "jotai";
 import { useState } from "react";
 
 import { sharedButtonClass } from "@/app/components/features/all/Categories";
-import DropDown from "@/app/me/components/DropDown/Dropdown";
+import DropDown from "@/components/ui/DropDown/Dropdown";
 import Button from "@/components/ui/button/Button";
 import { activitySortAtom } from "@/lib/api/activities/atoms";
 import { ActivitySort } from "@/lib/api/activities/types";

@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Btn, MeIcon, Status, Misc } from "@/components/icons";
 
 import { mockMyExperiences } from "./mock/myExperiences";
-import DropDown from "../components/DropDown/Dropdown";
+import DropDown from "../../../components/ui/DropDown/Dropdown";
 
 export default function Activities() {
   const [isOpen, setIsOpen] = useState(false);

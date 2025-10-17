@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-import DropDown from "@/app/me/components/DropDown/Dropdown";
+import DropDown from "@/components/ui/DropDown/Dropdown";
 import { useLogout } from "@/lib/api/auth/hooks";
 import { UserRes } from "@/lib/api/users/types";
 

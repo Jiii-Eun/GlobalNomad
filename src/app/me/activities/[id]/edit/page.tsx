@@ -1,9 +1,10 @@
 // # 내 체험 관리 (/me/activities)
 "use client";
 import Image from "next/image";
-import { Btn, MeIcon, Status } from "@/components/icons";
 import { useState } from "react";
-import TimeSlotPicker from "@/app/me/components/TimeSlotPicker";
+
+import { Btn, MeIcon, Status } from "@/components/icons";
+import TimeSlotPicker from "@/components/ui/timeSlot/TimeSlotPicker";
 
 export default function Edit() {
   const [parentSelectedDate, setParentSelectedDate] = useState<Date | null>(null);
