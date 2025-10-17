@@ -12,7 +12,7 @@ import type { GetMyActivitiesReq } from "@/lib/api/my-activities/types";
 
 import FormatNumber from "../components/formatNumber";
 import { mockMyExperiences } from "./mock/myExperiences";
-import DropDown from "../components/DropDown/Dropdown";
+import DropDown from "../../../components/ui/DropDown/Dropdown";
 import NotingPage from "../components/NotingPage";
 import ProfileSidebar from "../components/ProfileSidebar";
 
