@@ -14,6 +14,7 @@ import FormatNumber from "../components/formatNumber";
 import { mockMyExperiences } from "./mock/myExperiences";
 import DropDown from "../components/DropDown/Dropdown";
 import NotingPage from "../components/NotingPage";
+import ProfileSidebar from "../components/ProfileSidebar";
 
 interface ActivitiesRes {
   items: typeof mockMyExperiences;
@@ -31,6 +32,7 @@ export default function Activities() {
   const [openId, setOpenId] = useState<number | null>(null);
   const toggleMenu = (id: number) => setOpenId((prev) => (prev === id ? null : id));
   const closeMenu = () => setOpenId(null);
+  const selectedActivityId = "";
 
   const moveEdit = (id: number) => {
     closeMenu();
@@ -95,38 +97,10 @@ export default function Activities() {
     <>
       <main className="bg-brand-gray-100 py-18">
         <div className="mx-auto flex max-w-[1320px] gap-5">
-          <div className="flex h-fit w-[384px] flex-col gap-6 rounded-xl border border-[#DDDDDD] bg-white px-6 py-6">
-            <div className="w-full">
-              <div className="relative mx-auto w-fit">
-                <Image
-                  src="/profileImg.png"
-                  alt="프로필 이미지"
-                  width={160}
-                  height={160}
-                  className="rounded-full"
-                />
-                <Btn.Edit className="absolute right-0 bottom-0 h-11 w-11 rounded-full" />
-              </div>
-            </div>
-            <div className="flex w-full flex-col gap-2">
-              <div className="flex gap-2 rounded-xl px-2 py-[9px]">
-                <MeIcon.Me className="h-6 w-6" />
-                <div className="text-brand-gray-700 text-left font-bold">내 정보</div>
-              </div>
-              <div className="flex gap-2 rounded-xl px-2 py-[9px]">
-                <MeIcon.Reservations className="h-6 w-6" />
-                <div className="text-brand-gray-700 text-left font-bold">예약 내역</div>
-              </div>
-              <div className="bg-brand-deep-green-50 flex gap-2 rounded-xl px-2 py-[9px]">
-                <MeIcon.Schedule className="text-brand-black-100 h-6 w-6" />
-                <div className="text-brand-black-100 text-left font-bold">내 체험 관리</div>
-              </div>
-              <div className="flex gap-2 rounded-xl px-2 py-[9px]">
-                <MeIcon.Register className="h-6 w-6" />
-                <div className="text-brand-gray-700 text-left font-bold">예약 현황</div>
-              </div>
-            </div>
-          </div>
+          <ProfileSidebar
+            initialProfileUrl="/profileImg.png"
+            selectedActivityId={selectedActivityId}
+          />
           <div className="flex h-fit min-h-[800px] w-[800px] flex-col gap-10">
             <div className="flex justify-between">
               <h1 className="text-3xl font-bold">내 체험 관리</h1>

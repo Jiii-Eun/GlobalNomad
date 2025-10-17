@@ -1,4 +1,3 @@
-// # 내 체험 관리 (/me/activities)
 "use client";
 import Image from "next/image";
 import { useState } from "react";

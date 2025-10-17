@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 
-import Calendar from "@/app/me/components/Calendar";
+import Calendar from "@/app/me/activities/[id]/schedule/components/Calendar";
 import { Btn, MeIcon } from "@/components/icons";
 
 export default function Schedule() {
