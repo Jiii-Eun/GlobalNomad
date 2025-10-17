@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import KaKaoLoginButton from "@/components/oauth/KaKaoAuthButton";
@@ -135,7 +135,9 @@ export default function Signup() {
           <KaKaoLoginButton mode="signup" />
         </div>
 
-        <KakaoSignupBridge onToken={setKakaoToken} />
+        <Suspense fallback={null}>
+          <KakaoSignupBridge onToken={setKakaoToken} />
+        </Suspense>
       </form>
     </main>
   );
