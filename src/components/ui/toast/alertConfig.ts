@@ -52,6 +52,7 @@ export const ALERT_CONFIG: Record<string, AlertConfigItem> = {
     icon: true,
     message: "체험을 삭제하시겠어요?",
     autoClose: false,
-    buttons: [{ label: "아니오" }, { label: "삭제하기", primary: true }],
+    buttons: [{ label: "아니오" }, { label: "삭제하기", primary: true, actionKey: "redirect" }],
+    redirectTo: "/me/activities",
   },
 };

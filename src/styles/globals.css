@@ -127,15 +127,15 @@
     @apply cursor-default;
   }
 
-  /* 링크 기본 스타일 */
-  a {
-    @apply block no-underline text-brand-black w-full h-full;
-  }
+/* 링크 기본 스타일 */
+@layer base {
+  a { @apply no-underline text-brand-black w-full h-full; }
+}
 
-  /* 포커스인 테두리 */
-  :focus {
-    @apply outline-brand-nomad-black;
-  }
+/* 포커스인 테두리 */
+:focus {
+  @apply outline-brand-nomad-black;
+}
 
   /* 에러 테두리 */
   .is-error {
