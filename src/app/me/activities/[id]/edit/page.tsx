@@ -1,11 +1,10 @@
-// # 내 체험 관리 (/me/activities)
 "use client";
 import Image from "next/image";
 import { useState } from "react";
 
 import ProfileSidebar from "@/app/me/components/ProfileSidebar";
-import { Btn, MeIcon, Status } from "@/components/icons";
-import DropDown from "@/components/ui/DropDown/Dropdown";
+import { Btn, Status } from "@/components/icons";
+import { ActivityImageUploader } from "@/components/ui/image-uploader";
 import TimeSlotPicker from "@/components/ui/timeSlot/TimeSlotPicker";
 
 import CategorySelect from "./components/CategorySelect";
@@ -15,6 +14,9 @@ export default function Edit() {
   const handleSelectedDateChange = (date: Date | null) => setParentSelectedDate(date);
   const selectedId = "";
   const [category, setCategory] = useState("");
+
+  const [bannerImages, setBannerImages] = useState<(File | string)[]>([]);
+  const [introImages, setIntroImages] = useState<(File | string)[]>([]);
 
   return (
     <>
@@ -68,9 +70,9 @@ export default function Edit() {
             />
             <div className="flex flex-col gap-6">
               <h2 className="text-2xl font-bold">배너 이미지</h2>
-              <div className="flex gap-6">
-                <Btn.AddImage className="h-45 w-45" />
-                <div className="relative">
+              <div className="flex">
+                <ActivityImageUploader type="sub" onChange={setIntroImages} />
+                {/* <div className="relative">
                   <Image
                     src="/img2.png"
                     alt="테스트 이미지"
@@ -79,15 +81,17 @@ export default function Edit() {
                     className="rounded-24 h-45 w-45"
                   />
                   <Status.CloseFill className="absolute top-0 right-0 h-10 w-10 translate-x-1/3 -translate-y-1/3" />
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="flex flex-col gap-6">
               <h2 className="text-2xl font-bold">소개 이미지</h2>
               <div className="flex gap-6">
-                <Btn.AddImage className="h-45 w-45" />
+                <ActivityImageUploader type="banner" onChange={setBannerImages} />
               </div>
-              <span className="text-2lg pl-2">*이미지는 최대 4개까지 등록 가능합니다.</span>
+              <span className="text-2lg text-brand-gray-500 pl-2">
+                *이미지는 최대 4개까지 등록 가능합니다.
+              </span>
             </div>
           </div>
         </div>

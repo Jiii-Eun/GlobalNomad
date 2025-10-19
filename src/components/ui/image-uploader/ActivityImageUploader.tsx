@@ -34,7 +34,7 @@ export default function ActivityImageUploader({
     <div
       className={cn(
         "flex-wrap content-start items-start justify-start",
-        "flex w-full gap-6 p-4",
+        "flex w-full gap-6",
         "tablet:gap-4 mobile:gap-2",
         frameClass,
       )}
@@ -43,12 +43,11 @@ export default function ActivityImageUploader({
         <Button
           onClick={() => openFileDialog()}
           className={cn(
-            listClass,
+            // listClass,
             "text-brand-gray-900 border-brand-gray-300 rounded-12 flex flex-col items-center justify-center gap-7 border-2 border-dashed bg-transparent hover:bg-transparent",
           )}
         >
-          <Btn.Add className="size-12" />
-          <span className="text-2xl">이미지 등록</span>
+          <Btn.AddImage className="h-45 w-45" />
         </Button>
       )}
 
