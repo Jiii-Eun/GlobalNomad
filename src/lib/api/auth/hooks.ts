@@ -1,6 +1,8 @@
+import { useQueryClient } from "node_modules/@tanstack/react-query/build/modern/QueryClientProvider";
+
 import { useApiMutation, ApiMutationOptions } from "@/lib/hooks/useApiMutation";
 
-import { login, refreshToken } from "./api";
+import { login, logout, refreshToken } from "./api";
 import { LoginReq, LoginRes, TokenRes } from "./types";
 
 //POST: 로그인
@@ -30,4 +32,26 @@ export function useRefreshToken(isMock = false, options?: ApiMutationOptions<Tok
     mockResponse: isMock ? { refreshToken: "mock-refresh", accessToken: "mock-access" } : undefined,
     ...options,
   });
+}
+
+// POST: 로그아웃
+export function useLogout(options?: ApiMutationOptions<undefined, undefined>) {
+  const queryClient = useQueryClient();
+
+  const mutation = useApiMutation<undefined, undefined>(() => logout(), {
+    onSuccess: () => {
+      queryClient.clear();
+      window.location.reload();
+    },
+    onError: (error) => {
+      console.error("로그아웃 실패:", error);
+    },
+    ...options,
+  });
+
+  return {
+    ...mutation,
+    mutate: () => mutation.mutate(undefined),
+    mutateAsync: () => mutation.mutateAsync(undefined),
+  };
 }

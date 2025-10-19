@@ -1,4 +1,7 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const isServer = typeof window === "undefined";
+
+const BASE_URL = isServer ? process.env.NEXT_PUBLIC_API_URL : "/api";
+
 import { ZodType } from "zod";
 
 interface FetchOptions<T> extends Omit<RequestInit, "body"> {
@@ -36,7 +39,9 @@ export async function apiRequest<Response>(
 
   // 인증 오류 처리
   if (response.status === 401) {
-    throw new Error("인증 실패: 다시 로그인하세요");
+    const error = new Error("인증 실패: 다시 로그인하세요");
+    Object.assign(error, { status: 401 });
+    throw error;
   }
 
   // 콘텐츠 없을 때

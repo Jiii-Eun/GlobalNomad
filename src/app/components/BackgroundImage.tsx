@@ -6,12 +6,13 @@ import { useState } from "react";
 import { cn } from "@/lib/cn";
 
 interface BackgroundImageProps {
-  src: string;
+  src?: string;
   alt?: string;
   overlay?: string;
   onLoaded?: () => void;
   imageClass?: string;
   className?: string;
+  children?: React.ReactNode;
 }
 
 export default function BackgroundImage({
@@ -21,6 +22,7 @@ export default function BackgroundImage({
   onLoaded,
   imageClass,
   className,
+  children,
 }: BackgroundImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -32,22 +34,26 @@ export default function BackgroundImage({
           isLoaded ? "opacity-0" : "shimmer opacity-100",
         )}
       />
-
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        className={cn(
-          "object-cover transition-opacity duration-700 ease-out",
-          isLoaded ? "opacity-100" : "opacity-0",
-          imageClass,
-        )}
-        priority
-        onLoad={() => {
-          setIsLoaded(true);
-          onLoaded?.();
-        }}
-      />
+      {src ? (
+        <Image
+          src={src}
+          alt={alt}
+          loader={({ src }) => src}
+          fill
+          className={cn(
+            "object-cover transition-opacity duration-700 ease-out",
+            isLoaded ? "opacity-100" : "opacity-0",
+            imageClass,
+          )}
+          priority
+          onLoad={() => {
+            setIsLoaded(true);
+            onLoaded?.();
+          }}
+        />
+      ) : (
+        <div>{children}</div>
+      )}
 
       {overlay && (
         <div

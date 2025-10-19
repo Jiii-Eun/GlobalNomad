@@ -1,58 +1,68 @@
-import { useInfiniteQuery, UseInfiniteQueryOptions } from "@tanstack/react-query";
+import { useInfiniteQuery, type InfiniteData } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
+import { useInView } from "react-intersection-observer";
 
-export interface InfiniteQueryOptions<TResponse>
-  extends Omit<
-    UseInfiniteQueryOptions<TResponse, Error, TResponse, unknown[]>,
-    "queryKey" | "queryFn" | "getNextPageParam"
-  > {
-  mockData?: TResponse;
-}
-
-interface InfiniteScrollProps<
-  TResponse extends Record<string, unknown>,
-  TItem extends Record<string, unknown>,
+interface InfiniteScrollQueryOptions<
+  TResponse extends { cursorId?: number | null },
+  TParams extends Record<string, unknown>,
 > {
-  queryKey: unknown[];
-  fetchData: (params: Record<string, unknown>) => Promise<TResponse>;
-  selectItems: (response: TResponse) => TItem[];
-  limit: number;
-  cursorKey?: keyof TItem;
-  totalCountKey?: keyof TResponse;
-  options?: InfiniteQueryOptions<TResponse>;
+  queryKey: readonly unknown[];
+  fetchFn: (params: TParams) => Promise<TResponse>;
+  initialParams: TParams;
+  enabled?: boolean;
+  size?: number;
+  rootRef?: React.RefObject<Element | null>;
 }
 
-export function useInfiniteScroll<
-  TResponse extends Record<string, unknown>,
-  TItem extends Record<string, unknown>,
+export function useInfiniteScrollQuery<
+  TResponse extends { cursorId?: number | null },
+  TParams extends Record<string, unknown>,
 >({
   queryKey,
-  fetchData,
-  selectItems,
-  limit,
-  cursorKey = "id",
-  totalCountKey,
-  options,
-}: InfiniteScrollProps<TResponse, TItem>) {
-  const { mockData, ...queryOptions } = options ?? {};
-
-  return useInfiniteQuery<TResponse, Error, TResponse, unknown[]>({
-    queryKey,
-    queryFn: async ({ pageParam = 0 }) => {
-      if (mockData) return mockData;
-      return fetchData({ cursorId: pageParam });
-    },
-    getNextPageParam: (lastPage, allPages) => {
-      const items = selectItems(lastPage);
-      const totalCount = totalCountKey ? (lastPage[totalCountKey] as number) : undefined;
-      const loadedCount = allPages.flatMap(selectItems).length;
-
-      if (totalCount !== undefined && loadedCount >= totalCount) return undefined;
-      if (items.length < limit) return undefined;
-
-      const lastItem = items[items.length - 1];
-      return (lastItem?.[cursorKey] as number) ?? undefined;
-    },
-    initialPageParam: 0,
-    ...queryOptions,
+  fetchFn,
+  initialParams,
+  enabled = true,
+  size = 5,
+  rootRef,
+}: InfiniteScrollQueryOptions<TResponse, TParams>) {
+  const { ref, inView } = useInView({
+    threshold: 0.9,
+    root: rootRef?.current ?? null,
+    rootMargin: "40px",
   });
+
+  const observerDisabled = useRef(false);
+
+  const query = useInfiniteQuery<TResponse, Error, TResponse, readonly unknown[], number | null>({
+    queryKey,
+    queryFn: async ({ pageParam = null }) => {
+      const params = {
+        ...initialParams,
+        size,
+        cursorId: pageParam,
+      } as TParams;
+      return fetchFn(params);
+    },
+    getNextPageParam: (lastPage) => lastPage.cursorId ?? null,
+    enabled,
+    initialPageParam: null,
+  });
+
+  useEffect(() => {
+    if (!inView || observerDisabled.current) return;
+    if (!query.hasNextPage || query.isFetchingNextPage) return;
+
+    observerDisabled.current = true;
+    query.fetchNextPage().finally(() => {
+      setTimeout(() => {
+        observerDisabled.current = false;
+      }, 500);
+    });
+  }, [inView, query.hasNextPage, query.isFetchingNextPage]);
+
+  return {
+    ...query,
+    data: (query.data as InfiniteData<TResponse> | undefined)?.pages ?? [],
+    targetRef: ref,
+  };
 }

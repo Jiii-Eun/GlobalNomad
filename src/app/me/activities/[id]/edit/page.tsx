@@ -1,9 +1,9 @@
-// # 내 체험 관리 (/me/activities)
 "use client";
 import Image from "next/image";
-import { Btn, MeIcon, Status } from "@/components/icons";
 import { useState } from "react";
-import TimeSlotPicker from "@/app/me/components/TimeSlotPicker";
+
+import { Btn, MeIcon, Status } from "@/components/icons";
+import TimeSlotPicker from "@/components/ui/timeSlot/TimeSlotPicker";
 
 export default function Edit() {
   const [parentSelectedDate, setParentSelectedDate] = useState<Date | null>(null);
@@ -11,7 +11,7 @@ export default function Edit() {
 
   return (
     <>
-      <main className="bg-[#FAFAFA] py-18">
+      <main className="bg-brand-gray-100 py-18">
         <div className="mx-auto flex max-w-[1320px] gap-5">
           <div className="flex h-fit w-[384px] flex-col gap-6 rounded-xl border border-[#DDDDDD] bg-white px-6 py-6">
             <div className="w-full">
@@ -114,7 +114,9 @@ export default function Edit() {
               <div className="flex gap-6">
                 <Btn.AddImage className="h-45 w-45" />
               </div>
-              <span className="text-2lg pl-2">*이미지는 최대 4개까지 등록 가능합니다.</span>
+              <span className="text-2lg text-brand-gray-700 pl-2">
+                *이미지는 최대 4개까지 등록 가능합니다.
+              </span>
             </div>
           </div>
         </div>

@@ -1,19 +1,33 @@
 "use client";
 
+import { useSetAtom } from "jotai";
 import { useState } from "react";
 
 import { sharedButtonClass } from "@/app/components/features/all/Categories";
-import DropDown from "@/app/me/components/DropDown/Dropdown";
+import DropDown from "@/components/ui/DropDown/Dropdown";
 import Button from "@/components/ui/button/Button";
+import { activitySortAtom } from "@/lib/api/activities/atoms";
+import { ActivitySort } from "@/lib/api/activities/types";
+import { cn } from "@/lib/cn";
 
 export default function ArrayActivities() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedSort, setSelectedSort] = useState("최신순");
 
-  const sorts = ["리뷰 많은 순", "가격 높은 순", "가격 낮은 순", "최신순"];
+  const sortMap: Record<string, ActivitySort> = {
+    "리뷰 많은 순": "most_reviewed",
+    "가격 높은 순": "price_desc",
+    "가격 낮은 순": "price_asc",
+    최신순: "latest",
+  };
 
-  const handleSelect = (sort: string) => {
-    setSelectedSort(sort);
+  const sorts = Object.keys(sortMap);
+
+  const setSort = useSetAtom(activitySortAtom);
+
+  const handleSelect = (sortLabel: string) => {
+    setSelectedSort(sortLabel);
+    setSort(sortMap[sortLabel]);
     setIsOpen(false);
   };
 
@@ -23,14 +37,15 @@ export default function ArrayActivities() {
 
       <DropDown handleClose={() => setIsOpen(false)}>
         <DropDown.Trigger onClick={() => setIsOpen((prev) => !prev)}>
-          <Button variant="w" className={sharedButtonClass}>
+          <Button variant="w" className={cn(sharedButtonClass, "hover:bg-transparent")}>
             {selectedSort}
           </Button>
         </DropDown.Trigger>
+
         <DropDown.Menu isOpen={isOpen}>
-          {sorts.map((sort) => (
-            <DropDown.Item key={sort} onClick={() => handleSelect(sort)}>
-              {sort}
+          {sorts.map((sortLabel) => (
+            <DropDown.Item key={sortLabel} onClick={() => handleSelect(sortLabel)}>
+              {sortLabel}
             </DropDown.Item>
           ))}
         </DropDown.Menu>
