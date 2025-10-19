@@ -1,8 +1,8 @@
 import Link from "next/link";
 import React from "react";
 
-import BackgroundImage from "@/app/components/BackgroundImage";
 import { Status } from "@/components/icons";
+import BackgroundImage from "@/components/ui/BackgroundImage";
 import { cn } from "@/lib/cn";
 
 interface CardProps {

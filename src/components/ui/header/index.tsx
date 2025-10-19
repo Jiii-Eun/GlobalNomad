@@ -1,4 +1,4 @@
-import BackgroundImage from "@/app/components/BackgroundImage";
+import BackgroundImage from "@/components/ui/BackgroundImage";
 import AuthNav from "@/components/ui/header/AuthNav";
 import HeaderLogo from "@/components/ui/header/HeaderLogo";
 import Notification from "@/components/ui/header/Notification";
