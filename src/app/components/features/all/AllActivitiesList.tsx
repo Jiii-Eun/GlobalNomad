@@ -2,9 +2,11 @@
 
 import { useSetAtom } from "jotai";
 import { useEffect } from "react";
+import { length } from "zod";
 
 import ActivityCardBase from "@/app/components/features/ActivityCardBase";
 import ActivitiesPagination from "@/app/components/features/all/ActivitiesPagination";
+import SkeletonList from "@/app/components/features/SkeletonList";
 import { useActivityParams } from "@/app/components/useActivityParams";
 import { activitySizeAtom } from "@/lib/api/activities/atoms";
 import { useActivities } from "@/lib/api/activities/hooks";
@@ -36,29 +38,28 @@ export default function AllActivitiesList() {
           "tablet:grid-cols-3 mobile:grid-cols-2 grid-cols-4",
         )}
       >
-        {isLoading
-          ? Array.from({ length: LENGTH }).map((_, index) => (
-              <div
-                key={index}
-                className={cn(
-                  "shimmer rounded-[20px]",
-                  "tablet:mb-[184px] mobile:mb-[130px] mb-[200px]",
-                  listClass,
-                )}
+        {isLoading ? (
+          <>
+            {console.log(LENGTH)}
+            <SkeletonList
+              length={LENGTH}
+              className={cn("tablet:mb-[184px] mobile:mb-[130px] mb-[200px]", listClass)}
+            />
+          </>
+        ) : (
+          activities?.map((item) => (
+            <div key={item.id} className={cn("relative", listClass)}>
+              <ActivityCardBase
+                id={item.id}
+                title={item.title}
+                price={item.price}
+                bannerImageUrl={"/images/street-dance-banner.png"}
+                rating={item.rating}
+                reviewCount={item.reviewCount}
               />
-            ))
-          : activities?.map((item) => (
-              <div key={item.id} className={cn("relative", listClass)}>
-                <ActivityCardBase
-                  id={item.id}
-                  title={item.title}
-                  price={item.price}
-                  bannerImageUrl={"/images/street-dance-banner.png"}
-                  rating={item.rating}
-                  reviewCount={item.reviewCount}
-                />
-              </div>
-            ))}
+            </div>
+          ))
+        )}
         {!isLoading && activities?.length === 0 && (
           <p className="col-span-full py-10 text-center text-gray-500">검색 결과가 없습니다.</p>
         )}

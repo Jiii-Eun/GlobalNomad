@@ -5,8 +5,8 @@ import { cn } from "@/lib/cn";
 
 export default function AllActivities() {
   return (
-    <div className="">
-      <div className="mt-[60px] flex justify-between">
+    <div>
+      <div className="mt-[60px] flex items-center justify-between">
         <Categories />
         <ArrayActivities />
       </div>

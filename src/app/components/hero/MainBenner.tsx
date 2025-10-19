@@ -1,13 +1,21 @@
-import BackgroundImage from "@/app/components/BackgroundImage";
+import Image from "next/image";
+
 import { cn } from "@/lib/cn";
 
 export default function MainBanner() {
   return (
     <div className="mobile:h-[240px] relative mx-auto h-[550px] w-full max-w-[1920px] overflow-hidden transition-[height] duration-700">
-      <BackgroundImage
+      <Image
         src="/images/street-dance-banner.png"
         alt="10월에 가장 인기 있는 체험"
-        overlay="rgba(0,0,0,0.5)"
+        fill
+        priority
+        className="object-cover"
+      />
+
+      <div
+        className="absolute inset-0 bg-[rgba(0,0,0,0.5)] transition-colors duration-700"
+        aria-hidden="true"
       />
 
       <div
