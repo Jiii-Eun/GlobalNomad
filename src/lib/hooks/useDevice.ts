@@ -1,26 +1,24 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
 export function useDevice() {
-  const [state, setState] = useState({
-    isPc: false,
-    isTablet: false,
-    isMobile: false,
-  });
+  const [device, setDevice] = useState<"pc" | "tablet" | "mobile" | null>(null);
 
   useEffect(() => {
-    const update = () => {
+    const updateDevice = () => {
       const width = window.innerWidth;
-      setState({
-        isPc: width > 1248,
-        isTablet: width > 744 && width <= 1248,
-        isMobile: width <= 744,
-      });
+      if (width >= 1024) setDevice("pc");
+      else if (width >= 768) setDevice("tablet");
+      else setDevice("mobile");
     };
-
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
+    updateDevice();
+    window.addEventListener("resize", updateDevice);
+    return () => window.removeEventListener("resize", updateDevice);
   }, []);
 
-  return state;
+  return {
+    isPc: device === "pc",
+    isTablet: device === "tablet",
+    isMobile: device === "mobile",
+    isReady: device !== null,
+  };
 }
