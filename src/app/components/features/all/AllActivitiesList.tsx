@@ -2,7 +2,6 @@
 
 import { useSetAtom } from "jotai";
 import { useEffect } from "react";
-import { length } from "zod";
 
 import ActivityCardBase from "@/app/components/features/ActivityCardBase";
 import ActivitiesPagination from "@/app/components/features/all/ActivitiesPagination";
