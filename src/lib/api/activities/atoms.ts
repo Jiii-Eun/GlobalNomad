@@ -4,7 +4,7 @@ import { atom } from "jotai";
 
 import { ActivityCategory, ActivitySort } from "./types";
 
-export const activityMethodAtom = atom<"cursor" | "offset">("offset");
+export const activityMethodAtom = atom<"cursor" | "offset">("cursor");
 
 export const activityPageAtom = atom<number>(1);
 export const activitySizeAtom = atom<number>(8);

@@ -87,7 +87,7 @@ export default function NotificationDropDown({ isOpen, onClose }: NotificationDr
                   )}
                   <Status.Close onClick={() => handleDelete(id)} className={closeClass} />
                 </div>
-                <p className="text-md">
+                <p className="text-md break-keep">
                   {content.split("예약이")[0]}예약이
                   <span className={statusColor}> {isApproved ? "승인" : "거절"}</span>
                   되었습니다.

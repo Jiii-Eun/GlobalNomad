@@ -29,7 +29,7 @@ export default function Categories() {
   };
 
   return (
-    <div className="scrollbar-hide scrollbar-hide w-full overflow-x-auto">
+    <div className="scrollbar-hide w-full overflow-x-auto">
       <div className="flex min-w-max gap-4 px-2">
         {categories.map((category) => {
           const isSelected = selected === category;
@@ -41,8 +41,8 @@ export default function Categories() {
               onClick={() => handleSelect(category)}
               className={cn(
                 sharedButtonClass,
-                "hover:border-0 hover:text-white",
                 isSelected && "bg-brand-deep-green-500 text-white",
+                "hover:text-brand-nomad-black hover:border-0 hover:font-bold",
               )}
             >
               {category}

@@ -1,37 +1,38 @@
-import BackgroundImage from "@/app/components/BackgroundImage";
-import { cn } from "@/lib/cn";
+import Image from "next/image";
 
-export default function MainBanner() {
+import { EmblaCarousel } from "@/components/ui/embla-carousel/EmblaCarousel";
+import { getActivities } from "@/lib/api/activities/api";
+
+export default async function MainBanner() {
+  const res = await getActivities({ method: "cursor", size: 20 });
+  const randomFive = res.activities.sort(() => Math.random() - 0.5).slice(0, 5);
+
   return (
-    <div className="mobile:h-[240px] relative mx-auto h-[550px] w-full max-w-[1920px] overflow-hidden transition-[height] duration-700">
-      <BackgroundImage
-        src="/images/street-dance-banner.png"
-        alt="10월에 가장 인기 있는 체험"
-        overlay="rgba(0,0,0,0.5)"
-      />
-
-      <div
-        className={cn(
-          "container-base absolute inset-0",
-          "flex flex-col items-start justify-center gap-5",
-          "text-center text-white",
-          "tablet:pl-8 mobile:pl-6 tablet:gap-2",
-        )}
-      >
-        <h2
-          className={cn(
-            "transition-base text-left text-[68px] font-bold",
-            "mobile:text-2xl tablet:text-[54px]",
-          )}
+    <EmblaCarousel autoplayDelay={5000}>
+      {randomFive.map((activity) => (
+        <div
+          key={activity.id}
+          className="mobile:h-[240px] relative h-[550px] w-full flex-[0_0_100%]"
         >
-          함께 배우면 즐거운
-          <br />
-          스트릿 댄스
-        </h2>
-        <p className="mobile:text-md tablet:text-[20px] text-2xl">
-          10월의 인기 체험을 지금 예약하세요
-        </p>
-      </div>
-    </div>
+          <Image
+            src={activity.bannerImageUrl}
+            alt={activity.title}
+            fill
+            priority
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-[rgba(0,0,0,0.5)]" />
+          <div className="container-base tablet:pl-8 mobile:pl-6 mobile:gap-0 absolute inset-0 flex flex-col justify-center gap-4 text-white">
+            <h2 className="tablet:text-[54px] mobile:text-2xl tablet:max-w-4/5 max-w-1/2 text-[68px] leading-tight font-bold break-keep">
+              {activity.title}
+            </h2>
+            <p className="tablet:text-[20px] mobile:text-md text-2xl font-bold">
+              {activity.description}
+            </p>
+            <div className="tablet:text-2lg mobile:text-md text-xl">이달의 추천 체험 🔥</div>
+          </div>
+        </div>
+      ))}
+    </EmblaCarousel>
   );
 }

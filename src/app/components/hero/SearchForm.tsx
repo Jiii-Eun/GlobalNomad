@@ -22,6 +22,8 @@ export default function SearchForm() {
     setPage(1);
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value);
+
   const isActive = keyword.trim().length > 0;
 
   return (
@@ -36,7 +38,7 @@ export default function SearchForm() {
           id="search"
           type="text"
           value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
+          onChange={handleChange}
           className="peer h-full w-full px-2 text-base outline-none"
         />
 
