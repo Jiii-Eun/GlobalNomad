@@ -15,6 +15,8 @@ export default function BestPagination({ totalCount, page, setPage }: Pagination
   const firstPage = page === 1;
   const lastPage = page === totalPages;
 
+  const arrowClass = "size-11";
+
   const handlePrev = () => {
     if (page > 1) setPage(page - 1);
   };
@@ -25,10 +27,10 @@ export default function BestPagination({ totalCount, page, setPage }: Pagination
   return (
     <div className="flex items-center gap-2">
       <PaginationButton onClick={handlePrev} disabled={firstPage} variant="none">
-        <Arrow.Left className="size-11" />
+        <Arrow.Left className={arrowClass} />
       </PaginationButton>
       <PaginationButton onClick={handleNext} disabled={lastPage} variant="none">
-        <Arrow.Right className="size-11" />
+        <Arrow.Right className={arrowClass} />
       </PaginationButton>
     </div>
   );
