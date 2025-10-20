@@ -33,7 +33,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "vitest.setup.ts",
-    ".storybook/vitest.setup.ts"
+    ".storybook/vitest.setup.ts",
+    "kakao.maps.d.ts"
   ],
   "exclude": ["node_modules"]
 }
