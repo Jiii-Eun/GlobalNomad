@@ -1,3 +1,5 @@
+import { Drawer } from "vaul";
+
 import Button from "@/components/ui/button/Button";
 import { useDrawerContext } from "@/components/ui/modal/DrawerContext";
 import { cn } from "@/lib/cn";
@@ -22,6 +24,7 @@ export default function DrawerFooter({
   isNext,
 }: footerProps) {
   const { nextStep } = useDrawerContext();
+
   const handleClick = () => {
     onClick?.();
     if (isNext && nextStep) {
@@ -29,8 +32,9 @@ export default function DrawerFooter({
     }
   };
 
+  // next일 때는
   return (
-    <div className={cn("flex items-center justify-center", frameClass)}>
+    <Drawer.Close className={cn("flex w-full items-center justify-center", frameClass)}>
       {children ? (
         children
       ) : (
@@ -42,6 +46,6 @@ export default function DrawerFooter({
           {buttonText ? buttonText : "확인"}
         </Button>
       )}
-    </div>
+    </Drawer.Close>
   );
 }
