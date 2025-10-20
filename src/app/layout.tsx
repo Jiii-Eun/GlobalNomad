@@ -1,4 +1,6 @@
 import "@/styles/globals.css";
+import Script from "next/script";
+
 import BaseLayout from "@/components/layout/BaseLayout";
 import QueryProviders from "@/components/provider/QueryProviders";
 import { ToastProvider } from "@/components/provider/ToastProvider";
@@ -16,6 +18,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko">
       <body>
         <div id="portal" />
+        <Script
+          strategy="beforeInteractive"
+          src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAOMAP_KEY}&autoload=false&libraries=services`}
+        />
         <QueryProviders>
           <ToastProvider>
             <BaseLayout>{children}</BaseLayout>

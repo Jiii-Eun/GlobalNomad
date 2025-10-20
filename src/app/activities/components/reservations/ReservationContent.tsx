@@ -37,13 +37,13 @@ const ReservationContent = () => {
   return (
     <ReservationWrap>
       <div className="flex flex-row items-center gap-5">
-        <p className="text-h1 text-black200">{formatWage(price)}</p>
-        <p className="text-h3-regular text-gray600">/ 인</p>
+        <p className="text-brand-black text-3xl font-bold">{formatWage(price)}</p>
+        <p className="text-brand-gray-900 text-xl">/ 인</p>
       </div>
       {/* datepicker */}
 
-      <div className="border-t-gray200 mt-4 border-t">
-        <p className="text-h3-bold text-black200 mt-4 mb-4">날짜</p>
+      <div className="mt-4 border-t border-[#DDDDDD]">
+        <p className="text-brand-nomad-black mt-4 mb-4 text-xl font-bold">날짜</p>
         <div className="flex justify-center">
           <DatePicker
             inline
@@ -55,20 +55,22 @@ const ReservationContent = () => {
       </div>
 
       <div className="mobile:mt-7 mt-4 flex flex-col gap-3.5">
-        <p className="text-h3-bold text-black200 mobile:text-h2">예약 가능한 시간</p>
+        <p className="text-brand-nomad-black text-2lg mobile:text-h2 font-bold">예약 가능한 시간</p>
         <button
-          className={`active:bg-nomad-black mr-[1.2rem] mb-[1.2rem] rounded-lg border border-[var(--color-brand-nomad-black)] bg-[var(--color-brand-nomad-black)] px-[1.2rem] py-[1rem] text-base font-medium text-white active:text-white`}
+          className={`active:bg-brand-deep-green-500 border-brand-nomad-black bg-brand-nomad-black mr-[1.2rem] mb-[1.2rem] rounded-lg border px-[1.2rem] py-[1rem] text-base font-medium text-white active:text-white`}
         >
           14:00~15:00
         </button>
         <button
-          className={`border-nomad-black active:bg-nomad-black text-nomad-black text-nomad-black mr-[1.2rem] mb-[1.2rem] rounded-lg border bg-white px-[1.2rem] py-[1rem] text-base font-medium active:text-white`}
+          className={`border-brand-nomad-black active:bg-brand-black text-nomad-black text-brand-nomad-black mr-[1.2rem] mb-[1.2rem] rounded-lg border bg-white px-[1.2rem] py-[1rem] text-base font-medium active:text-white`}
         >
           14:00~15:00
         </button>
 
         <div>
-          <div className="text-h4-regular text-nomad-black mb-4">예약가능한 시간이 없습니다</div>
+          <div className="text-h4-regular text-brand-nomad-black mb-4">
+            예약가능한 시간이 없습니다
+          </div>
         </div>
       </div>
       <ParticipantsCounter
