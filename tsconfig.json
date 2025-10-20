@@ -15,7 +15,7 @@
     "jsx": "preserve",
     "incremental": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["vitest/globals", "@testing-library/jest-dom"],
+    "types": ["vitest/globals", "@testing-library/jest-dom", "kakao.maps.d.ts"],
     "plugins": [
       {
         "name": "next"
@@ -33,8 +33,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "vitest.setup.ts",
-    ".storybook/vitest.setup.ts",
-    "kakao.maps.d.ts"
+    ".storybook/vitest.setup.ts"
   ],
   "exclude": ["node_modules"]
 }
