@@ -9,6 +9,7 @@ export default function Home() {
       <div className="container-base tablet:px-6 mobile:px-4 mb-52">
         <Search />
         <Features />
+        테스트
       </div>
     </div>
   );
