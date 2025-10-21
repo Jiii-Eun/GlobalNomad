@@ -9,11 +9,15 @@ const INPUT_BASE =
   "w-full h-[58px] px-5 bg-white border border-brand-gray-400 rounded " +
   "text-lg placeholder:text-brand-gray-500/60";
 
+const INPUT_HEIGHT = "h-[58px]";
+const TEXTAREA_BASE = "min-h-[346px] py-3 resize-y";
+
 const padIfRightIcon = (has: boolean) => (has ? "pr-12" : "pr-5 ");
 const padIfLeftIcon = (has: boolean) => (has ? "pl-10" : "pl-5 ");
 
 type NativeInputProps = ComponentPropsWithoutRef<"input">;
 type NativeSelectProps = ComponentPropsWithoutRef<"select">;
+type NativeTextareaProps = ComponentPropsWithoutRef<"textarea">;
 
 export interface BaseProps<TRef extends Element = Element> {
   id: string;
@@ -40,9 +44,19 @@ export interface InputSelectProps extends Omit<NativeSelectProps, "size" | "id">
   placeholderOption?: string;
 }
 
-export type Props = InputTextProps | InputSelectProps;
+export interface TextareaProps
+  extends Omit<NativeTextareaProps, "id">,
+    BaseProps<HTMLTextAreaElement> {
+  as: "textarea";
+}
+
+export type Props = InputTextProps | InputSelectProps | TextareaProps;
 function isSelectProps(p: Props): p is InputSelectProps {
   return (p as InputSelectProps).as === "select";
+}
+
+function isTextareaProps(p: Props): p is TextareaProps {
+  return (p as TextareaProps).as === "textarea";
 }
 
 export default function Input(props: Props) {
@@ -92,7 +106,32 @@ export default function Input(props: Props) {
           ))}
         </select>
         {rightIcon && (
-          <span className="absolute inset-y-0 right-3 flex items-center text-gray-400">
+          <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+            {rightIcon}
+          </span>
+        )}
+      </div>
+    );
+  }
+
+  if (isTextareaProps(props)) {
+    const { id, isInvalid, className, leftIcon, rightIcon, ref, as: _, ...rest } = props;
+    const leftPad = padIfLeftIcon(Boolean(leftIcon));
+    const rightPad = padIfRightIcon(Boolean(rightIcon));
+    return (
+      <div className="relative">
+        {leftIcon && (
+          <span className="absolute top-3 left-3 flex items-center text-gray-400">{leftIcon}</span>
+        )}
+        <textarea
+          id={id}
+          ref={ref}
+          className={[INPUT_BASE, TEXTAREA_BASE, leftPad, rightPad, className].join(" ")}
+          aria-invalid={isInvalid || undefined}
+          {...rest}
+        />
+        {rightIcon && (
+          <span className="absolute top-3 right-3 flex items-center text-gray-400">
             {rightIcon}
           </span>
         )}
@@ -148,7 +187,7 @@ export default function Input(props: Props) {
         </button>
       ) : (
         rightIcon && (
-          <span className="absolute inset-y-0 right-3 flex items-center text-gray-400">
+          <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
             {rightIcon}
           </span>
         )

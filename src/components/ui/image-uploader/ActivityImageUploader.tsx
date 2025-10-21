@@ -28,7 +28,7 @@ export default function ActivityImageUploader({
     useImageUploader({ limit, initialImages, onChange });
 
   const listClass =
-    "aspect-square flex-[1_0_180px] max-w-[240px] h-full w-full hover:scale-98 transition-all duration-150";
+    "aspect-square flex-[1_0_180px] max-w-[180px] h-full w-full hover:scale-98 transition-all duration-150";
 
   return (
     <div
@@ -43,8 +43,8 @@ export default function ActivityImageUploader({
         <Button
           onClick={() => openFileDialog()}
           className={cn(
-            // listClass,
-            "text-brand-gray-900 border-brand-gray-300 rounded-12 flex flex-col items-center justify-center gap-7 border-2 border-dashed bg-transparent hover:bg-transparent",
+            listClass,
+            "rounded-12 flex flex-col items-center justify-center gap-7 border-dashed bg-transparent hover:bg-transparent",
           )}
         >
           <Btn.AddImage className="h-45 w-45" />
