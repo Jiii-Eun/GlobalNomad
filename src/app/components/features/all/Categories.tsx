@@ -8,10 +8,7 @@ import { activityCategoryAtom, activityPageAtom } from "@/lib/api/activities/ato
 import { ActivityCategory, ActivityCategorySchema } from "@/lib/api/activities/types";
 import { cn } from "@/lib/cn";
 
-export const sharedButtonClass = cn(
-  "text-2lg h-[58px] w-[127px] rounded-[15px] whitespace-nowrap",
-  "mobile:w-[100px] mobile:h-[41px] tablet:w-[120px]",
-);
+export const sharedButtonClass = "text-2lg h-[58px] w-[127px] rounded-[15px] whitespace-nowrap";
 
 export default function Categories() {
   const categories = ["모두", ...ActivityCategorySchema.options] as const;
@@ -41,6 +38,7 @@ export default function Categories() {
               onClick={() => handleSelect(category)}
               className={cn(
                 sharedButtonClass,
+                "mobile:w-[100px] mobile:h-[41px] tablet:w-[120px]",
                 isSelected && "bg-brand-deep-green-500 text-white",
                 "hover:text-brand-nomad-black hover:border-0 hover:font-bold",
               )}

@@ -39,7 +39,6 @@ export default function AllActivitiesList() {
       >
         {isLoading ? (
           <>
-            {console.log(LENGTH)}
             <SkeletonList
               length={LENGTH}
               className={cn("tablet:mb-[184px] mobile:mb-[130px] mb-[200px]", listClass)}
@@ -48,23 +47,18 @@ export default function AllActivitiesList() {
         ) : (
           activities?.map((item) => (
             <div key={item.id} className={cn("relative", listClass)}>
-              <ActivityCardBase
-                id={item.id}
-                title={item.title}
-                price={item.price}
-                bannerImageUrl={"/images/street-dance-banner.png"}
-                rating={item.rating}
-                reviewCount={item.reviewCount}
-              />
+              <ActivityCardBase {...item} />
             </div>
           ))
         )}
         {!isLoading && activities?.length === 0 && (
-          <p className="col-span-full py-10 text-center text-gray-500">검색 결과가 없습니다.</p>
+          <p className="text-brand-gray-500 col-span-full py-10 text-center">
+            진행중인 체험이 없습니다.
+          </p>
         )}
       </div>
 
-      <ActivitiesPagination size={LENGTH} />
+      <ActivitiesPagination size={LENGTH} data={data} />
     </div>
   );
 }
