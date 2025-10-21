@@ -31,6 +31,10 @@ export default function KeywordActivities() {
       </div>
 
       <AllActivitiesList />
+
+      {totalCount === 0 && (
+        <p className="text-brand-gray-500 col-span-full py-10 text-center">검색 결과가 없습니다.</p>
+      )}
     </div>
   );
 }
