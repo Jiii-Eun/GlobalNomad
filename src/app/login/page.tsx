@@ -10,7 +10,6 @@ import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
 
 import KakaoSigninHandler from "./KakaoSigninHandler";
-import TestLoginPage from "../components/TestLogin";
 
 interface FormValues {
   email: string;
@@ -86,7 +85,6 @@ export default function Login() {
           <KakaoSigninHandler />
         </Suspense>
       </form>
-      <TestLoginPage />
     </main>
   );
 }
