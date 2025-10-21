@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
+import KaKaoLoginButton from "@/components/oauth/KaKaoAuthButton";
 import Logo from "@/components/ui/brand/Logo";
 import Button from "@/components/ui/button/Button";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
+
+import KakaoSignupBridge from "./KakaoSignupBridge";
 
 interface FormValues {
   email: string;
@@ -16,6 +19,8 @@ interface FormValues {
 }
 
 export default function Signup() {
+  const [kakaoToken, setKakaoToken] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -38,8 +43,15 @@ export default function Signup() {
     }
   }, [pw, trigger, getValues, touchedFields.confirm, dirtyFields.confirm]);
 
-  const onSubmit = async () => {
+  const onSubmit = async (values: FormValues) => {
     // 추후 api 연동
+    if (kakaoToken) {
+      console.log("[KAKAO SIGNUP]", { nickname: values.nickname, token: kakaoToken });
+      alert(`간편회원가입 (모의): 닉네임="${values.nickname}"\n토큰=${kakaoToken?.slice(0, 8)}...`);
+    } else {
+      console.log("[EMAIL SIGNUP]", values);
+      alert(`일반 회원가입 (모의): ${values.email} / ${values.nickname}`);
+    }
   };
 
   return (
@@ -112,6 +124,20 @@ export default function Signup() {
         >
           {isSubmitting ? "가입 중..." : "회원가입"}
         </Button>
+
+        <div className="mt-12 flex items-center gap-4 text-gray-500">
+          <span className="h-px flex-1 bg-gray-200" />
+          <span className="text-lg">SNS 계정으로 회원가입하기</span>
+          <span className="h-px flex-1 bg-gray-200" />
+        </div>
+
+        <div className="mt-6 flex justify-center">
+          <KaKaoLoginButton mode="signup" />
+        </div>
+
+        <Suspense fallback={null}>
+          <KakaoSignupBridge onToken={setKakaoToken} />
+        </Suspense>
       </form>
     </main>
   );

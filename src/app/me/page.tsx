@@ -8,8 +8,6 @@ import Button from "@/components/ui/button/Button";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
 
-import ProfileSidebar from "./components/ProfileSidebar";
-
 interface FormValues {
   nickname: string;
   email: string;
@@ -54,72 +52,63 @@ export default function Mypage() {
   const selectedActivityId = pathname.match(/\/me\/activities\/([^/]+)/)?.[1] ?? "mock-activity-id"; // TODO: 실제 값으로 교체
 
   return (
-    <main className="mx-auto mt-20 mb-[88px] flex w-full max-w-[1200px]">
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-[24rem_1fr]">
-        <ProfileSidebar
-          initialProfileUrl={me.profileImageUrl}
-          selectedActivityId={selectedActivityId}
-        />
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="w-full max-w-[792px] space-y-8">
+      <div className="flex justify-between">
+        <h1 className="text-brand-black text-3xl font-bold">내정보</h1>
+        <Button
+          type="submit"
+          variant="b"
+          isDisabled={!isValid || isSubmitting}
+          className="h-12 w-[120px] text-lg"
+        >
+          {isSubmitting ? "저장 중..." : "저장하기"}
+        </Button>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} noValidate className="w-full max-w-[792px] space-y-8">
-        <div className="flex justify-between">
-          <h1 className="text-brand-black text-3xl font-bold">내정보</h1>
-          <Button
-            type="submit"
-            variant="b"
-            isDisabled={!isValid || isSubmitting}
-            className="h-12 w-[120px] text-lg"
-          >
-            {isSubmitting ? "저장 중..." : "저장하기"}
-          </Button>
-        </div>
+      <Field id="nickname" label="닉네임" error={errors.nickname?.message}>
+        <Input
+          id="nickname"
+          type="text"
+          placeholder="닉네임을 입력해 주세요."
+          maxLength={10}
+          aria-invalid={!!errors.nickname}
+          {...register("nickname", {
+            setValueAs: (v) => (typeof v === "string" ? v.trim() : v),
+            required: "닉네임을 입력해주세요.",
+            validate: (v) => (v?.length ?? 0) > 0 || "닉네임을 입력해 주세요.",
+          })}
+        />
+      </Field>
 
-        <Field id="nickname" label="닉네임" error={errors.nickname?.message}>
-          <Input
-            id="nickname"
-            type="text"
-            placeholder="닉네임을 입력해 주세요."
-            maxLength={10}
-            aria-invalid={!!errors.nickname}
-            {...register("nickname", {
-              setValueAs: (v) => (typeof v === "string" ? v.trim() : v),
-              required: "닉네임을 입력해주세요.",
-              validate: (v) => (v?.length ?? 0) > 0 || "닉네임을 입력해 주세요.",
-            })}
-          />
-        </Field>
+      <Field id="email" label="이메일" error={errors.email?.message}>
+        <Input id="email" type="email" placeholder="이메일" readOnly {...register("email")} />
+      </Field>
 
-        <Field id="email" label="이메일" error={errors.email?.message}>
-          <Input id="email" type="email" placeholder="이메일" readOnly {...register("email")} />
-        </Field>
+      <Field id="password" label="비밀번호" error={errors.password?.message}>
+        <Input
+          id="password"
+          type="password"
+          placeholder="8자 이상 입력해 주세요."
+          aria-invalid={!!errors.password}
+          {...register("password", {
+            required: "비밀번호를 입력해 주세요.",
+            minLength: { value: 8, message: "비밀번호는 8자 이상이어야 합니다." },
+          })}
+        />
+      </Field>
 
-        <Field id="password" label="비밀번호" error={errors.password?.message}>
-          <Input
-            id="password"
-            type="password"
-            placeholder="8자 이상 입력해 주세요."
-            aria-invalid={!!errors.password}
-            {...register("password", {
-              required: "비밀번호를 입력해 주세요.",
-              minLength: { value: 8, message: "비밀번호는 8자 이상이어야 합니다." },
-            })}
-          />
-        </Field>
-
-        <Field id="confirm" label="비밀번호 확인" error={errors.confirm?.message}>
-          <Input
-            id="confirm"
-            type="password"
-            placeholder="비밀번호를 한번 더 입력해 주세요."
-            aria-invalid={!!errors.confirm}
-            {...register("confirm", {
-              required: "비밀번호를 다시 입력해 주세요.",
-              validate: (v) => v === getValues("password") || "비밀번호가 일치하지 않습니다.",
-            })}
-          />
-        </Field>
-      </form>
-    </main>
+      <Field id="confirm" label="비밀번호 확인" error={errors.confirm?.message}>
+        <Input
+          id="confirm"
+          type="password"
+          placeholder="비밀번호를 한번 더 입력해 주세요."
+          aria-invalid={!!errors.confirm}
+          {...register("confirm", {
+            required: "비밀번호를 다시 입력해 주세요.",
+            validate: (v) => v === getValues("password") || "비밀번호가 일치하지 않습니다.",
+          })}
+        />
+      </Field>
+    </form>
   );
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import BackgroundImage from "@/app/components/BackgroundImage";
 import { Logo } from "@/components/icons";
 import AuthNav from "@/components/ui/header/AuthNav";
 import Notification from "@/components/ui/header/Notification";
@@ -7,7 +8,7 @@ import UserMenu from "@/components/ui/header/UserMenu";
 import { useGetMe } from "@/lib/api/users/hooks";
 
 export default function Header() {
-  const { data: user } = useGetMe();
+  const { data: user, isLoading } = useGetMe();
 
   const hasLogin = !!user;
 
@@ -20,7 +21,9 @@ export default function Header() {
           </Link>
         </h1>
         <div className="flex-center">
-          {hasLogin ? (
+          {isLoading ? (
+            <BackgroundImage className="rounded-4 h-9 w-40 overflow-hidden" />
+          ) : hasLogin ? (
             <>
               <Notification />
               <div className="mobile:mx-3 mx-[25px] h-[22px] w-[1px] bg-gray-300" />

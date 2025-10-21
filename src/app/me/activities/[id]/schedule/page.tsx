@@ -1,13 +1,13 @@
 "use client";
 import Image from "next/image";
 
-import Calendar from "@/app/me/components/Calendar";
+import Calendar from "@/app/me/activities/[id]/schedule/components/Calendar";
 import { Btn, MeIcon } from "@/components/icons";
 
 export default function Schedule() {
   return (
     <>
-      <main className="bg-[#FAFAFA] py-18">
+      <main className="bg-brand-gray-100 py-18">
         <div className="mx-auto flex max-w-[1320px] gap-5">
           <div className="flex h-fit w-[384px] flex-col gap-6 rounded-xl border border-[#DDDDDD] bg-white px-6 py-6">
             <div className="w-full">

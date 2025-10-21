@@ -1,11 +1,16 @@
 "use client";
 
+import { Suspense } from "react";
 import { useForm } from "react-hook-form";
 
+import KaKaoLoginButton from "@/components/oauth/KaKaoAuthButton";
 import Logo from "@/components/ui/brand/Logo";
 import Button from "@/components/ui/button/Button";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
+
+import KakaoSigninHandler from "./KakaoSigninHandler";
+import TestLoginPage from "../components/TestLogin";
 
 interface FormValues {
   email: string;
@@ -66,7 +71,22 @@ export default function Login() {
         >
           {isSubmitting ? "로그인 중..." : "로그인"}
         </Button>
+
+        <div className="mt-12 flex items-center gap-4 text-gray-500">
+          <span className="h-px flex-1 bg-gray-200" />
+          <span className="text-lg">SNS 계정으로 로그인하기</span>
+          <span className="h-px flex-1 bg-gray-200" />
+        </div>
+
+        <div className="mt-6 flex justify-center">
+          <KaKaoLoginButton mode="signin" />
+        </div>
+
+        <Suspense fallback={null}>
+          <KakaoSigninHandler />
+        </Suspense>
       </form>
+      <TestLoginPage />
     </main>
   );
 }

@@ -6,7 +6,7 @@ export interface ExperienceCard {
   thumbnail: string;
   rating: number;
   reviewsCount: number;
-  pricePerPerson: string;
+  pricePerPerson: number;
   status: ExperienceStatus;
 
   location: string;
