@@ -27,8 +27,6 @@ export default function AllActivitiesList() {
 
   const activities = data?.activities;
 
-  console.log("activities:", activities);
-
   const listClass = "w-full max-w-[384px] aspect-square";
 
   return (
@@ -41,7 +39,6 @@ export default function AllActivitiesList() {
       >
         {isLoading ? (
           <>
-            {console.log(LENGTH)}
             <SkeletonList
               length={LENGTH}
               className={cn("tablet:mb-[184px] mobile:mb-[130px] mb-[200px]", listClass)}
