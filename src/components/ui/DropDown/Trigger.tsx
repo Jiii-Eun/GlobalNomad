@@ -9,6 +9,7 @@ interface DropDownTriggerProps {
   customButton?: string;
   customClass?: string;
   isOpen?: boolean;
+  className?: string;
 }
 
 const DropDownTrigger = ({
@@ -46,7 +47,16 @@ const DropDownTrigger = ({
   }
 
   return (
-    <button type="button" onClick={onClick} onKeyDown={handleKeyDown}>
+    <button
+      type="button"
+      onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") {
+          onClick();
+        }
+      }}
+      className={className}
+    >
       {children}
     </button>
   );

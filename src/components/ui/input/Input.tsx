@@ -106,7 +106,32 @@ export default function Input(props: Props) {
           ))}
         </select>
         {rightIcon && (
-          <span className="absolute inset-y-0 right-3 flex items-center text-gray-400">
+          <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+            {rightIcon}
+          </span>
+        )}
+      </div>
+    );
+  }
+
+  if (isTextareaProps(props)) {
+    const { id, isInvalid, className, leftIcon, rightIcon, ref, as: _, ...rest } = props;
+    const leftPad = padIfLeftIcon(Boolean(leftIcon));
+    const rightPad = padIfRightIcon(Boolean(rightIcon));
+    return (
+      <div className="relative">
+        {leftIcon && (
+          <span className="absolute top-3 left-3 flex items-center text-gray-400">{leftIcon}</span>
+        )}
+        <textarea
+          id={id}
+          ref={ref}
+          className={[INPUT_BASE, TEXTAREA_BASE, leftPad, rightPad, className].join(" ")}
+          aria-invalid={isInvalid || undefined}
+          {...rest}
+        />
+        {rightIcon && (
+          <span className="absolute top-3 right-3 flex items-center text-gray-400">
             {rightIcon}
           </span>
         )}
@@ -189,7 +214,7 @@ export default function Input(props: Props) {
         </button>
       ) : (
         rightIcon && (
-          <span className="absolute inset-y-0 right-3 flex items-center text-gray-400">
+          <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
             {rightIcon}
           </span>
         )

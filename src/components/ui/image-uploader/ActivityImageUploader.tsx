@@ -28,13 +28,13 @@ export default function ActivityImageUploader({
     useImageUploader({ limit, initialImages, onChange });
 
   const listClass =
-    "aspect-square flex-[1_0_180px] max-w-[240px] h-full w-full hover:scale-98 transition-all duration-150";
+    "aspect-square flex-[1_0_180px] max-w-[180px] h-full w-full hover:scale-98 transition-all duration-150";
 
   return (
     <div
       className={cn(
         "flex-wrap content-start items-start justify-start",
-        "flex w-full gap-6 p-4",
+        "flex w-full gap-6",
         "tablet:gap-4 mobile:gap-2",
         frameClass,
       )}
@@ -44,11 +44,10 @@ export default function ActivityImageUploader({
           onClick={() => openFileDialog()}
           className={cn(
             listClass,
-            "text-brand-gray-900 border-brand-gray-300 rounded-12 flex flex-col items-center justify-center gap-7 border-2 border-dashed bg-transparent hover:bg-transparent",
+            "rounded-12 flex flex-col items-center justify-center gap-7 border-dashed bg-transparent hover:bg-transparent",
           )}
         >
-          <Btn.Add className="size-12" />
-          <span className="text-2xl">이미지 등록</span>
+          <Btn.AddImage className="h-45 w-45" />
         </Button>
       )}
 
