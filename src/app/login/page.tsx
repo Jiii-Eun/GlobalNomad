@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Suspense } from "react";
 import { useForm } from "react-hook-form";
 
@@ -8,9 +9,9 @@ import Logo from "@/components/ui/brand/Logo";
 import Button from "@/components/ui/button/Button";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
+import { useLogin } from "@/lib/api/auth/hooks";
 
 import KakaoSigninHandler from "./KakaoSigninHandler";
-import TestLoginPage from "../components/TestLogin";
 
 interface FormValues {
   email: string;
@@ -18,14 +19,33 @@ interface FormValues {
 }
 
 export default function Login() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isValid, isSubmitting },
   } = useForm<FormValues>({ mode: "onBlur", defaultValues: { email: "", password: "" } });
 
-  const onSubmit = async () => {
-    // 추후 api 연동
+  const loginMutation = useLogin(false, {
+    onSuccess: () => {
+      router.push("/");
+    },
+    onError: (e: unknown) => {
+      const msg = (e as { message?: string })?.message ?? "";
+      if (/비밀번호/i.test(msg) || /password/i.test(msg)) {
+        alert("비밀번호가 일치하지 않습니다.");
+        setError("password", { type: "server", message: "비밀번호가 일치하지 않습니다." });
+      } else if (/이메일/i.test(msg) || /email/i.test(msg)) {
+        setError("email", { type: "server", message: "이메일 형식으로 작성해 주세요." });
+      } else {
+        setError("email", { type: "server", message: msg || "로그인에 실패했습니다." });
+      }
+    },
+  });
+
+  const onSubmit = async (v: FormValues) => {
+    await loginMutation.mutateAsync({ email: v.email.trim(), password: v.password });
   };
 
   return (
@@ -66,7 +86,7 @@ export default function Login() {
         <Button
           type="submit"
           variant="b"
-          isDisabled={!isValid || isSubmitting}
+          isDisabled={!isValid || isSubmitting || loginMutation.isPending}
           className="h-12 w-full text-lg"
         >
           {isSubmitting ? "로그인 중..." : "로그인"}
@@ -86,7 +106,6 @@ export default function Login() {
           <KakaoSigninHandler />
         </Suspense>
       </form>
-      <TestLoginPage />
     </main>
   );
 }

@@ -40,14 +40,11 @@ export default function ProfileSidebar({
       case "experiences":
         return "/me/activities";
       case "calendar":
-        return selectedActivityId
-          ? `/me/activities/${selectedActivityId}/schedule`
-          : "/me/activities";
+        return `/me/activities/schedule`;
     }
   };
 
   const go = (k: ItemKey) => {
-    if (k === "calendar" && !selectedActivityId) return;
     router.push(toPath(k));
   };
 
@@ -81,7 +78,7 @@ export default function ProfileSidebar({
   };
 
   return (
-    <aside className="rounded-12 border-brand-gray-300 w-fu h-fit w-full max-w-96 border bg-white p-6">
+    <aside className="rounded-12 border-brand-gray-300 h-fit w-full max-w-96 border bg-white p-6">
       <div className="flex w-full flex-col items-center gap-6">
         <ProfileImageUploader initialUrl={initialProfileUrl} />
       </div>

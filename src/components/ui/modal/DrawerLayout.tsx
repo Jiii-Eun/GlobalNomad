@@ -81,7 +81,7 @@ export default function DrawerLayout({
             className={cn(
               "rounded-t-16 fixed bottom-0 left-1/2 z-[910] flex max-h-[96%] w-full -translate-x-1/2 flex-col bg-white p-6 shadow-lg",
               "mobile:p-4",
-              `${widthMap[width]}`,
+              widthMap[width],
               contentClass,
             )}
           >

@@ -3,12 +3,9 @@
 import { useSetAtom } from "jotai";
 import { useState } from "react";
 
-import { sharedButtonClass } from "@/app/components/features/all/Categories";
 import DropDown from "@/components/ui/DropDown/Dropdown";
-import Button from "@/components/ui/button/Button";
 import { activitySortAtom } from "@/lib/api/activities/atoms";
 import { ActivitySort } from "@/lib/api/activities/types";
-import { cn } from "@/lib/cn";
 
 export default function ArrayActivities() {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,11 +33,11 @@ export default function ArrayActivities() {
       <div className="pointer-events-none absolute top-0 -left-12 z-10 h-full w-12 bg-gradient-to-l from-white to-transparent" />
 
       <DropDown handleClose={() => setIsOpen(false)}>
-        <DropDown.Trigger onClick={() => setIsOpen((prev) => !prev)}>
-          <Button variant="w" className={cn(sharedButtonClass, "hover:bg-transparent")}>
-            {selectedSort}
-          </Button>
-        </DropDown.Trigger>
+        <DropDown.Trigger
+          onClick={() => setIsOpen((prev) => !prev)}
+          customButton={selectedSort}
+          isOpen={isOpen}
+        />
 
         <DropDown.Menu isOpen={isOpen}>
           {sorts.map((sortLabel) => (
