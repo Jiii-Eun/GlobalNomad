@@ -18,6 +18,7 @@ const DropDownTrigger = ({
   customButton,
   customClass,
   isOpen,
+  className,
 }: DropDownTriggerProps) => {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Escape") {
