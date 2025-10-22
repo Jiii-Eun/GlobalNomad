@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
@@ -8,6 +9,8 @@ import Logo from "@/components/ui/brand/Logo";
 import Button from "@/components/ui/button/Button";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
+import { useOAuthSignUp } from "@/lib/api/oauth/hooks";
+import { useSignUp } from "@/lib/api/users/hooks";
 
 import KakaoSignupBridge from "./KakaoSignupBridge";
 
@@ -19,12 +22,14 @@ interface FormValues {
 }
 
 export default function Signup() {
+  const router = useRouter();
   const [kakaoToken, setKakaoToken] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
     formState: { errors, isValid, isSubmitting, touchedFields, dirtyFields },
+    setError,
     control,
     trigger,
     getValues,
@@ -43,16 +48,69 @@ export default function Signup() {
     }
   }, [pw, trigger, getValues, touchedFields.confirm, dirtyFields.confirm]);
 
+  //일반 회원가입
+  const emailSignup = useSignUp(false, {
+    onSuccess: () => {
+      router.push("/login");
+    },
+    onError: (e: unknown) => {
+      const msg = (e as { message?: string })?.message ?? "";
+      if (/이메일/i.test(msg) || /email/i.test(msg)) {
+        setError("email", { type: "server", message: msg || "이메일을 입력해 주세요" });
+      } else if (/닉네임/i.test(msg) || /nickname/i.test(msg)) {
+        setError("nickname", { type: "server", message: msg || "닉네임을 입력해 주세요" });
+      } else if (/비밀번호/i.test(msg) || /password/i.test(msg)) {
+        setError("password", {
+          type: "server",
+          message: msg || "비밀번호는 8자리 이상이어야 합니다.",
+        });
+      } else {
+        setError("email", { type: "server", message: msg || "회원가입에 실패했습니다." });
+      }
+    },
+  });
+
+  //카카오 회원가입
+  const kakaoSignup = useOAuthSignUp(false, {
+    onSuccess: (res) => {
+      if (res.accessToken || res.refreshToken) router.push("/");
+      else router.push("/login");
+    },
+    onError: (e: unknown) => {
+      const msg = (e as { message?: string })?.message ?? "";
+      setError("nickname", { type: "server", message: msg || "간편회원가입에 실패했습니다." });
+    },
+  });
+
+  const REQUIRED_LITERAL = "http://localhost:3000/oauth/kakao" as const;
+
+  const ACTUAL_REDIRECT_URI =
+    process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI ??
+    "https://global-nomad-henna.vercel.app/oauth/kakao/callback";
+
+  if (ACTUAL_REDIRECT_URI !== REQUIRED_LITERAL && process.env.NODE_ENV !== "production") {
+    console.warn("[KAKAO_REDIRECT_URI] 타입 리터럴과 ENV 값이 다릅니다:", ACTUAL_REDIRECT_URI);
+  }
+
+  const REDIRECT_URI_FOR_TYPE = ACTUAL_REDIRECT_URI as unknown as typeof REQUIRED_LITERAL;
+
   const onSubmit = async (values: FormValues) => {
-    // 추후 api 연동
     if (kakaoToken) {
-      console.log("[KAKAO SIGNUP]", { nickname: values.nickname, token: kakaoToken });
-      alert(`간편회원가입 (모의): 닉네임="${values.nickname}"\n토큰=${kakaoToken?.slice(0, 8)}...`);
+      await kakaoSignup.mutateAsync({
+        nickname: values.nickname.trim(),
+        redirectUri: REDIRECT_URI_FOR_TYPE,
+        token: kakaoToken,
+      });
     } else {
-      console.log("[EMAIL SIGNUP]", values);
-      alert(`일반 회원가입 (모의): ${values.email} / ${values.nickname}`);
+      await emailSignup.mutateAsync({
+        email: values.email.trim(),
+        nickname: values.nickname.trim(),
+        password: values.password,
+      });
     }
   };
+
+  const isPending = isSubmitting || emailSignup.isPending || kakaoSignup.isPending;
 
   return (
     <main className="mx-auto mt-28 w-full max-w-[640px]">
@@ -119,10 +177,10 @@ export default function Signup() {
         <Button
           type="submit"
           variant="b"
-          isDisabled={!isValid || isSubmitting}
+          isDisabled={!isValid || isPending}
           className="h-12 w-full text-lg"
         >
-          {isSubmitting ? "가입 중..." : "회원가입"}
+          {isPending ? "가입 중..." : "회원가입"}
         </Button>
 
         <div className="mt-12 flex items-center gap-4 text-gray-500">

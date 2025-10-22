@@ -5,12 +5,17 @@ import { useState } from "react";
 
 import { Misc } from "@/components/icons";
 import Button from "@/components/ui/button/Button";
-import { activityKeywordAtom, activityPageAtom } from "@/lib/api/activities/atoms";
+import {
+  activityCategoryAtom,
+  activityKeywordAtom,
+  activityPageAtom,
+} from "@/lib/api/activities/atoms";
 import { cn } from "@/lib/cn";
 
 export default function SearchForm() {
   const [keyword, setKeyword] = useState("");
   const setGlobalKeyword = useSetAtom(activityKeywordAtom);
+  const setCategory = useSetAtom(activityCategoryAtom);
   const setPage = useSetAtom(activityPageAtom);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -20,7 +25,10 @@ export default function SearchForm() {
     setGlobalKeyword(trimmed.length > 0 ? trimmed : undefined);
 
     setPage(1);
+    setCategory(undefined);
   };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value);
 
   const isActive = keyword.trim().length > 0;
 
@@ -36,7 +44,7 @@ export default function SearchForm() {
           id="search"
           type="text"
           value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
+          onChange={handleChange}
           className="peer h-full w-full px-2 text-base outline-none"
         />
 

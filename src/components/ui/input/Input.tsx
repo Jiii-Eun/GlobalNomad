@@ -9,8 +9,8 @@ const INPUT_BASE =
   "w-full h-[58px] px-5 bg-white border border-brand-gray-400 rounded " +
   "text-lg placeholder:text-brand-gray-500/60";
 
-const INPUT_HEIGHT = "h-[58px]";
-const TEXTAREA_BASE = "min-h-[346px] py-3 resize-y";
+const INPUT_HEIGHT = "h-[58px]"; // input 전용 높이
+const TEXTAREA_BASE = "min-h-[346px] py-3 resize-y"; // textarea 전용
 
 const padIfRightIcon = (has: boolean) => (has ? "pr-12" : "pr-5 ");
 const padIfLeftIcon = (has: boolean) => (has ? "pl-10" : "pl-5 ");
@@ -116,6 +116,33 @@ export default function Input(props: Props) {
 
   if (isTextareaProps(props)) {
     const { id, isInvalid, className, leftIcon, rightIcon, ref, as: _, ...rest } = props;
+    const leftPad = padIfLeftIcon(Boolean(leftIcon));
+    const rightPad = padIfRightIcon(Boolean(rightIcon));
+    return (
+      <div className="relative">
+        {leftIcon && (
+          <span className="absolute top-3 left-3 flex items-center text-gray-400">{leftIcon}</span>
+        )}
+        <textarea
+          id={id}
+          ref={ref}
+          className={[INPUT_BASE, TEXTAREA_BASE, leftPad, rightPad, className].join(" ")}
+          aria-invalid={isInvalid || undefined}
+          {...rest}
+        />
+        {rightIcon && (
+          <span className="absolute top-3 right-3 flex items-center text-gray-400">
+            {rightIcon}
+          </span>
+        )}
+      </div>
+    );
+  }
+
+  /** TEXTAREA */
+  if (isTextareaProps(props)) {
+    const { id, isInvalid, className, leftIcon, rightIcon, ref, as: _, ...rest } = props;
+    // textarea는 높이 고정 X
     const leftPad = padIfLeftIcon(Boolean(leftIcon));
     const rightPad = padIfRightIcon(Boolean(rightIcon));
     return (

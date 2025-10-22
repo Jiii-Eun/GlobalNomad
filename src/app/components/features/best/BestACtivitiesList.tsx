@@ -1,4 +1,5 @@
 import ActivityCardBase from "@/app/components/features/ActivityCardBase";
+import SkeletonList from "@/app/components/features/SkeletonList";
 import type { Activity } from "@/lib/api/activities/types";
 import { cn } from "@/lib/cn";
 
@@ -26,10 +27,7 @@ export default function BestActivitiesList({ activities, isLoading, targetRef }:
         );
       })}
 
-      {isLoading &&
-        Array.from({ length: 3 }).map((_, index) => (
-          <div key={index} className={cn("shimmer rounded-[20px]", listClass)} />
-        ))}
+      {isLoading && <SkeletonList length={3} className={listClass} />}
     </div>
   );
 }

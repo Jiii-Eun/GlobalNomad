@@ -38,21 +38,21 @@ export default function BackgroundImage({
         <Image
           src={src}
           alt={alt}
-          loader={({ src }) => src}
           fill
+          loading="lazy"
+          decoding="async"
           className={cn(
             "object-cover transition-opacity duration-700 ease-out",
             isLoaded ? "opacity-100" : "opacity-0",
             imageClass,
           )}
-          priority
           onLoad={() => {
             setIsLoaded(true);
             onLoaded?.();
           }}
         />
       ) : (
-        <div>{children}</div>
+        <>{children}</>
       )}
 
       {overlay && (

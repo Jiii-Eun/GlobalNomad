@@ -32,10 +32,11 @@ export default function BestActivities() {
 
   const { data: offsetData, isLoading } = useActivities(baseParams);
 
-  const { data: cursorData, targetRef } = useInfiniteScrollQuery<
-    GetActivitiesRes,
-    GetActivitiesReq
-  >({
+  const {
+    data: cursorData,
+    targetRef,
+    isLoading: cursorIsLoading,
+  } = useInfiniteScrollQuery<GetActivitiesRes, GetActivitiesReq>({
     queryKey: ["bestActivities", baseParams],
     fetchFn: getActivities,
     initialParams: baseParams,
@@ -58,7 +59,7 @@ export default function BestActivities() {
 
       <BestActivitiesList
         activities={activities}
-        isLoading={isLoading}
+        isLoading={isPc ? isLoading : cursorIsLoading}
         targetRef={!isPc ? targetRef : undefined}
       />
     </div>

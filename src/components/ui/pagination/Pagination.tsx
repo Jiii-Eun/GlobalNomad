@@ -43,26 +43,27 @@ export default function Pagination({ page, setPage, totalPages, className }: dat
   };
 
   return (
-    <div className={cn("mt-4 flex items-center justify-center gap-[10px]", className)}>
+    <div className={cn("flex-center mt-4 gap-[10px]", className)}>
       <PaginationButton disabled={firstGroup} onClick={handlePrevGroup}>
         <Arrow.LeftFill className={cn("size-5", !firstGroup && arrowClass)} />
       </PaginationButton>
 
       <SlideFrame direction={direction} uniqueKey={startPage} className="flex items-center">
         <div className="flex gap-[10px]">
-          {visiblePages.map((num) => (
-            <PaginationButton
-              key={num}
-              onClick={() => setPage(num)}
-              aria-current={page === num ? "page" : undefined}
-              className={cn(
-                "transition-colors",
-                page === num && "bg-brand-deep-green-500 text-white",
-              )}
-            >
-              {num}
-            </PaginationButton>
-          ))}
+          {visiblePages.map((num) => {
+            const isNum = page === num;
+
+            return (
+              <PaginationButton
+                key={num}
+                onClick={() => setPage(num)}
+                aria-current={isNum ? "page" : undefined}
+                className={cn("transition-colors", isNum && "bg-brand-deep-green-500 text-white")}
+              >
+                {num}
+              </PaginationButton>
+            );
+          })}
         </div>
       </SlideFrame>
 
