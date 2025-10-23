@@ -1,22 +1,51 @@
 // # 내 체험 관리 (/me/activities)
 "use client";
+import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useMemo, useState, useRef } from "react";
 
 import { Status, Misc } from "@/components/icons";
 import { useAlertToast } from "@/components/ui/toast/useAlertToast";
-import { useMyActivities } from "@/lib/api/my-activities/hooks";
-import type { GetMyActivitiesReq } from "@/lib/api/my-activities/types";
+import { getMyActivities } from "@/lib/api/my-activities/api";
+import { useDeleteMyActivity } from "@/lib/api/my-activities/hooks";
+import type {
+  GetMyActivitiesReq,
+  GetMyActivitiesRes,
+  DeleteActivityReq,
+} from "@/lib/api/my-activities/types";
+import { useInfiniteScrollQuery } from "@/lib/hooks/useInfiniteScroll";
 
-import FormatNumber from "../components/formatNumber";
-import { mockMyExperiences } from "./mock/myExperiences";
 import DropDown from "../../../components/ui/DropDown/Dropdown";
+import FormatNumber from "../components/formatNumber";
 import NotingPage from "../components/NotingPage";
+
+function deriveNextCursor(items: { id?: number; createdAt?: string }[], fallback?: number | null) {
+  if (!items || items.length === 0) return null;
+  const last = items[items.length - 1];
+  if (typeof last.id === "number") return last.id;
+  if (typeof last.createdAt === "string") {
+    const t = Date.parse(last.createdAt);
+    if (!Number.isNaN(t)) return t;
+  }
+  return fallback ?? null;
+}
+
+async function getMyActivitiesSafe(params: GetMyActivitiesReq): Promise<GetMyActivitiesRes> {
+  const res = await getMyActivities(params);
+  const size = params.size ?? 10;
+  const items = res.activities ?? [];
+
+  if (items.length < size) return { ...res, cursorId: null };
+  const next = deriveNextCursor(items, res.cursorId ?? null);
+  return { ...res, cursorId: next };
+}
 
 export default function Activities() {
   const router = useRouter();
+  const queryClient = useQueryClient();
+
   const { openAlertToast } = useAlertToast();
   const [targetId, setTargetId] = useState<number | null>(null);
   const [openId, setOpenId] = useState<number | null>(null);
@@ -28,11 +57,73 @@ export default function Activities() {
     router.push(`/me/activities/${id}/edit`);
   };
 
-  const params: GetMyActivitiesReq = { size: 5 };
-  const { data, isLoading, isError } = useMyActivities(params, false);
+  const PAGE_SIZE = 5 as const;
+  const QUERY_KEY = ["myActivities", "infinite", { size: 5 }] as const;
 
-  const items = data?.activities ?? [];
-  const hasData = items.length > 0;
+  interface MyActivitiesInfiniteData {
+    pages: GetMyActivitiesRes[];
+    pageParams: (number | null)[];
+  }
+
+  const {
+    data: pages,
+    isLoading,
+    isError,
+    hasNextPage,
+    isFetchingNextPage,
+    targetRef,
+  } = useInfiniteScrollQuery<GetMyActivitiesRes, GetMyActivitiesReq>({
+    queryKey: QUERY_KEY,
+    fetchFn: getMyActivitiesSafe,
+    initialParams: {},
+    enabled: true,
+    size: PAGE_SIZE,
+  });
+
+  const items = useMemo(() => {
+    const flat = (pages ?? []).flatMap((p) => p.activities ?? []);
+
+    const seen = new Set<number>();
+    const deduped = flat.filter((a) => {
+      if (typeof a.id !== "number") return true;
+      if (seen.has(a.id)) return false;
+      seen.add(a.id);
+      return true;
+    });
+
+    return deduped.sort((a, b) => {
+      const at = Date.parse(a.createdAt);
+      const bt = Date.parse(b.createdAt);
+      if (!Number.isNaN(bt - at) && bt !== at) return bt - at;
+      return (b.id ?? 0) - (a.id ?? 0);
+    });
+  }, [pages]);
+
+  const isEnd = !hasNextPage;
+
+  console.log({
+    hasNextPage, // react-query가 보는 다음 페이지 유무
+    lastCursor: pages?.at(-1)?.cursorId, // 서버가 내려준 마지막 cursorId
+    lastCount: pages?.at(-1)?.activities?.length,
+  });
+
+  const { mutateAsync: deleteMutate, isPending: isDeleting } = useDeleteMyActivity(false, {
+    onSuccess: (_data: null, variables: DeleteActivityReq) => {
+      queryClient.setQueryData<MyActivitiesInfiniteData>(QUERY_KEY, (prev) => {
+        if (!prev) return prev;
+
+        const nextPages: GetMyActivitiesRes[] = prev.pages.map((pg) => ({
+          ...pg,
+          activities: pg.activities.filter((a) => a.id !== variables.activityId),
+        }));
+
+        return { ...prev, pages: nextPages };
+      });
+
+      // (선택) 서버와 재동기화가 필요하면 invalidate를 추가
+      // queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+    },
+  });
 
   const openDelete = (id: number) => {
     setTargetId(id);
@@ -46,16 +137,8 @@ export default function Activities() {
   };
 
   const handleConfirmDelete = async (id: number) => {
-    try {
-      // TODO: 실제 삭제 API 연동
-      // await deleteMyActivity(id);
-      // TODO: 성공 후 refetch/낙관적 갱신 등
-      // queryClient.invalidateQueries({ queryKey: ["activities"] });
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setTargetId(null);
-    }
+    await deleteMutate({ activityId: id });
+    setTargetId(null);
   };
 
   return (
@@ -71,7 +154,11 @@ export default function Activities() {
           </Link>
         </div>
         <div>
-          {hasData ? (
+          {isLoading && <div>불러오는 중…</div>}
+          {isError && <div>목록을 불러오지 못했습니다.</div>}
+          {!isLoading && !isError && items.length === 0 && <NotingPage />}
+
+          {items.length > 0 && (
             <ul className="flex list-none flex-col gap-6">
               {items.map((item) => (
                 <li key={item.id} className="flex h-[204px] w-[800px] rounded-3xl bg-white">
@@ -115,9 +202,10 @@ export default function Activities() {
                   </div>
                 </li>
               ))}
+              {hasNextPage && <li ref={targetRef} className="h-24 w-full" />}
+              {!isEnd && isFetchingNextPage && <li>더 불러오는 중…</li>}
+              {isEnd && <li className="text-center text-sm text-gray-500">마지막입니다</li>}
             </ul>
-          ) : (
-            <NotingPage />
           )}
         </div>
       </div>

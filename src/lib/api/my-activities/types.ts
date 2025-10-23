@@ -17,7 +17,7 @@ export type GetMyActivitiesReq = z.infer<typeof GetMyActivitiesReqSchema>;
 
 // GET: 내 체험 리스트 조회 응답
 export const GetMyActivitiesResSchema = z.object({
-  cursorId: z.number(),
+  cursorId: z.number().nullable(),
   totalCount: z.number(),
   activities: z.array(ActivitySchema),
 });
