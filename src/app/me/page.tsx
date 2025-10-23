@@ -9,8 +9,6 @@ import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
 import { useEditMe, useGetMe } from "@/lib/api/users/hooks";
 
-import ProfileSidebar from "./components/ProfileSidebar";
-
 interface FormValues {
   nickname: string;
   email: string;
@@ -100,13 +98,6 @@ export default function Mypage() {
 
   return (
     <main className="mx-auto mt-20 mb-[88px] flex w-full max-w-[1200px]">
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-[24rem_1fr]">
-        <ProfileSidebar
-          initialProfileUrl={me?.profileImageUrl ?? null}
-          selectedActivityId={selectedActivityId}
-        />
-      </div>
-
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="w-full max-w-[792px] space-y-8">
         <div className="flex justify-between">
           <h1 className="text-brand-black text-3xl font-bold">내정보</h1>
@@ -147,18 +138,6 @@ export default function Mypage() {
             aria-invalid={!!errors.password}
             {...register("password", {
               required: "비밀번호를 입력해 주세요.",
-              minLength: { value: 8, message: "비밀번호는 8자 이상이어야 합니다." },
-            })}
-          />
-        </Field>
-
-        <Field id="password" label="비밀번호" error={errors.password?.message}>
-          <Input
-            id="password"
-            type="password"
-            placeholder="8자 이상 입력해 주세요."
-            aria-invalid={!!errors.password}
-            {...register("password", {
               minLength: { value: 8, message: "비밀번호는 8자 이상이어야 합니다." },
             })}
           />
