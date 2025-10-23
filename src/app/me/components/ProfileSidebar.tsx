@@ -15,7 +15,7 @@ export default function ProfileSidebar({
   selectedActivityId,
 }: {
   initialProfileUrl?: string | null;
-  selectedActivityId: string;
+  selectedActivityId?: string;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -40,11 +40,16 @@ export default function ProfileSidebar({
       case "experiences":
         return "/me/activities";
       case "calendar":
-        return `/me/activities/${selectedActivityId}/schedule`;
+        return selectedActivityId
+          ? `/me/activities/${selectedActivityId}/schedule`
+          : "/me/activities";
     }
   };
 
-  const go = (k: ItemKey) => router.push(toPath(k));
+  const go = (k: ItemKey) => {
+    if (k === "calendar" && !selectedActivityId) return;
+    router.push(toPath(k));
+  };
 
   const items: { k: ItemKey; label: string; icon: React.ReactNode }[] = [
     { k: "me", label: "내 정보", icon: <UserIcon className="svg-fill h-6 w-6" /> },
@@ -76,7 +81,7 @@ export default function ProfileSidebar({
   };
 
   return (
-    <aside className="rounded-12 border-brand-gray-300 h-fit max-w-96 border bg-white p-6">
+    <aside className="rounded-12 border-brand-gray-300 h-fit w-full max-w-96 border bg-white p-6">
       <div className="flex w-full flex-col items-center gap-6">
         <ProfileImageUploader initialUrl={initialProfileUrl} />
       </div>

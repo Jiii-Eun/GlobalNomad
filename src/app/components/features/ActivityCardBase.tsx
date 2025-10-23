@@ -3,26 +3,22 @@ import React from "react";
 
 import { Status } from "@/components/icons";
 import BackgroundImage from "@/components/ui/BackgroundImage";
+import { Activity } from "@/lib/api/activities/types";
 import { cn } from "@/lib/cn";
 
-interface CardProps {
-  id: number;
-  title: string;
-  price: number;
-  bannerImageUrl: string;
-  rating: number;
-  reviewCount: number;
-
+type CardProps = Pick<
+  Activity,
+  "id" | "title" | "price" | "bannerImageUrl" | "rating" | "reviewCount"
+> & {
   cardClass?: string;
   contentClass?: string;
   imageClass?: string;
   titleClass?: string;
   priceClass?: string;
-
   variant?: "default" | "best";
   backgroundOverlay?: string;
   children?: React.ReactNode;
-}
+};
 
 export default function ActivityCardBase({
   id,

@@ -1,7 +1,13 @@
 "use client";
+import { usePathname } from "next/navigation";
 import Script from "next/script";
 
 export default function KakaoScriptLoader() {
+  const pathname = usePathname();
+  const needKakao = pathname.startsWith("/activities") || pathname.startsWith("/me/activities");
+
+  if (!needKakao) return null;
+
   return (
     <Script
       strategy="beforeInteractive"

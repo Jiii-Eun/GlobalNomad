@@ -21,7 +21,7 @@ export default function DrawerFooter({
   isDisabled,
   frameClass,
   buttonClass,
-  isNext,
+  isNext = false,
 }: footerProps) {
   const { nextStep } = useDrawerContext();
 
@@ -32,9 +32,10 @@ export default function DrawerFooter({
     }
   };
 
-  // next일 때는
+  const Wrapper = isNext ? "div" : Drawer.Close;
+
   return (
-    <Drawer.Close className={cn("flex w-full items-center justify-center", frameClass)}>
+    <Wrapper className={cn("flex w-full items-center justify-center", frameClass)}>
       {children ? (
         children
       ) : (
@@ -43,9 +44,9 @@ export default function DrawerFooter({
           onClick={handleClick}
           isDisabled={isDisabled}
         >
-          {buttonText ? buttonText : "확인"}
+          {buttonText ?? "확인"}
         </Button>
       )}
-    </Drawer.Close>
+    </Wrapper>
   );
 }
