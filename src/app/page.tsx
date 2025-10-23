@@ -1,7 +1,6 @@
 import Features from "@/app/components/features/Features";
 import MainBenner from "@/app/components/hero/MainBenner";
 import Search from "@/app/components/hero/Search";
-import ToastTestPage from "@/components/ui/toast/ToastTestPage";
 
 export default function Home() {
   return (
@@ -11,7 +10,6 @@ export default function Home() {
         <Search />
         <Features />
       </div>
-      <ToastTestPage />
     </div>
   );
 }
