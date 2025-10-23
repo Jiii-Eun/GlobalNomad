@@ -29,6 +29,7 @@ import Instagram from "@/assets/icons/me-sns/sns-instagram.svg";
 import X from "@/assets/icons/me-sns/sns-x.svg";
 import Youtube from "@/assets/icons/me-sns/sns-youtube.svg";
 // Status
+import CheckErrorFill from "@/assets/icons/status/check-error-fill.svg";
 import CheckMarkFill from "@/assets/icons/status/check-mark-fill.svg";
 import CheckMark from "@/assets/icons/status/check-mark.svg";
 import CloseFill from "@/assets/icons/status/close-fill.svg";
@@ -96,6 +97,7 @@ export const Sns = {
 
 // 상태
 export const Status = {
+  CheckErrorFill,
   CheckMarkFill,
   CheckMark,
   CloseFill,

@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -5,10 +6,6 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   // const accessToken = request.cookies.get("accessToken")?.value;
   // const refreshToken = request.cookies.get("refreshToken")?.value;
-
-  if (pathname.startsWith("/undefined")) {
-    return NextResponse.redirect(new URL("/not-found", request.url));
-  }
 
   // if (!accessToken && !refreshToken) {
   //   return NextResponse.redirect(new URL("/login", request.url));

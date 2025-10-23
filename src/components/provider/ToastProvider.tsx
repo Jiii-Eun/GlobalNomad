@@ -93,7 +93,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useToast() {
+export function useToastProvider() {
   const ctx = useContext(ToastContext);
   if (!ctx) throw new Error("ToastProvider와 함께 사용해야합니다.");
   return ctx;

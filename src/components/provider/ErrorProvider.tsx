@@ -3,7 +3,8 @@
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { openToast } from "@/components/provider/ToastProvider";
+import { useToastProvider } from "@/components/provider/ToastProvider";
+import Toast from "@/components/ui/toast";
 
 export interface ApiError extends Error {
   status?: number;
@@ -27,22 +28,24 @@ export const ErrorProvider = ({ children }: { children: React.ReactNode }) => {
     setError(error);
   };
 
+  const { openToast } = useToastProvider();
+
   useEffect(() => {
     if (!error) return;
 
     switch (error.status) {
       case 401:
-        openToast("로그인이 필요합니다.");
+        openToast(<Toast message="로그인이 필요합니다." />);
         router.push("/login");
         break;
       case 404:
         router.push("/not-found");
         break;
       case 500:
-        openToast("서버 오류가 발생했습니다.");
+        openToast(<Toast message="서버 오류가 발생했습니다." icon="error" />);
         break;
       default:
-        openToast(error.message || "요청 중 오류가 발생했습니다.");
+        openToast(<Toast message={error.message || "요청 중 오류가 발생했습니다."} icon="error" />);
     }
 
     setError(null);

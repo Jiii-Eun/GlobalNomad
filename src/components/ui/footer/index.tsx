@@ -13,7 +13,7 @@ export default function Footer() {
   const fontClass = "font-arial text-lg";
 
   return (
-    <div className="bg-brand-nomad-black h-40">
+    <div className="bg-brand-nomad-black h-40 shrink-0">
       <div
         className={cn(
           "tablet:px-10 container-base pt-8 text-[#676767]",
