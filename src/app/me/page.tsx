@@ -1,6 +1,5 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
@@ -18,8 +17,6 @@ interface FormValues {
 
 export default function Mypage() {
   const { data: me, isLoading: isMeLoading, refetch: refetchMe } = useGetMe(false);
-  const pathname = usePathname();
-  const selectedActivityId = pathname.match(/\/me\/activities\/([^/]+)/)?.[1] ?? "mock-activity-id"; // TODO: 실제 값으로 교체
 
   const {
     register,
