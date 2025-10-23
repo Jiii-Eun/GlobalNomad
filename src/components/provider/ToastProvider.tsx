@@ -37,18 +37,19 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
   const openToast = useCallback((content: ReactNode, options?: ToastOptions) => {
     clearTimer();
-    setToast(content);
+    setToast(null);
 
-    const merged = { ...DEFAULT_OPTIONS, ...options };
-    const autoClose = merged.autoClose;
-    const duration = merged.duration;
+    setTimeout(() => {
+      setToast(content);
 
-    if (autoClose) {
-      timerRef.current = setTimeout(() => {
-        setToast(null);
-        timerRef.current = null;
-      }, duration);
-    }
+      const merged = { ...DEFAULT_OPTIONS, ...options };
+      if (merged.autoClose) {
+        timerRef.current = setTimeout(() => {
+          setToast(null);
+          timerRef.current = null;
+        }, merged.duration);
+      }
+    }, 10);
   }, []);
 
   const closeToast = useCallback(() => {

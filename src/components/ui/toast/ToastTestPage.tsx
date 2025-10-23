@@ -9,11 +9,11 @@ export default function ToastTestPage() {
 
   const { showCustomToast } = useTestToast();
 
-  const handleConfirmResult = async (type: "cancel" | "delete") => {
+  const handleConfirmResult = async (type: "Cancel" | "Delete") => {
     const isSuccess = Math.random() > 0.5;
-    const result = isSuccess ? `${type}` : `false${type}`;
+    const result = isSuccess ? `true${type}` : `false${type}`;
     console.log(`${type} 결과: ${result}`);
-    showToast(result as any);
+    // showToast(result as any);
   };
 
   return (
@@ -31,23 +31,23 @@ export default function ToastTestPage() {
       <div className="flex flex-wrap gap-3">
         <Button
           variant="w"
-          onClick={() => showToast("isCancel", () => handleConfirmResult("cancel"))}
+          onClick={() => showToast("isCancel", () => handleConfirmResult("Cancel"))}
         >
           isCancel
         </Button>
         <Button
           variant="w"
-          onClick={() => showToast("isDelete", () => handleConfirmResult("delete"))}
+          onClick={() => showToast("isDelete", () => handleConfirmResult("Delete"))}
         >
           isDelete
         </Button>
       </div>
 
       <div className="flex flex-wrap gap-3">
-        <Button onClick={() => showToast("cancel")}>✅ Cancel</Button>
-        <Button onClick={() => showToast("falsecancel")}>❌ FalseCancel</Button>
-        <Button onClick={() => showToast("delete")}>✅ Delete</Button>
-        <Button onClick={() => showToast("falsedelete")}>❌ FalseDelete</Button>
+        <Button onClick={() => showToast("trueCancel")}>✅ Cancel</Button>
+        <Button onClick={() => showToast("falseCancel")}>❌ FalseCancel</Button>
+        <Button onClick={() => showToast("trueDelete")}>✅ Delete</Button>
+        <Button onClick={() => showToast("falseDelete")}>❌ FalseDelete</Button>
       </div>
 
       <div className="flex flex-col gap-5 p-10">
