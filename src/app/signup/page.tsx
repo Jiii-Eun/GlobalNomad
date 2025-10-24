@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -182,6 +183,16 @@ export default function Signup() {
         >
           {isPending ? "가입 중..." : "회원가입"}
         </Button>
+
+        <div className="mx-auto mt-8 flex w-fit gap-3">
+          <span className="text-brand-gray-900 text-lg whitespace-nowrap">회원이신가요?</span>
+          <Link
+            href="/login"
+            className="text-brand-deep-green-500 text-lg underline decoration-solid"
+          >
+            로그인하기
+          </Link>
+        </div>
 
         <div className="mt-12 flex items-center gap-4 text-gray-500">
           <span className="h-px flex-1 bg-gray-200" />

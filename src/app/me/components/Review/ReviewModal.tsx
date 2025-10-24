@@ -73,7 +73,7 @@ export default function ReviewModal({
             maxLength={1000}
           />
           {!content.trim() && (
-            <p className="text-brand-red-500 mt-2 text-sm">후기를 작성해 주세요</p>
+            <p className="text-brand-red-500 mt-2 text-sm">1자 이상 입력해 주세요</p>
           )}
         </div>
       </DrawerBody>
