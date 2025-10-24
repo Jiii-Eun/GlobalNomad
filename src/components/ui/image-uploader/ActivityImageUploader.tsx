@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 import { Btn } from "@/components/icons";
 import Button from "@/components/ui/button/Button";
 import { useImageUploader } from "@/components/ui/image-uploader/hooks/useImageUploader";
@@ -25,7 +27,11 @@ export default function ActivityImageUploader({
   const limit = customLimit ?? defaultLimit;
 
   const { images, inputRef, canAddMore, openFileDialog, handleFileChange, handleDelete } =
-    useImageUploader({ limit, initialImages, onChange });
+    useImageUploader({ limit, initialImages });
+
+  useEffect(() => {
+    if (onChange) onChange(images);
+  }, [images, onChange]);
 
   const listClass =
     "aspect-square flex-[1_0_180px] max-w-[180px] h-full w-full hover:scale-98 transition-all duration-150";
@@ -41,13 +47,14 @@ export default function ActivityImageUploader({
     >
       {canAddMore && (
         <Button
+          type="button"
           onClick={() => openFileDialog()}
           className={cn(
             listClass,
             "rounded-12 flex flex-col items-center justify-center gap-7 border-dashed bg-transparent hover:bg-transparent",
           )}
         >
-          <Btn.AddImage className="h-45 w-45" />
+          <Btn.AddImage className="size-45" />
         </Button>
       )}
 
