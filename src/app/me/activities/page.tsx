@@ -102,8 +102,8 @@ export default function Activities() {
   const isEnd = !hasNextPage;
 
   console.log({
-    hasNextPage, // react-query가 보는 다음 페이지 유무
-    lastCursor: pages?.at(-1)?.cursorId, // 서버가 내려준 마지막 cursorId
+    hasNextPage,
+    lastCursor: pages?.at(-1)?.cursorId,
     lastCount: pages?.at(-1)?.activities?.length,
   });
 
