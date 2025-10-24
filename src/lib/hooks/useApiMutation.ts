@@ -1,5 +1,7 @@
 import { useMutation, UseMutationOptions, useQueryClient, QueryKey } from "@tanstack/react-query";
 
+import { useErrorHandler } from "@/components/provider/ErrorProvider";
+
 export interface ApiMutationOptions<TResponse, TVariables>
   extends Omit<UseMutationOptions<TResponse, Error, TVariables>, "mutationFn"> {
   mockResponse?: TResponse;
@@ -11,6 +13,7 @@ export function useApiMutation<TResponse, TVariables = void>(
   options?: ApiMutationOptions<TResponse, TVariables>,
 ) {
   const queryClient = useQueryClient();
+  const { handleError } = useErrorHandler();
 
   return useMutation<TResponse, Error, TVariables>({
     mutationFn: async (data: TVariables) => {
@@ -39,6 +42,10 @@ export function useApiMutation<TResponse, TVariables = void>(
           ),
         );
       }
+    },
+    onError: (error, variables, context, mutation) => {
+      handleError(error);
+      options?.onError?.(error, variables, context, mutation);
     },
 
     ...options,

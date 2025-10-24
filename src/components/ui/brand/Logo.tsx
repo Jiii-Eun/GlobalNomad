@@ -9,7 +9,6 @@ interface LogoProps {
   width?: number;
   height?: number;
   ariaLabel?: string;
-  className?: string;
 }
 
 export default function Logo({
@@ -19,9 +18,9 @@ export default function Logo({
   ariaLabel = "GlobalNomad",
 }: LogoProps) {
   return (
-    <Link href={href} aria-label="홈으로 이동" className="block w-fit">
+    <Link href={href} aria-label="홈으로 이동" className="mx-auto block w-fit">
       <MainLogo
-        className="mx-auto mb-14 block"
+        className="mb-14 block"
         role="img"
         aria-label={ariaLabel}
         width={width}
