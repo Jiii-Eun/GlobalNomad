@@ -1,4 +1,5 @@
 "use client";
+import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -75,8 +76,50 @@ async function diffSubImages(
   };
 }
 
+async function buildPatchPayload(
+  original: ActivityDetail,
+  data: FormValues,
+  bannerImages: (File | string)[],
+  introImages: (File | string)[],
+  activityId: number,
+): Promise<UpdateActivityReq> {
+  const origCat = isActivityCategory(original.category) ? original.category : undefined;
+  const curCat = isActivityCategory(data.category) ? data.category : undefined;
+
+  const title = diffField(original.title, data.title);
+  const description = diffField(original.description, data.description);
+  const price = diffField(original.price, data.price);
+  const address = diffField(original.address, data.address);
+  const category = diffField<ActivityCategory | undefined>(origCat, curCat);
+
+  const bannerImageUrl = await diffBanner(original.bannerImageUrl, bannerImages);
+
+  const { subImageIdsToRemove, subImageUrlsToAdd } = await diffSubImages(
+    original.subImages ?? [],
+    introImages,
+  );
+
+  const payload: UpdateActivityReq = {
+    activityId,
+    ...(title !== undefined && { title }),
+    ...(description !== undefined && { description }),
+    ...(price !== undefined && { price }),
+    ...(address !== undefined && { address }),
+    ...(category !== undefined && { category }),
+    ...(bannerImageUrl !== undefined && { bannerImageUrl }),
+    ...(subImageIdsToRemove && { subImageIdsToRemove }),
+    ...(subImageUrlsToAdd && { subImageUrlsToAdd }),
+    // ...(scheduleIdsToRemove && { scheduleIdsToRemove }),
+    // ...(schedulesToAdd && { schedulesToAdd }),
+  };
+
+  return payload;
+}
+
 export default function Edit() {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const { mutateAsync: updateActivity, isPending: isUpdating } = useUpdateMyActivity();
   const params = useParams<{ id: string }>();
   const activityId = Number(params?.id);
   const [parentSelectedDate, setParentSelectedDate] = useState<Date | null>(null);
@@ -141,79 +184,28 @@ export default function Edit() {
     };
   }, [activityId, reset]);
 
-  const original = useMemo(() => {
-    if (!detail) return null;
-    return {
-      title: detail.title,
-      description: detail.description,
-      price: detail.price,
-      address: detail.address,
-      category: detail.category,
-      bannerImageUrl: detail.bannerImageUrl,
-      subImages: detail.subImages ?? [],
-      schedules: detail.schedules ?? [],
-    };
-  }, [detail]);
-
-  const { mutateAsync: updateMutate } = useUpdateMyActivity(false);
-
   const onSubmit = async (data: FormValues) => {
-    if (!original) {
+    if (!detail) {
       alert("원본 데이터를 불러오지 못했습니다.");
       return;
     }
 
     try {
-      const origCat = isActivityCategory(original.category) ? original.category : undefined;
-      const curCat = isActivityCategory(data.category) ? data.category : undefined;
+      const payload = await buildPatchPayload(detail, data, bannerImages, introImages, activityId);
 
-      const title = diffField(original.title, data.title);
-      const description = diffField(original.description, data.description);
-      const price = diffField(original.price, data.price);
-      const address = diffField(original.address, data.address);
-      const category = diffField<ActivityCategory | undefined>(origCat, curCat);
+      await updateActivity(payload);
 
-      const bannerImageUrl = await diffBanner(original.bannerImageUrl, bannerImages);
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["my-activities"] }),
+        queryClient.invalidateQueries({ queryKey: ["activity-detail", payload.activityId] }),
+      ]);
 
-      const { subImageIdsToRemove, subImageUrlsToAdd } = await diffSubImages(
-        original.subImages,
-        introImages,
-      );
-
-      // const pickerSlots: { id?: number; date: string; startTime: string; endTime: string }[] = …
-      // const { scheduleIdsToRemove, schedulesToAdd } = diffSchedules(original.schedules, pickerSlots);
-
-      const payload: UpdateActivityReq = {
-        activityId,
-        ...(title !== undefined && { title }),
-        ...(description !== undefined && { description }),
-        ...(price !== undefined && { price }),
-        ...(address !== undefined && { address }),
-        ...(category !== undefined && { category }),
-        ...(bannerImageUrl !== undefined && { bannerImageUrl }),
-        ...(subImageIdsToRemove && { subImageIdsToRemove }),
-        ...(subImageUrlsToAdd && { subImageUrlsToAdd }),
-        // ...(scheduleIdsToRemove && { scheduleIdsToRemove }),
-        // ...(schedulesToAdd && { schedulesToAdd }),
-      };
-
-      // 변경 없음 방지(선택)
-      const changedKeys = Object.keys(payload).filter((k) => k !== "activityId");
-      if (changedKeys.length === 0) {
-        alert("변경된 내용이 없습니다.");
-        return;
-      }
-
-      await updateMutate(payload);
-
-      alert("수정이 완료되었습니다.");
-      router.back();
+      router.replace("/me/activities");
     } catch (err) {
       console.error(err);
-      alert(err instanceof Error ? err.message : "수정 중 오류가 발생했습니다.");
+      alert(err instanceof Error ? err.message : "수정에 실패했습니다. 다시 시도해주세요.");
     }
   };
-
   return (
     <>
       <form
@@ -224,7 +216,11 @@ export default function Edit() {
       >
         <div className="flex w-[800px] justify-between text-3xl font-bold">
           내 체험 수정
-          <button className="rounded-4 bg-brand-nomad-black text-brand-gray-100 h-12 w-30 px-4 py-2 text-lg">
+          <button
+            type="submit"
+            form="edit-form"
+            className="rounded-4 bg-brand-nomad-black text-brand-gray-100 h-12 w-30 px-4 py-2 text-lg"
+          >
             수정하기
           </button>
         </div>
@@ -307,7 +303,7 @@ export default function Edit() {
                       type="text"
                       inputMode="numeric"
                       placeholder="가격"
-                      className="rounded-4 border border-gray-400 bg-white px-4 py-2"
+                      className="rounded-4 border border-gray-400 bg-white px-4 py-2 font-normal"
                       aria-invalid={!!fieldState.error}
                       value={displayValue}
                       onChange={(e) => {
@@ -336,7 +332,7 @@ export default function Edit() {
               id="address"
               type="text"
               placeholder="주소를 입력해주세요"
-              className="rounded-4 border border-gray-400 bg-white px-4 py-2"
+              className="rounded-4 border border-gray-400 bg-white px-4 py-2 font-normal"
               aria-invalid={!!errors.address}
               {...register("address", {
                 setValueAs: (v) => (typeof v === "string" ? v.trim() : v),
@@ -353,13 +349,25 @@ export default function Edit() {
         <div className="flex flex-col gap-6">
           <h2 className="text-2xl font-bold">배너 이미지</h2>
           <div className="flex">
-            <ActivityImageUploader type="banner" onChange={setBannerImages} />
+            {!loadingDetail && (
+              <ActivityImageUploader
+                type="banner"
+                initialImages={bannerImages.filter((v): v is string => typeof v === "string")}
+                onChange={setBannerImages}
+              />
+            )}
           </div>
         </div>
         <div className="flex flex-col gap-6">
           <h2 className="text-2xl font-bold">소개 이미지</h2>
           <div className="flex gap-6">
-            <ActivityImageUploader type="sub" onChange={setIntroImages} />
+            {!loadingDetail && (
+              <ActivityImageUploader
+                type="sub"
+                initialImages={introImages.filter((v): v is string => typeof v === "string")}
+                onChange={setIntroImages}
+              />
+            )}
           </div>
           <span className="text-2lg text-brand-gray-800 pl-2">
             *이미지는 최대 4개까지 등록 가능합니다.
