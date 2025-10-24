@@ -1,0 +1,113 @@
+"use client";
+
+import { FieldError, FieldValues, Path, useFormContext } from "react-hook-form";
+
+import PriceField from "@/app/me/activities/register/components/PriceField";
+import FormField from "@/components/ui/input/FormField";
+import { ActivityCategorySchema } from "@/lib/api/activities/types";
+
+interface SelectOption {
+  value: string | number;
+  label: string;
+}
+
+interface FormConfig<TReq extends FieldValues> {
+  id: Path<TReq>;
+  label?: string;
+  as?: "input" | "select" | "textarea";
+  placeholder?: string;
+  placeholderOption?: string;
+  options?: SelectOption[];
+  required: string;
+}
+
+type FieldItem<TReq extends FieldValues> =
+  | { type: "form"; config: FormConfig<TReq> }
+  | { type: "custom"; element: React.ReactElement };
+
+const CATEGORY_OPTIONS: SelectOption[] = ActivityCategorySchema.options.map(
+  (category: (typeof ActivityCategorySchema)["options"][number]) => ({
+    value: category,
+    label: category,
+  }),
+);
+
+export default function RegisterField<TReq extends FieldValues>() {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext<TReq>();
+
+  const FIELD_STRUCTURE: readonly FieldItem<TReq>[] = [
+    {
+      type: "form",
+      config: {
+        id: "title" as Path<TReq>,
+        as: "input",
+        placeholder: "제목",
+        required: "제목을 입력해주세요.",
+      },
+    },
+    {
+      type: "form",
+      config: {
+        id: "category" as Path<TReq>,
+        as: "select",
+        placeholderOption: "카테고리를 선택해주세요",
+        options: CATEGORY_OPTIONS,
+        required: "카테고리를 선택해주세요.",
+      },
+    },
+    {
+      type: "form",
+      config: {
+        id: "description" as Path<TReq>,
+        as: "textarea",
+        placeholder: "설명",
+        required: "설명을 입력해주세요.",
+      },
+    },
+    { type: "custom", element: <PriceField key="price" /> },
+    {
+      type: "form",
+      config: {
+        id: "address" as Path<TReq>,
+        as: "input",
+        label: "주소",
+        placeholder: "주소를 입력해주세요",
+        required: "주소를 입력해주세요.",
+      },
+    },
+  ] as const;
+
+  return (
+    <div className="flex flex-col gap-6">
+      {FIELD_STRUCTURE.map((item) => {
+        if (item.type === "custom") return item.element;
+
+        const { id, label, as, placeholder, placeholderOption, options, required } = item.config;
+        const fieldError: FieldError | undefined = errors[id]?.message
+          ? (errors[id] as FieldError)
+          : undefined;
+
+        return (
+          <FormField
+            key={id}
+            id={id}
+            label={label}
+            as={as ?? "input"}
+            placeholder={placeholder}
+            placeholderOption={placeholderOption}
+            options={as === "select" ? (options ?? []) : []}
+            error={fieldError}
+            register={register(id, {
+              setValueAs: (v: string) => v.trim(),
+              required,
+              validate: (v: string) => v.trim().length > 0 || required,
+            })}
+          />
+        );
+      })}
+    </div>
+  );
+}

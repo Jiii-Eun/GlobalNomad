@@ -10,7 +10,7 @@ const INPUT_BASE =
   "text-lg placeholder:text-brand-gray-500/60";
 
 const INPUT_HEIGHT = "h-[58px]"; // input 전용 높이
-const TEXTAREA_BASE = "min-h-[346px] py-3 resize-y"; // textarea 전용
+const TEXTAREA_BASE = "min-h-[346px] py-3 resize-none"; // textarea 전용
 
 const padIfRightIcon = (has: boolean) => (has ? "pr-12" : "pr-5 ");
 const padIfLeftIcon = (has: boolean) => (has ? "pl-10" : "pl-5 ");

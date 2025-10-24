@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 import { Status, Misc } from "@/components/icons";
-import { useAlertToast } from "@/components/ui/toast/useToast";
+// import { useAlertToast } from "@/components/ui/toast/useToast";
 import { useMyActivities } from "@/lib/api/my-activities/hooks";
 import type { GetMyActivitiesReq } from "@/lib/api/my-activities/types";
 
@@ -17,7 +17,7 @@ import NotingPage from "../components/NotingPage";
 
 export default function Activities() {
   const router = useRouter();
-  const { openAlertToast } = useAlertToast();
+  // const { openAlertToast } = useAlertToast();
   const [targetId, setTargetId] = useState<number | null>(null);
   const [openId, setOpenId] = useState<number | null>(null);
   const toggleMenu = (id: number) => setOpenId((prev) => (prev === id ? null : id));
@@ -42,7 +42,7 @@ export default function Activities() {
     url.searchParams.set("confirmDelete", String(id));
     router.replace(`${url.pathname}?${url.searchParams.toString()}`);
 
-    openAlertToast("isDelete");
+    // openAlertToast("isDelete");
   };
 
   const handleConfirmDelete = async (id: number) => {
