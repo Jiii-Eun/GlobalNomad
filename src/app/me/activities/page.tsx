@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState, useRef } from "react";
 
 import { Status, Misc } from "@/components/icons";
-import { useAlertToast } from "@/components/ui/toast/useAlertToast";
+import { useToast } from "@/components/ui/toast/useToast";
 import { getMyActivities } from "@/lib/api/my-activities/api";
 import { useDeleteMyActivity } from "@/lib/api/my-activities/hooks";
 import type {
@@ -45,8 +45,7 @@ async function getMyActivitiesSafe(params: GetMyActivitiesReq): Promise<GetMyAct
 export default function Activities() {
   const router = useRouter();
   const queryClient = useQueryClient();
-
-  const { openAlertToast } = useAlertToast();
+  const { showToast } = useToast();
   const [targetId, setTargetId] = useState<number | null>(null);
   const [openId, setOpenId] = useState<number | null>(null);
   const toggleMenu = (id: number) => setOpenId((prev) => (prev === id ? null : id));
@@ -126,19 +125,15 @@ export default function Activities() {
   });
 
   const openDelete = (id: number) => {
-    setTargetId(id);
     closeMenu();
-
-    const url = new URL(window.location.href);
-    url.searchParams.set("confirmDelete", String(id));
-    router.replace(`${url.pathname}?${url.searchParams.toString()}`);
-
-    openAlertToast("isDelete");
-  };
-
-  const handleConfirmDelete = async (id: number) => {
-    await deleteMutate({ activityId: id });
-    setTargetId(null);
+    showToast("isDelete", async () => {
+      try {
+        await deleteMutate({ activityId: id });
+        showToast("trueDelete");
+      } catch (err) {
+        showToast("falseDelete");
+      }
+    });
   };
 
   return (
