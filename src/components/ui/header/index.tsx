@@ -11,7 +11,7 @@ export default function Header() {
   const hasLogin = !!user;
 
   return (
-    <div className="border-b-brand-gray-300 border-b">
+    <div className="border-b-brand-gray-300 bg-brand-gray-100 sticky top-0 z-600 border-b">
       <div className="container-base mobile:px-5 tablet:px-6 flex h-[70px] items-center justify-between">
         <HeaderLogo />
         <div className="flex-center">

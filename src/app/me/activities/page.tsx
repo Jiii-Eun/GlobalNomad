@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 import { Status, Misc } from "@/components/icons";
-import { useAlertToast } from "@/components/ui/toast/useAlertToast";
+import { useAlertToast } from "@/components/ui/toast/useToast";
 import { useMyActivities } from "@/lib/api/my-activities/hooks";
 import type { GetMyActivitiesReq } from "@/lib/api/my-activities/types";
 
