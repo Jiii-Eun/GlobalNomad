@@ -97,7 +97,7 @@ export default function ReviewModal({
           type="button"
           className="h-14 w-full text-lg"
           variant="b"
-          isDisabled={!canSubmit}
+          isDisabled={!canSubmit || isPending}
           onClick={handleSubmit}
         >
           {isPending ? "작성 중..." : "작성하기"}
