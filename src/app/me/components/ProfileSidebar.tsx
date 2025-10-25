@@ -40,14 +40,11 @@ export default function ProfileSidebar({
       case "experiences":
         return "/me/activities";
       case "calendar":
-        return selectedActivityId
-          ? `/me/activities/${selectedActivityId}/schedule`
-          : "/me/activities";
+        return `/me/activities/schedule`;
     }
   };
 
   const go = (k: ItemKey) => {
-    if (k === "calendar" && !selectedActivityId) return;
     router.push(toPath(k));
   };
 

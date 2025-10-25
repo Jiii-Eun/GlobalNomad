@@ -32,8 +32,6 @@ export function useImageUploader({
         } else {
           next = [...prev, file].slice(0, limit);
         }
-
-        onChange?.(next);
         return next;
       });
 
@@ -55,10 +53,13 @@ export function useImageUploader({
   const handleDelete = (index: number) => {
     setImages((prev) => {
       const next = prev.filter((_, i) => i !== index);
-      onChange?.(next);
       return next;
     });
   };
+
+  useEffect(() => {
+    if (onChange) onChange(images);
+  }, [images, onChange]);
 
   const canAddMore = images.length < limit;
 

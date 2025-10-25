@@ -4,6 +4,7 @@ import ProfileSidebar from "./components/ProfileSidebar";
 
 export default function MyLayout({ children }: { children: ReactNode }) {
   const initialProfileUrl: string | null = null;
+  const selectedActivityId = null;
   return (
     <div>
       <main className="bg-brand-gray-100 py-18">
