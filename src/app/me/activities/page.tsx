@@ -46,7 +46,6 @@ export default function Activities() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { showToast } = useToast();
-  const [targetId, setTargetId] = useState<number | null>(null);
   const [openId, setOpenId] = useState<number | null>(null);
   const toggleMenu = (id: number) => setOpenId((prev) => (prev === id ? null : id));
   const closeMenu = () => setOpenId(null);
@@ -99,12 +98,6 @@ export default function Activities() {
   }, [pages]);
 
   const isEnd = !hasNextPage;
-
-  console.log({
-    hasNextPage,
-    lastCursor: pages?.at(-1)?.cursorId,
-    lastCount: pages?.at(-1)?.activities?.length,
-  });
 
   const { mutateAsync: deleteMutate, isPending: isDeleting } = useDeleteMyActivity(false, {
     onSuccess: (_data: null, variables: DeleteActivityReq) => {

@@ -1,7 +1,7 @@
 "use client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { Arrow } from "@/components/icons";
@@ -9,6 +9,7 @@ import { ActivityImageUploader } from "@/components/ui/image-uploader";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
 import TimeSlotPicker from "@/components/ui/timeSlot/TimeSlotPicker";
+import { useToast } from "@/components/ui/toast/useToast";
 import { getActivityDetail, uploadActivityImage } from "@/lib/api/activities/api";
 import type { ActivityDetail, UploadImageRes } from "@/lib/api/activities/types";
 import { ActivityCategory, ActivityCategorySchema } from "@/lib/api/activities/types";
@@ -75,6 +76,30 @@ async function diffSubImages(
     subImageUrlsToAdd: subImageUrlsToAdd.length ? subImageUrlsToAdd : undefined,
   };
 }
+function diffSchedules(
+  original: { id: number; date: string; startTime: string; endTime: string }[],
+  current: { id?: number; start: Date; end: Date }[],
+) {
+  const currentIds = new Set(current.filter((s) => s.id != null).map((s) => s.id as number));
+  const scheduleIdsToRemove = original.filter((o) => !currentIds.has(o.id)).map((o) => o.id);
+
+  const schedulesToAdd = current
+    .filter((s) => s.id == null)
+    .map((s) => ({
+      date: toDateStr(s.start),
+      startTime: toTimeStr(s.start),
+      endTime: toTimeStr(s.end),
+    }));
+
+  return {
+    scheduleIdsToRemove: scheduleIdsToRemove.length ? scheduleIdsToRemove : undefined,
+    schedulesToAdd: schedulesToAdd.length ? schedulesToAdd : undefined,
+  };
+}
+
+const pad = (n: number) => String(n).padStart(2, "0");
+const toDateStr = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const toTimeStr = (d: Date) => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 
 async function buildPatchPayload(
   original: ActivityDetail,
@@ -82,6 +107,7 @@ async function buildPatchPayload(
   bannerImages: (File | string)[],
   introImages: (File | string)[],
   activityId: number,
+  slots: { id?: number; start: Date; end: Date }[],
 ): Promise<UpdateActivityReq> {
   const origCat = isActivityCategory(original.category) ? original.category : undefined;
   const curCat = isActivityCategory(data.category) ? data.category : undefined;
@@ -93,6 +119,7 @@ async function buildPatchPayload(
   const category = diffField<ActivityCategory | undefined>(origCat, curCat);
 
   const bannerImageUrl = await diffBanner(original.bannerImageUrl, bannerImages);
+  const { scheduleIdsToRemove, schedulesToAdd } = diffSchedules(original.schedules ?? [], slots);
 
   const { subImageIdsToRemove, subImageUrlsToAdd } = await diffSubImages(
     original.subImages ?? [],
@@ -109,8 +136,8 @@ async function buildPatchPayload(
     ...(bannerImageUrl !== undefined && { bannerImageUrl }),
     ...(subImageIdsToRemove && { subImageIdsToRemove }),
     ...(subImageUrlsToAdd && { subImageUrlsToAdd }),
-    // ...(scheduleIdsToRemove && { scheduleIdsToRemove }),
-    // ...(schedulesToAdd && { schedulesToAdd }),
+    ...(scheduleIdsToRemove && { scheduleIdsToRemove }),
+    ...(schedulesToAdd && { schedulesToAdd }),
   };
 
   return payload;
@@ -119,6 +146,7 @@ async function buildPatchPayload(
 export default function Edit() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
   const { mutateAsync: updateActivity, isPending: isUpdating } = useUpdateMyActivity();
   const params = useParams<{ id: string }>();
   const activityId = Number(params?.id);
@@ -149,6 +177,8 @@ export default function Edit() {
   const [detail, setDetail] = useState<ActivityDetail | null>(null);
   const [loadingDetail, setLoadingDetail] = useState(true);
   const [detailError, setDetailError] = useState<string | null>(null);
+  const [slots, setSlots] = useState<{ id?: number; start: Date; end: Date }[]>([]);
+  const toDateTime = (date: string, time: string) => new Date(`${date}T${time}:00`);
 
   useEffect(() => {
     let mounted = true;
@@ -172,6 +202,12 @@ export default function Edit() {
 
         setBannerImages(res.bannerImageUrl ? [res.bannerImageUrl] : []);
         setIntroImages(Array.isArray(res.subImages) ? res.subImages.map((s) => s.imageUrl) : []);
+        const mapped = (res.schedules ?? []).map((s) => ({
+          id: s.id,
+          start: toDateTime(s.date, s.startTime),
+          end: toDateTime(s.date, s.endTime),
+        }));
+        setSlots(mapped);
       } catch (e) {
         console.error(e);
         setDetailError("체험 정보를 불러오지 못했습니다.");
@@ -191,7 +227,14 @@ export default function Edit() {
     }
 
     try {
-      const payload = await buildPatchPayload(detail, data, bannerImages, introImages, activityId);
+      const payload = await buildPatchPayload(
+        detail,
+        data,
+        bannerImages,
+        introImages,
+        activityId,
+        slots,
+      );
 
       await updateActivity(payload);
 
@@ -200,7 +243,7 @@ export default function Edit() {
         queryClient.invalidateQueries({ queryKey: ["activity-detail", payload.activityId] }),
       ]);
 
-      router.replace("/me/activities");
+      showToast("update");
     } catch (err) {
       console.error(err);
       alert(err instanceof Error ? err.message : "수정에 실패했습니다. 다시 시도해주세요.");
@@ -345,6 +388,8 @@ export default function Edit() {
         <TimeSlotPicker
           selectDate={parentSelectedDate}
           onSelectedDateChange={handleSelectedDateChange}
+          slots={slots}
+          onSlotsChange={setSlots}
         />
         <div className="flex flex-col gap-6">
           <h2 className="text-2xl font-bold">배너 이미지</h2>
