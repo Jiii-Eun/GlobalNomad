@@ -16,9 +16,9 @@ interface FormConfig<TReq extends FieldValues> {
   label?: string;
   as?: "input" | "select" | "textarea";
   placeholder?: string;
-  placeholderOption?: string;
   options?: SelectOption[];
   required: string;
+  maxLength?: number;
 }
 
 type FieldItem<TReq extends FieldValues> =
@@ -46,6 +46,7 @@ export default function RegisterField<TReq extends FieldValues>() {
         as: "input",
         placeholder: "제목",
         required: "제목을 입력해주세요.",
+        maxLength: 20,
       },
     },
     {
@@ -53,7 +54,7 @@ export default function RegisterField<TReq extends FieldValues>() {
       config: {
         id: "category" as Path<TReq>,
         as: "select",
-        placeholderOption: "카테고리를 선택해주세요",
+        placeholder: "카테고리를 선택해주세요",
         options: CATEGORY_OPTIONS,
         required: "카테고리를 선택해주세요.",
       },
@@ -65,6 +66,7 @@ export default function RegisterField<TReq extends FieldValues>() {
         as: "textarea",
         placeholder: "설명",
         required: "설명을 입력해주세요.",
+        maxLength: 1800,
       },
     },
     { type: "custom", element: <PriceField key="price" /> },
@@ -85,7 +87,7 @@ export default function RegisterField<TReq extends FieldValues>() {
       {FIELD_STRUCTURE.map((item) => {
         if (item.type === "custom") return item.element;
 
-        const { id, label, as, placeholder, placeholderOption, options, required } = item.config;
+        const { id, label, as, placeholder, options, required, maxLength } = item.config;
         const fieldError: FieldError | undefined = errors[id]?.message
           ? (errors[id] as FieldError)
           : undefined;
@@ -97,13 +99,19 @@ export default function RegisterField<TReq extends FieldValues>() {
             label={label}
             as={as ?? "input"}
             placeholder={placeholder}
-            placeholderOption={placeholderOption}
             options={as === "select" ? (options ?? []) : []}
             error={fieldError}
+            maxLength={maxLength}
             register={register(id, {
               setValueAs: (v: string) => v.trim(),
               required,
               validate: (v: string) => v.trim().length > 0 || required,
+              ...(maxLength && {
+                maxLength: {
+                  value: maxLength,
+                  message: `최대 ${maxLength}자까지 입력 가능합니다.`,
+                },
+              }),
             })}
           />
         );

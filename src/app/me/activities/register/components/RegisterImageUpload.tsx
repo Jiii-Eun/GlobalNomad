@@ -1,8 +1,11 @@
+import { Controller, FieldError, useFormContext } from "react-hook-form";
+
 import { ActivityImageUploader } from "@/components/ui/image-uploader";
+import Field from "@/components/ui/input/Field";
 
 interface RegisterImageUploadProps {
-  onMainChange: (files: File[]) => void;
-  onSubChange: (files: File[]) => void;
+  onMainChange: (files: (File | string)[]) => void;
+  onSubChange: (files: (File | string)[]) => void;
 }
 
 export default function RegisterImageUpload({
@@ -10,20 +13,38 @@ export default function RegisterImageUpload({
   onSubChange,
 }: RegisterImageUploadProps) {
   const handleMainChange = (images: (File | string)[]) => {
-    const onlyFiles = images.filter((img): img is File => img instanceof File);
-    onMainChange(onlyFiles);
+    onMainChange(images);
   };
 
   const handleSubChange = (images: (File | string)[]) => {
-    const onlyFiles = images.filter((img): img is File => img instanceof File);
-    onSubChange(onlyFiles);
+    onSubChange(images);
   };
+  const {
+    formState: { errors },
+  } = useFormContext();
 
   return (
     <>
       <div className="flex flex-col gap-6">
         <span className="text-2xl font-bold">배너 이미지</span>
-        <ActivityImageUploader type="banner" onChange={handleMainChange} />
+        <Controller
+          name="bannerImageUrl"
+          rules={{ required: "배너 이미지를 등록해주세요." }}
+          render={({ field }) => (
+            <Field
+              id="bannerImageUrl"
+              error={(errors.bannerImageUrl as FieldError | undefined)?.message}
+            >
+              <ActivityImageUploader
+                type="banner"
+                onChange={(images) => {
+                  handleMainChange(images);
+                  field.onChange(images);
+                }}
+              />
+            </Field>
+          )}
+        />
       </div>
       <div className="flex flex-col gap-6">
         <span className="text-2xl font-bold">소개 이미지</span>

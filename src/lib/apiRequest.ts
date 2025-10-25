@@ -37,6 +37,8 @@ export async function apiRequest<Response>(
 
   const response = await fetch(`${BASE_URL}${endpoint}`, fetchOptions);
 
+  console.log("body", response);
+
   // 인증 오류 처리
   if (response.status === 401) {
     const error = new Error("인증 실패: 다시 로그인하세요");

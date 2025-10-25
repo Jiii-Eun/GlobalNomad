@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import { Btn } from "@/components/icons";
 import Button from "@/components/ui/button/Button";
@@ -30,8 +30,14 @@ export default function ActivityImageUploader({
     useImageUploader({ limit, initialImages });
 
   useEffect(() => {
-    if (onChange) onChange(images);
-  }, [images, onChange]);
+    if (mountedRef.current) {
+      if (onChange) onChange(images);
+    } else {
+      mountedRef.current = true;
+    }
+  }, [images]);
+
+  const mountedRef = useRef(false);
 
   const listClass =
     "aspect-square flex-[1_0_180px] max-w-[180px] h-full w-full hover:scale-98 transition-all duration-150";

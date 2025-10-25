@@ -172,13 +172,13 @@ export const CreateReservationResSchema = z.object({
 });
 export type CreateReservationRes = z.infer<typeof CreateReservationResSchema>;
 
-// POST: 체험 이미지 업로드 요청
+// POST: 체험 이미지 URL 생성
 export const UploadImageReqSchema = z.object({
   image: z.instanceof(File),
 });
 export type UploadImageReq = z.infer<typeof UploadImageReqSchema>;
 
-// POST: 체험 이미지 업로드 응답
+// POST: 체험 이미지 URL 생성
 export const UploadImageResSchema = z.object({
   activityImageUrl: z.string(),
 });

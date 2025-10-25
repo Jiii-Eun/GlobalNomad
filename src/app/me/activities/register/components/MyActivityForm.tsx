@@ -1,15 +1,25 @@
 "use client";
+
 import { MutateOptions, UseMutateFunction } from "@tanstack/react-query";
 import { useState } from "react";
-import { DefaultValues, FormProvider, useForm } from "react-hook-form";
+import {
+  Controller,
+  DefaultValues,
+  FieldError,
+  FieldValues,
+  FormProvider,
+  Path,
+  useForm,
+} from "react-hook-form";
 
 import RegisterImageUpload from "@/app/me/activities/register/components/RegisterImageUpload";
 import RegisterInput from "@/app/me/activities/register/components/RegisterInput";
-import toFormData from "@/app/me/activities/register/components/toFormData";
+import { uploadFiles } from "@/app/me/activities/register/components/uploadFiles";
 import Button from "@/components/ui/button/Button";
+import Field from "@/components/ui/input/Field";
 import TimeSlotPicker from "@/components/ui/timeSlot/TimeSlotPicker";
 import { useUploadActivityImage } from "@/lib/api/activities/hooks";
-import type { CreateActivityReq } from "@/lib/api/activities/types";
+import type { CreateActivityReq, ScheduleTime } from "@/lib/api/activities/types";
 import type { UpdateActivityReq } from "@/lib/api/my-activities/types";
 
 interface ActivityFormProps<TReq, TRes> {
@@ -19,68 +29,66 @@ interface ActivityFormProps<TReq, TRes> {
   onAfterSubmit?: () => void;
 }
 
-export default function MyActivityForm<TReq extends object, TRes>({
+export default function MyActivityForm<TReq extends FieldValues, TRes>({
   defaultValues,
   isEdit = false,
   apiActivity,
   onAfterSubmit,
 }: ActivityFormProps<TReq, TRes>) {
-  const [bannerItems, setBannerItems] = useState<File[]>([]);
-  const [subItems, setSubItems] = useState<File[]>([]);
+  const [bannerItems, setBannerItems] = useState<(File | string)[]>([]);
+  const [subItems, setSubItems] = useState<(File | string)[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [slots, setSlots] = useState<{ start: Date; end: Date }[]>([]);
 
   const { mutateAsync: uploadImage } = useUploadActivityImage();
 
   const methods = useForm<TReq>({
-    mode: "onBlur",
+    mode: "all",
     defaultValues,
+    delayError: 300,
   });
 
   const {
     handleSubmit,
-    formState: { isValid, isSubmitting },
+    control,
+    formState: { errors, isValid, isSubmitting },
   } = methods;
 
   const onSubmit = async (data: TReq) => {
     const [bannerUrls, subUrls] = await Promise.all([
-      Promise.all(bannerItems.map((file) => uploadImage(toFormData(file)))),
-      Promise.all(subItems.map((file) => uploadImage(toFormData(file)))),
+      uploadFiles(bannerItems, uploadImage),
+      uploadFiles(subItems, uploadImage),
     ]);
 
-    const schedules = slots.map((slot) => {
-      const date = slot.start.toISOString().split("T")[0];
-      const startTime = `${String(slot.start.getHours()).padStart(2, "0")}:${String(
-        slot.start.getMinutes(),
-      ).padStart(2, "0")}`;
-      const endTime = `${String(slot.end.getHours()).padStart(2, "0")}:${String(
-        slot.end.getMinutes(),
-      ).padStart(2, "0")}`;
-      return { date, startTime, endTime };
-    });
+    const schedules: ScheduleTime[] = slots.map((slot) => ({
+      date: slot.start.toISOString().split("T")[0],
+      startTime: slot.start.toTimeString().slice(0, 5),
+      endTime: slot.end.toTimeString().slice(0, 5),
+    }));
 
-    const payload: TReq = isEdit
+    const payload = isEdit
       ? ({
-          ...(data as UpdateActivityReq),
-          activityId: (defaultValues as UpdateActivityReq)?.activityId ?? 0,
-          bannerImageUrl: bannerUrls[0]?.activityImageUrl ?? "",
-          subImageUrlsToAdd: subUrls.map((r) => r.activityImageUrl),
+          ...(data as unknown as UpdateActivityReq),
+          activityId: (defaultValues as UpdateActivityReq)?.activityId,
+          bannerImageUrl: bannerUrls[0],
+          subImageUrlsToAdd: subUrls,
           subImageIdsToRemove: [],
           schedulesToAdd: schedules,
           scheduleIdsToRemove: [],
-        } as TReq)
+        } as UpdateActivityReq)
       : ({
-          ...(data as CreateActivityReq),
-          bannerImageUrl: bannerUrls[0]?.activityImageUrl ?? "",
-          subImageUrls: subUrls.map((r) => r.activityImageUrl),
+          ...(data as unknown as CreateActivityReq),
+          bannerImageUrl: bannerUrls[0],
+          subImageUrls: subUrls,
           schedules,
-        } as TReq);
+        } as CreateActivityReq);
 
+    console.log("📦 Final JSON payload", JSON.stringify(payload, null, 2));
     const options: MutateOptions<TRes, Error, TReq> = {
       onSuccess: () => onAfterSubmit?.(),
     };
 
-    apiActivity(payload, options);
+    apiActivity(payload as unknown as TReq, options);
   };
 
   return (
@@ -109,11 +117,34 @@ export default function MyActivityForm<TReq extends object, TRes>({
               <RegisterInput<TReq> />
 
               <div className="flex w-[800px] pt-4 text-2xl font-bold">예약 가능한 시간대</div>
-              <TimeSlotPicker
-                selectDate={selectedDate}
-                onSelectedDateChange={setSelectedDate}
-                slots={slots}
-                onSlotsChange={setSlots}
+              <Controller
+                name={(isEdit ? "schedulesToAdd" : "schedules") as Path<TReq>}
+                control={control}
+                rules={{ required: "예약 가능한 시간을 선택해주세요." }}
+                render={({ field }) => (
+                  <Field
+                    id="schedules"
+                    label="예약 가능한 시간대"
+                    error={
+                      isEdit
+                        ? (errors.schedulesToAdd as FieldError | undefined)?.message
+                        : (errors.schedules as FieldError | undefined)?.message
+                    }
+                  >
+                    <TimeSlotPicker
+                      selectDate={selectedDate}
+                      onSelectedDateChange={(date) => {
+                        setSelectedDate(date);
+                        field.onChange({ ...field.value, selectDate: date });
+                      }}
+                      slots={slots}
+                      onSlotsChange={(newSlots) => {
+                        setSlots(newSlots);
+                        field.onChange({ ...field.value, slots: newSlots });
+                      }}
+                    />
+                  </Field>
+                )}
               />
 
               <RegisterImageUpload onMainChange={setBannerItems} onSubChange={setSubItems} />
