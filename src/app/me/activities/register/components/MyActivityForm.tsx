@@ -1,10 +1,9 @@
 "use client";
 
 import { MutateOptions, UseMutateFunction } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { DefaultValues, FieldValues, FormProvider, useForm } from "react-hook-form";
 
-import { UpdateActivityFormValues } from "@/app/me/activities/[id]/edit/page";
 import DateField from "@/app/me/activities/register/components/DateField";
 import { diffMainImages, diffSubImages } from "@/app/me/activities/register/components/DiffImage";
 import ImageField from "@/app/me/activities/register/components/ImageField";
@@ -41,16 +40,6 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
   const initialSubUrls = defaultValues?.subImageUrlsToAdd ?? [];
   const initialSubIds = defaultValues?.subImageIds ?? [];
 
-  const initialSubImages = useMemo<UpdateActivityFormValues[]>(() => {
-    const ids = initialSubIds;
-    const urls = initialSubUrls;
-
-    return ids.map((id: number, index: number) => ({
-      id,
-      imageUrl: urls[index] ?? "",
-    }));
-  }, [defaultValues]);
-
   const propsMainImages = isEdit ? [initialMainUrls] : [];
   const propsSubImages = isEdit ? initialSubUrls : [];
 
@@ -72,7 +61,7 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
       setBannerItems(initialMainUrls ? [initialMainUrls] : []);
       setSubItems(initialSubUrls ?? []);
     }
-  }, [isEdit, defaultValues, methods, initialMainUrls, initialSubUrls, initialSubImages]);
+  }, [isEdit, defaultValues, methods, initialMainUrls, initialSubUrls]);
 
   const onSubmit = async (data: TReq) => {
     const schedules: ScheduleTime[] = slots.map((slot) => ({
