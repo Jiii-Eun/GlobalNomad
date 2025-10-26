@@ -2,6 +2,7 @@
 
 import { Controller, FieldError, Path, useFormContext, FieldValues } from "react-hook-form";
 
+import { subTitleClass } from "@/app/me/activities/register/components/MyActivityForm";
 import Field from "@/components/ui/input/Field";
 import TimeSlotPicker from "@/components/ui/timeSlot/TimeSlotPicker";
 
@@ -28,36 +29,35 @@ export default function DateField<TReq extends FieldValues>({
   const fieldName = (isEdit ? "schedulesToAdd" : "schedules") as Path<TReq>;
 
   return (
-    <Controller
-      control={control}
-      name={fieldName}
-      rules={{ required: "예약 가능한 시간을 선택해주세요." }}
-      render={({ field }) => (
-        <Field
-          id={fieldName}
-          label="예약 가능한 시간대"
-          error={(errors[fieldName] as FieldError | undefined)?.message}
-        >
-          <TimeSlotPicker
-            selectDate={selectedDate}
-            onSelectedDateChange={(date) => {
-              setSelectedDate(date);
-              field.onChange({
-                date,
-                slots,
-              });
-            }}
-            slots={slots}
-            onSlotsChange={(newSlots) => {
-              setSlots(newSlots);
-              field.onChange({
-                date: selectedDate,
-                slots: newSlots,
-              });
-            }}
-          />
-        </Field>
-      )}
-    />
+    <div>
+      <span className={subTitleClass}>예약 가능한 시간대</span>
+      <Controller
+        control={control}
+        name={fieldName}
+        rules={{ required: "예약 가능한 시간을 선택해주세요." }}
+        render={({ field }) => (
+          <Field id={fieldName} error={(errors[fieldName] as FieldError | undefined)?.message}>
+            <TimeSlotPicker
+              selectDate={selectedDate}
+              onSelectedDateChange={(date) => {
+                setSelectedDate(date);
+                field.onChange({
+                  date,
+                  slots,
+                });
+              }}
+              slots={slots}
+              onSlotsChange={(newSlots) => {
+                setSlots(newSlots);
+                field.onChange({
+                  date: selectedDate,
+                  slots: newSlots,
+                });
+              }}
+            />
+          </Field>
+        )}
+      />
+    </div>
   );
 }

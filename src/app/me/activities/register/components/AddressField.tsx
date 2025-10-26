@@ -9,10 +9,12 @@ import {
   PathValue,
 } from "react-hook-form";
 
+import { subTitleClass } from "@/app/me/activities/register/components/MyActivityForm";
 import Button from "@/components/ui/button/Button";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
 import Toast from "@/components/ui/toast";
+import { cn } from "@/lib/cn";
 
 export interface DaumAddressData {
   address: string;
@@ -70,39 +72,42 @@ export default function AddressField<TReq extends FieldValues>() {
   };
 
   return (
-    <Field id={keyId} label="주소" error={fieldError}>
-      <Controller
-        name={keyId}
-        rules={{
-          required: "주소를 입력해주세요.",
-          validate: (v) => v.trim().length > 0 || "주소를 입력해주세요.",
-        }}
-        render={({ field }) => {
-          const { value = "", onChange, onBlur, name, ref } = field;
-          return (
-            <div className="flex gap-2">
-              <Input
-                id={keyId}
-                name={name}
-                ref={ref}
-                value={value}
-                onChange={onChange}
-                onBlur={onBlur}
-                readOnly
-                placeholder="주소를 검색해주세요"
-                wrapperClass="flex-1"
-              />
-              <Button
-                type="button"
-                onClick={handleAddressSearch}
-                className="rounded-lg px-4 py-2 font-semibold"
-              >
-                주소 검색
-              </Button>
-            </div>
-          );
-        }}
-      />
-    </Field>
+    <div>
+      <span className={cn(subTitleClass, "mb-4")}>주소</span>
+      <Field id={keyId} error={fieldError}>
+        <Controller
+          name={keyId}
+          rules={{
+            required: "주소를 입력해주세요.",
+            validate: (v) => v.trim().length > 0 || "주소를 입력해주세요.",
+          }}
+          render={({ field }) => {
+            const { value = "", onChange, onBlur, name, ref } = field;
+            return (
+              <div className="flex gap-2">
+                <Input
+                  id={keyId}
+                  name={name}
+                  ref={ref}
+                  value={value}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  readOnly
+                  placeholder="주소를 검색해주세요"
+                  wrapperClass="flex-1"
+                />
+                <Button
+                  type="button"
+                  onClick={handleAddressSearch}
+                  className="rounded-lg px-4 py-2 font-semibold"
+                >
+                  주소 검색
+                </Button>
+              </div>
+            );
+          }}
+        />
+      </Field>
+    </div>
   );
 }

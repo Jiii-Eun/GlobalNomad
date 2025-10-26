@@ -2,8 +2,10 @@
 
 import { Controller, useFormContext, FieldError, Path, FieldValues } from "react-hook-form";
 
+import { subTitleClass } from "@/app/me/activities/register/components/MyActivityForm";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
+import { cn } from "@/lib/cn";
 import { formatKRW, parseKRW } from "@/lib/utills/currency";
 
 export default function PriceField<TReq extends FieldValues>() {
@@ -15,8 +17,9 @@ export default function PriceField<TReq extends FieldValues>() {
   const keyId = "price";
 
   return (
-    <div className="flex flex-col">
-      <Field id={keyId} label="가격" error={fieldError} className="h-[110px] text-2xl font-bold">
+    <div>
+      <span className={cn(subTitleClass, "mb-4")}>가격</span>
+      <Field id={keyId} error={fieldError}>
         <Controller
           name={keyId as Path<TReq>}
           rules={{

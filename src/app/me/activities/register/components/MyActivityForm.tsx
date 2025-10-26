@@ -21,6 +21,8 @@ interface ActivityFormProps<TReq, TRes> {
   onAfterSubmit?: () => void;
 }
 
+export const subTitleClass = "block text-2xl font-bold mb-6";
+
 export default function MyActivityForm<TReq extends FieldValues, TRes>({
   defaultValues,
   isEdit = false,

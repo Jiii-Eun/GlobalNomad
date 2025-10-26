@@ -1,7 +1,9 @@
 import { Controller, FieldError, FieldValues, useFormContext } from "react-hook-form";
 
+import { subTitleClass } from "@/app/me/activities/register/components/MyActivityForm";
 import { ActivityImageUploader } from "@/components/ui/image-uploader";
 import Field from "@/components/ui/input/Field";
+import { cn } from "@/lib/cn";
 
 interface ImageFieldProps {
   onMainChange: (files: (File | string)[]) => void;
@@ -25,30 +27,29 @@ export default function ImageField({
   const BANNER_IMAGE = "bannerImageUrl";
   const SUB_IMAGE = "subImageUrls";
 
-  const handleChange = (key: string, images: (File | string)[], field: FieldValues) => {
-    if (key === BANNER_IMAGE) onMainChange(images);
-    else if (key === SUB_IMAGE) onSubChange(images);
+  const handleChange = (type: string, images: (File | string)[], field: FieldValues) => {
+    if (type === BANNER_IMAGE) onMainChange(images);
+    else if (type === SUB_IMAGE) onSubChange(images);
 
     field.onChange(images);
   };
 
-  const handleError = (key: string, msg: string | null) => {
-    if (msg) setError(key, { message: msg });
-    else clearErrors(key);
+  const handleError = (type: string, msg: string | null) => {
+    if (msg) setError(type, { message: msg });
+    else clearErrors(type);
   };
+
+  const onFieldError = (type: string) => (errors[type] as FieldError | undefined)?.message;
 
   return (
     <>
-      <div className="flex flex-col gap-6">
-        <span className="text-2xl font-bold">배너 이미지</span>
+      <div>
+        <span className={subTitleClass}>배너 이미지</span>
         <Controller
           name={BANNER_IMAGE}
           rules={{ required: "배너 이미지를 등록해주세요." }}
           render={({ field }) => (
-            <Field
-              id={BANNER_IMAGE}
-              error={(errors.bannerImageUrl as FieldError | undefined)?.message}
-            >
+            <Field id={BANNER_IMAGE} error={onFieldError(BANNER_IMAGE)}>
               <ActivityImageUploader
                 type="banner"
                 initialImages={initialMainImages}
@@ -61,12 +62,12 @@ export default function ImageField({
           )}
         />
       </div>
-      <div className="flex flex-col gap-6">
-        <span className="text-2xl font-bold">소개 이미지</span>
+      <div>
+        <span className={subTitleClass}>소개 이미지</span>
         <Controller
           name="subImageUrls"
           render={({ field }) => (
-            <Field id={SUB_IMAGE} error={(errors.subImageUrls as FieldError | undefined)?.message}>
+            <Field id={SUB_IMAGE} error={onFieldError(SUB_IMAGE)}>
               <ActivityImageUploader
                 type="sub"
                 initialImages={initialSubImages}
@@ -77,7 +78,7 @@ export default function ImageField({
           )}
         />
 
-        <span className="text-2lg pl-2">*이미지는 최대 4개까지 등록 가능합니다.</span>
+        <span className="text-2lg mt-6 block pl-2">*이미지는 최대 4개까지 등록 가능합니다.</span>
       </div>
     </>
   );
