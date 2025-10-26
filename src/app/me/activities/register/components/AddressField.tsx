@@ -35,7 +35,6 @@ declare global {
 
 export default function AddressField<TReq extends FieldValues>() {
   const {
-    control,
     setValue,
     formState: { errors },
   } = useFormContext<TReq>();
@@ -64,6 +63,7 @@ export default function AddressField<TReq extends FieldValues>() {
       oncomplete: (data) => {
         setValue(keyId, data.address as PathValue<TReq, typeof keyId>, {
           shouldValidate: true,
+          shouldDirty: true,
         });
       },
     }).open();
@@ -73,7 +73,6 @@ export default function AddressField<TReq extends FieldValues>() {
     <Field id={keyId} label="주소" error={fieldError}>
       <Controller
         name={keyId}
-        control={control}
         rules={{
           required: "주소를 입력해주세요.",
           validate: (v) => v.trim().length > 0 || "주소를 입력해주세요.",

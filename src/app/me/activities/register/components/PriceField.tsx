@@ -8,7 +8,6 @@ import { formatKRW, parseKRW } from "@/lib/utills/currency";
 
 export default function PriceField<TReq extends FieldValues>() {
   const {
-    control,
     formState: { errors },
   } = useFormContext<TReq>();
 
@@ -20,7 +19,6 @@ export default function PriceField<TReq extends FieldValues>() {
       <Field id={keyId} label="가격" error={fieldError} className="h-[110px] text-2xl font-bold">
         <Controller
           name={keyId as Path<TReq>}
-          control={control}
           rules={{
             required: "가격을 입력해주세요.",
             validate: (v) =>

@@ -33,7 +33,7 @@ const CATEGORY_OPTIONS: SelectOption[] = ActivityCategorySchema.options.map(
   }),
 );
 
-export default function RegisterField<TReq extends FieldValues>() {
+export default function InputField<TReq extends FieldValues>() {
   const {
     register,
     formState: { errors },

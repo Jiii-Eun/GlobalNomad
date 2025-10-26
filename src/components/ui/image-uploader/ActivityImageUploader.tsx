@@ -20,7 +20,7 @@ interface ActivityImageUploaderProps {
 export default function ActivityImageUploader({
   type = "banner",
   limit: customLimit,
-  initialImages = [],
+  initialImages,
   onChange,
   onError,
   frameClass,

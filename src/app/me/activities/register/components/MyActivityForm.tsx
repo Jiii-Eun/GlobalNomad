@@ -1,7 +1,7 @@
 "use client";
 
 import { MutateOptions, UseMutateFunction } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Controller,
   DefaultValues,
@@ -12,8 +12,8 @@ import {
   useForm,
 } from "react-hook-form";
 
-import RegisterImageUpload from "@/app/me/activities/register/components/RegisterImageUpload";
-import RegisterInput from "@/app/me/activities/register/components/RegisterInput";
+import ImageField from "@/app/me/activities/register/components/ImageField";
+import InputField from "@/app/me/activities/register/components/InputField";
 import { uploadFiles } from "@/app/me/activities/register/components/uploadFiles";
 import Button from "@/components/ui/button/Button";
 import Field from "@/components/ui/input/Field";
@@ -39,7 +39,6 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
   const [subItems, setSubItems] = useState<(File | string)[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [slots, setSlots] = useState<{ start: Date; end: Date }[]>([]);
-  const [errorStateFromUploader, setErrorStateFromUploader] = useState<string | null>(null);
 
   const { mutateAsync: uploadImage } = useUploadActivityImage();
 
@@ -49,10 +48,15 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
     delayError: 300,
   });
 
+  const initialMainImages = defaultValues?.bannerImageUrl ?? "";
+  const initialSubImages = defaultValues?.subImageUrlsToAdd ?? [];
+
+  const propsMainImages = isEdit ? [initialMainImages] : [];
+  const propsSubImages = isEdit ? initialSubImages : [];
+
   const {
     handleSubmit,
-    control,
-    formState: { errors, isValid, isSubmitting },
+    formState: { errors, isValid, isSubmitting, isDirty },
   } = methods;
 
   const onSubmit = async (data: TReq) => {
@@ -70,7 +74,7 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
     const payload = isEdit
       ? ({
           ...(data as unknown as UpdateActivityReq),
-          activityId: (defaultValues as UpdateActivityReq)?.activityId,
+          activityId: (defaultValues as UpdateActivityReq).activityId,
           bannerImageUrl: bannerUrls[0],
           subImageUrlsToAdd: subUrls,
           subImageIdsToRemove: [],
@@ -94,6 +98,12 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
     apiActivity(payload as unknown as TReq, options);
   };
 
+  useEffect(() => {
+    if (defaultValues) {
+      methods.reset(defaultValues);
+    }
+  }, [defaultValues, methods]);
+
   return (
     <FormProvider {...methods}>
       <main className="bg-brand-gray-100 py-18">
@@ -104,7 +114,7 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
                 내 체험 {isEdit ? "수정" : "등록"}
                 <Button
                   type="submit"
-                  isDisabled={!isValid || isSubmitting || !!errorStateFromUploader}
+                  isDisabled={!isValid || isSubmitting || !isDirty}
                   className="rounded-4 h-12 w-30 px-4 py-2 text-lg"
                 >
                   {isSubmitting
@@ -117,12 +127,11 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
                 </Button>
               </div>
 
-              <RegisterInput<TReq> />
+              <InputField<TReq> />
 
               <div className="flex w-[800px] pt-4 text-2xl font-bold">예약 가능한 시간대</div>
               <Controller
                 name={(isEdit ? "schedulesToAdd" : "schedules") as Path<TReq>}
-                control={control}
                 rules={{ required: "예약 가능한 시간을 선택해주세요." }}
                 render={({ field }) => (
                   <Field
@@ -150,10 +159,11 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
                 )}
               />
 
-              <RegisterImageUpload
+              <ImageField
                 onMainChange={setBannerItems}
                 onSubChange={setSubItems}
-                onError={setErrorStateFromUploader}
+                initialMainImages={propsMainImages}
+                initialSubImages={propsSubImages}
               />
             </div>
           </form>

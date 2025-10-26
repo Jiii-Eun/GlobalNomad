@@ -1,18 +1,21 @@
-import { Controller, FieldError, useFormContext } from "react-hook-form";
+import { Controller, FieldError, FieldValues, useFormContext } from "react-hook-form";
 
 import { ActivityImageUploader } from "@/components/ui/image-uploader";
 import Field from "@/components/ui/input/Field";
 
-interface RegisterImageUploadProps {
+interface ImageFieldProps {
   onMainChange: (files: (File | string)[]) => void;
   onSubChange: (files: (File | string)[]) => void;
-  onError?: (msg: string | null) => void;
+  initialMainImages?: string[];
+  initialSubImages?: string[];
 }
 
-export default function RegisterImageUpload({
+export default function ImageField({
   onMainChange,
   onSubChange,
-}: RegisterImageUploadProps) {
+  initialMainImages,
+  initialSubImages,
+}: ImageFieldProps) {
   const {
     formState: { errors },
     setError,
@@ -22,9 +25,11 @@ export default function RegisterImageUpload({
   const BANNER_IMAGE = "bannerImageUrl";
   const SUB_IMAGE = "subImageUrls";
 
-  const handleChange = (key: string, images: (File | string)[]) => {
+  const handleChange = (key: string, images: (File | string)[], field: FieldValues) => {
     if (key === BANNER_IMAGE) onMainChange(images);
     else if (key === SUB_IMAGE) onSubChange(images);
+
+    field.onChange(images);
   };
 
   const handleError = (key: string, msg: string | null) => {
@@ -46,9 +51,9 @@ export default function RegisterImageUpload({
             >
               <ActivityImageUploader
                 type="banner"
+                initialImages={initialMainImages}
                 onChange={(images) => {
-                  handleChange(BANNER_IMAGE, images);
-                  field.onChange(images);
+                  handleChange(BANNER_IMAGE, images, field);
                 }}
                 onError={(msg) => handleError(BANNER_IMAGE, msg)}
               />
@@ -58,13 +63,19 @@ export default function RegisterImageUpload({
       </div>
       <div className="flex flex-col gap-6">
         <span className="text-2xl font-bold">소개 이미지</span>
-        <Field id={SUB_IMAGE} error={(errors.subImageUrls as FieldError | undefined)?.message}>
-          <ActivityImageUploader
-            type="sub"
-            onChange={(images) => handleChange(SUB_IMAGE, images)}
-            onError={(msg) => handleError(SUB_IMAGE, msg)}
-          />
-        </Field>
+        <Controller
+          name="subImageUrls"
+          render={({ field }) => (
+            <Field id={SUB_IMAGE} error={(errors.subImageUrls as FieldError | undefined)?.message}>
+              <ActivityImageUploader
+                type="sub"
+                initialImages={initialSubImages}
+                onChange={(images) => handleChange(SUB_IMAGE, images, field)}
+                onError={(msg) => handleError(SUB_IMAGE, msg)}
+              />
+            </Field>
+          )}
+        />
 
         <span className="text-2lg pl-2">*이미지는 최대 4개까지 등록 가능합니다.</span>
       </div>
