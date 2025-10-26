@@ -39,6 +39,7 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
   const [subItems, setSubItems] = useState<(File | string)[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [slots, setSlots] = useState<{ start: Date; end: Date }[]>([]);
+  const [errorStateFromUploader, setErrorStateFromUploader] = useState<string | null>(null);
 
   const { mutateAsync: uploadImage } = useUploadActivityImage();
 
@@ -86,6 +87,8 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
     const options: MutateOptions<TRes, Error, TReq> = {
       onSuccess: () => onAfterSubmit?.(),
     };
+
+    // 삭제해야한다
     console.log("payload,", payload);
 
     apiActivity(payload as unknown as TReq, options);
@@ -101,7 +104,7 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
                 내 체험 {isEdit ? "수정" : "등록"}
                 <Button
                   type="submit"
-                  isDisabled={!isValid || isSubmitting}
+                  isDisabled={!isValid || isSubmitting || !!errorStateFromUploader}
                   className="rounded-4 h-12 w-30 px-4 py-2 text-lg"
                 >
                   {isSubmitting
@@ -147,7 +150,11 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
                 )}
               />
 
-              <RegisterImageUpload onMainChange={setBannerItems} onSubChange={setSubItems} />
+              <RegisterImageUpload
+                onMainChange={setBannerItems}
+                onSubChange={setSubItems}
+                onError={setErrorStateFromUploader}
+              />
             </div>
           </form>
         </div>

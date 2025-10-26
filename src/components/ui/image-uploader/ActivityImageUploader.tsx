@@ -13,6 +13,7 @@ interface ActivityImageUploaderProps {
   limit?: number;
   initialImages?: string[];
   onChange?: (images: (File | string)[]) => void;
+  onError?: (msg: string | null) => void;
   frameClass?: string;
 }
 
@@ -21,12 +22,13 @@ export default function ActivityImageUploader({
   limit: customLimit,
   initialImages = [],
   onChange,
+  onError,
   frameClass,
 }: ActivityImageUploaderProps) {
   const defaultLimit = type === "banner" ? 1 : 4;
   const limit = customLimit ?? defaultLimit;
 
-  const { images, inputRef, canAddMore, openFileDialog, handleFileChange, handleDelete } =
+  const { images, error, inputRef, canAddMore, openFileDialog, handleFileChange, handleDelete } =
     useImageUploader({ limit, initialImages });
 
   useEffect(() => {
@@ -36,6 +38,10 @@ export default function ActivityImageUploader({
       mountedRef.current = true;
     }
   }, [images]);
+
+  useEffect(() => {
+    if (onError) onError(error);
+  }, [error]);
 
   const mountedRef = useRef(false);
 

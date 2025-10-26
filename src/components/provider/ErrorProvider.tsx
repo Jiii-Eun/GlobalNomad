@@ -45,7 +45,7 @@ export const ErrorProvider = ({ children }: { children: React.ReactNode }) => {
         openToast(<Toast message="서버 오류가 발생했습니다." icon="error" />);
         break;
       default:
-        openToast(<Toast message={error.message || "요청 중 오류가 발생했습니다."} icon="error" />);
+        openToast(<Toast message={"요청 중 오류가 발생했습니다."} icon="error" />);
     }
 
     setError(null);
