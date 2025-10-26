@@ -46,7 +46,7 @@ export default function ActivityImageUploader({
   const mountedRef = useRef(false);
 
   const listClass =
-    "aspect-square flex-[1_0_180px] max-w-[180px] h-full w-full hover:scale-98 transition-all duration-150";
+    "aspect-square flex-[1_0_180px] max-w-[180px] tablet:max-w-[206px] mobile:max-w-[167px] h-full w-full hover:scale-98 transition-all duration-150";
 
   return (
     <div
@@ -66,7 +66,7 @@ export default function ActivityImageUploader({
             "rounded-12 flex flex-col items-center justify-center gap-7 border-dashed bg-white hover:bg-white",
           )}
         >
-          <Btn.AddImage className="size-45" />
+          <Btn.AddImage className="w-full" />
         </Button>
       )}
 
