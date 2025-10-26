@@ -83,10 +83,10 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
           schedules,
         } as CreateActivityReq);
 
-    console.log("📦 Final JSON payload", JSON.stringify(payload, null, 2));
     const options: MutateOptions<TRes, Error, TReq> = {
       onSuccess: () => onAfterSubmit?.(),
     };
+    console.log("payload,", payload);
 
     apiActivity(payload as unknown as TReq, options);
   };

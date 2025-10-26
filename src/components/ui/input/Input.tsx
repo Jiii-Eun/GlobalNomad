@@ -4,6 +4,7 @@ import { ComponentPropsWithoutRef, Ref, useState } from "react";
 
 import VisibilityOff from "@/assets/icons/status/visibility-off.svg";
 import Visibility from "@/assets/icons/status/visibility.svg";
+import { cn } from "@/lib/cn";
 
 const INPUT_BASE =
   "w-full h-[58px] px-5 bg-white border border-brand-gray-400 rounded " +
@@ -23,6 +24,7 @@ export interface BaseProps<TRef extends Element = Element> {
   id: string;
   isInvalid?: boolean;
   className?: string;
+  wrapperClass?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   ref?: Ref<TRef>;
@@ -67,6 +69,7 @@ export default function Input(props: Props) {
       id,
       isInvalid,
       className,
+      wrapperClass,
       leftIcon,
       rightIcon,
       options,
@@ -76,7 +79,7 @@ export default function Input(props: Props) {
       ...rest
     } = props;
     return (
-      <div className="relative">
+      <div className={cn("relative", wrapperClass)}>
         {leftIcon && (
           <span className="absolute inset-y-0 left-3 flex items-center text-gray-400">
             {leftIcon}
@@ -116,12 +119,22 @@ export default function Input(props: Props) {
 
   /** TEXTAREA */
   if (isTextareaProps(props)) {
-    const { id, isInvalid, className, leftIcon, rightIcon, ref, as: _, ...rest } = props;
+    const {
+      id,
+      isInvalid,
+      className,
+      wrapperClass,
+      leftIcon,
+      rightIcon,
+      ref,
+      as: _,
+      ...rest
+    } = props;
     // textarea는 높이 고정 X
     const leftPad = padIfLeftIcon(Boolean(leftIcon));
     const rightPad = padIfRightIcon(Boolean(rightIcon));
     return (
-      <div className="relative">
+      <div className={cn("relative", wrapperClass)}>
         {leftIcon && (
           <span className="absolute top-3 left-3 flex items-center text-gray-400">{leftIcon}</span>
         )}
@@ -145,6 +158,7 @@ export default function Input(props: Props) {
     id,
     isInvalid,
     className,
+    wrapperClass,
     leftIcon,
     rightIcon,
     type,
@@ -160,7 +174,7 @@ export default function Input(props: Props) {
   const leftPad = padIfLeftIcon(Boolean(leftIcon));
 
   return (
-    <div className="relative">
+    <div className={cn("relative", wrapperClass)}>
       {leftIcon && (
         <span className="absolute inset-y-0 left-3 flex items-center text-gray-400">
           {leftIcon}

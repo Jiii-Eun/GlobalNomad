@@ -57,7 +57,7 @@ export default function ActivityImageUploader({
           onClick={() => openFileDialog()}
           className={cn(
             listClass,
-            "rounded-12 flex flex-col items-center justify-center gap-7 border-dashed bg-transparent hover:bg-transparent",
+            "rounded-12 flex flex-col items-center justify-center gap-7 border-dashed bg-white hover:bg-white",
           )}
         >
           <Btn.AddImage className="size-45" />

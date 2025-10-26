@@ -2,6 +2,7 @@
 
 import { FieldError, FieldValues, Path, useFormContext } from "react-hook-form";
 
+import AddressField from "@/app/me/activities/register/components/AddressField";
 import PriceField from "@/app/me/activities/register/components/PriceField";
 import FormField from "@/components/ui/input/FormField";
 import { ActivityCategorySchema } from "@/lib/api/activities/types";
@@ -71,14 +72,8 @@ export default function RegisterField<TReq extends FieldValues>() {
     },
     { type: "custom", element: <PriceField key="price" /> },
     {
-      type: "form",
-      config: {
-        id: "address" as Path<TReq>,
-        as: "input",
-        label: "주소",
-        placeholder: "주소를 입력해주세요",
-        required: "주소를 입력해주세요.",
-      },
+      type: "custom",
+      element: <AddressField key="address" />,
     },
   ] as const;
 
