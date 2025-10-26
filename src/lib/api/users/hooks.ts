@@ -57,7 +57,7 @@ export function useEditMe(isMock = false, options?: ApiMutationOptions<UserRes, 
   });
 }
 
-//POST: 프로필 이미지 URL생성
+//POST: 프로필 이미지 URL 생성
 export function useUploadProfileImage(
   isMock = false,
   options?: ApiMutationOptions<UploadProfileImageRes, FormData>,

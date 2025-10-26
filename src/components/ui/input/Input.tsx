@@ -109,7 +109,7 @@ export default function Input(props: Props) {
           ))}
         </select>
         {rightIcon && (
-          <span className="absolute inset-y-0 right-3 flex items-center text-gray-400">
+          <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
             {rightIcon}
           </span>
         )}
@@ -117,7 +117,6 @@ export default function Input(props: Props) {
     );
   }
 
-  /** TEXTAREA */
   if (isTextareaProps(props)) {
     const {
       id,

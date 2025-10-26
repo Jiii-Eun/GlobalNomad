@@ -60,6 +60,7 @@ export default function ActivityImageUploader({
       {canAddMore && (
         <Button
           type="button"
+          type="button"
           onClick={() => openFileDialog()}
           className={cn(
             listClass,
