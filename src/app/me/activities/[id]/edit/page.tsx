@@ -47,8 +47,6 @@ export default function EditPage() {
 
   if (isLoading) return <div>불러오는 중...</div>;
 
-  console.log("detail:", detail, "defaultValues,", defaultValues);
-
   if (!detail || !defaultValues) return <div>데이터를 불러올 수 없습니다.</div>;
 
   return (

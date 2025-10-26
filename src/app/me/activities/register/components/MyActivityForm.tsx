@@ -12,6 +12,7 @@ import {
   useForm,
 } from "react-hook-form";
 
+import DateField from "@/app/me/activities/register/components/DateField";
 import ImageField from "@/app/me/activities/register/components/ImageField";
 import InputField from "@/app/me/activities/register/components/InputField";
 import { uploadFiles } from "@/app/me/activities/register/components/uploadFiles";
@@ -56,7 +57,7 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
 
   const {
     handleSubmit,
-    formState: { errors, isValid, isSubmitting, isDirty },
+    formState: { isValid, isSubmitting, isDirty },
   } = methods;
 
   const onSubmit = async (data: TReq) => {
@@ -91,9 +92,6 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
     const options: MutateOptions<TRes, Error, TReq> = {
       onSuccess: () => onAfterSubmit?.(),
     };
-
-    // 삭제해야한다
-    console.log("payload,", payload);
 
     apiActivity(payload as unknown as TReq, options);
   };
@@ -130,33 +128,12 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
               <InputField<TReq> />
 
               <div className="flex w-[800px] pt-4 text-2xl font-bold">예약 가능한 시간대</div>
-              <Controller
-                name={(isEdit ? "schedulesToAdd" : "schedules") as Path<TReq>}
-                rules={{ required: "예약 가능한 시간을 선택해주세요." }}
-                render={({ field }) => (
-                  <Field
-                    id="schedules"
-                    label="예약 가능한 시간대"
-                    error={
-                      isEdit
-                        ? (errors.schedulesToAdd as FieldError | undefined)?.message
-                        : (errors.schedules as FieldError | undefined)?.message
-                    }
-                  >
-                    <TimeSlotPicker
-                      selectDate={selectedDate}
-                      onSelectedDateChange={(date) => {
-                        setSelectedDate(date);
-                        field.onChange({ ...field.value, selectDate: date });
-                      }}
-                      slots={slots}
-                      onSlotsChange={(newSlots) => {
-                        setSlots(newSlots);
-                        field.onChange({ ...field.value, slots: newSlots });
-                      }}
-                    />
-                  </Field>
-                )}
+              <DateField
+                isEdit={isEdit}
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+                slots={slots}
+                setSlots={setSlots}
               />
 
               <ImageField

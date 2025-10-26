@@ -14,7 +14,7 @@ export function useFileInput({ onFileSelect, onError }: UseFileInputOptions = {}
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
     if (!file) return;
 
@@ -26,10 +26,11 @@ export function useFileInput({ onFileSelect, onError }: UseFileInputOptions = {}
     }
 
     if (!allowedTypes.includes(file.type)) {
-      onError?.("JPG, PNG, WEBP 형식의 이미지만 업로드할 수 있습니다.");
+      onError?.("JPG, PNG, GIF, WEBP 형식의 이미지만 업로드할 수 있습니다.");
       e.target.value = "";
       return;
     }
+
     onError?.(null);
 
     onFileSelect?.(file);
