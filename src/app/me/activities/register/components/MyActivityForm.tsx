@@ -34,7 +34,6 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [slots, setSlots] = useState<{ start: Date; end: Date }[]>([]);
 
-  // 초기 데이터
   const initialActivityId = (defaultValues as UpdateActivityReq)?.activityId ?? 0;
   const initialMainUrls = defaultValues?.bannerImageUrl ?? "";
   const initialSubUrls = defaultValues?.subImageUrlsToAdd ?? [];
