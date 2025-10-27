@@ -60,9 +60,11 @@ export default function Login() {
 
   return (
     <main
-      className={["mx-auto mt-28 w-full max-w-[640px]", "moblie: mt-[110px] max-w-[350px]"].join(
-        " ",
-      )}
+      className={[
+        "mx-auto mt-28 w-full max-w-[640px]",
+        "tablet:px-[52px] tablet:max-w-[640px]",
+        "mobile:mt-[110px] mobile:px-3 mobile:max-w-[350px]",
+      ].join(" ")}
     >
       <Logo />
 
