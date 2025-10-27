@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Suspense } from "react";
@@ -11,7 +12,9 @@ import Button from "@/components/ui/button/Button";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
 import { useLogin } from "@/lib/api/auth/hooks";
+import { getMe } from "@/lib/api/users/api";
 
+import { baseProfileNeeded } from "./baseProfileNeeded";
 import KakaoSigninHandler from "./KakaoSigninHandler";
 
 interface FormValues {
@@ -21,6 +24,7 @@ interface FormValues {
 
 export default function Login() {
   const router = useRouter();
+  const qc = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -47,10 +51,19 @@ export default function Login() {
 
   const onSubmit = async (v: FormValues) => {
     await loginMutation.mutateAsync({ email: v.email.trim(), password: v.password });
+
+    const me = await getMe();
+    await baseProfileNeeded(me);
+    await qc.invalidateQueries({ queryKey: ["me"] });
+    router.push("/");
   };
 
   return (
-    <main className="mx-auto mt-28 w-full max-w-[640px]">
+    <main
+      className={["mx-auto mt-28 w-full max-w-[640px]", "moblie: mt-[110px] max-w-[350px]"].join(
+        " ",
+      )}
+    >
       <Logo />
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-7">
