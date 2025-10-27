@@ -134,7 +134,7 @@ export type DeleteActivityReq = z.infer<typeof DeleteActivityReqSchema>;
 export const UpdateActivityReqSchema = z.object({
   activityId: z.number(),
   title: z.string().optional(),
-  category: ActivityCategorySchema.optional(),
+  category: z.string().optional(),
   description: z.string().optional(),
   price: z.number().optional(),
   address: z.string().optional(),

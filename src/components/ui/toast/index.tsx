@@ -6,7 +6,8 @@ import Button from "@/components/ui/button/Button";
 import { cn } from "@/lib/cn";
 
 export interface ToastProps {
-  message: string;
+  message?: string;
+  children?: React.ReactNode;
   icon?: React.ReactNode | string;
   buttons?: {
     label: string;
@@ -42,6 +43,7 @@ const BUTTON = {
 
 export default function Toast({
   message,
+  children,
   icon,
   buttons = [{ label: "확인", primary: true }],
   onAction,
@@ -74,7 +76,7 @@ export default function Toast({
     <div className={cn("rounded-8 flex flex-col bg-white p-7 shadow-lg", frameStyle, frameClass)}>
       <div className="flex flex-col items-center gap-4">
         {icon && <div className="size-6">{icons}</div>}
-        <p className="text-center text-lg text-gray-900">{message}</p>
+        {children ? children : <p className="text-center text-lg">{message}</p>}
       </div>
 
       <div className={cn("flex items-center gap-2", buttonAlignStyle, alignStyle)}>

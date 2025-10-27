@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import { Btn } from "@/components/icons";
 import Button from "@/components/ui/button/Button";
@@ -13,28 +13,40 @@ interface ActivityImageUploaderProps {
   limit?: number;
   initialImages?: string[];
   onChange?: (images: (File | string)[]) => void;
+  onError?: (msg: string | null) => void;
   frameClass?: string;
 }
 
 export default function ActivityImageUploader({
   type = "banner",
   limit: customLimit,
-  initialImages = [],
+  initialImages,
   onChange,
+  onError,
   frameClass,
 }: ActivityImageUploaderProps) {
   const defaultLimit = type === "banner" ? 1 : 4;
   const limit = customLimit ?? defaultLimit;
 
-  const { images, inputRef, canAddMore, openFileDialog, handleFileChange, handleDelete } =
+  const { images, error, inputRef, canAddMore, openFileDialog, handleFileChange, handleDelete } =
     useImageUploader({ limit, initialImages });
 
   useEffect(() => {
-    if (onChange) onChange(images);
-  }, [images, onChange]);
+    if (mountedRef.current) {
+      if (onChange) onChange(images);
+    } else {
+      mountedRef.current = true;
+    }
+  }, [images]);
+
+  useEffect(() => {
+    if (onError) onError(error);
+  }, [error]);
+
+  const mountedRef = useRef(false);
 
   const listClass =
-    "aspect-square flex-[1_0_180px] max-w-[180px] h-full w-full hover:scale-98 transition-all duration-150";
+    "aspect-square flex-[1_0_180px] max-w-[180px] tablet:max-w-[206px] mobile:max-w-[167px] h-full w-full hover:scale-98 transition-all duration-150";
 
   return (
     <div
@@ -51,10 +63,10 @@ export default function ActivityImageUploader({
           onClick={() => openFileDialog()}
           className={cn(
             listClass,
-            "rounded-12 flex flex-col items-center justify-center gap-7 border-dashed bg-transparent hover:bg-transparent",
+            "rounded-12 flex flex-col items-center justify-center gap-7 border-dashed bg-white hover:bg-white",
           )}
         >
-          <Btn.AddImage className="h-45 w-45" />
+          <Btn.AddImage className="w-full" />
         </Button>
       )}
 
