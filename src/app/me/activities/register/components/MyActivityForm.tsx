@@ -23,6 +23,20 @@ interface ActivityFormProps<TReq, TRes> {
 
 export const subTitleClass = "block text-2xl font-bold mb-6";
 
+function mapSchedulesToSlots(schedules: ScheduleTime[] = []) {
+  const toDate = (date: string, hhmm: string) => {
+    const [y, m, d] = date.split("-").map(Number);
+    const [hh, mm] = hhmm.split(":").map(Number);
+    const dt = new Date(y, (m ?? 1) - 1, d ?? 1, hh ?? 0, mm ?? 0, 0, 0);
+    if (hh === 24) dt.setDate(dt.getDate() + 1);
+    return dt;
+  };
+
+  return schedules
+    .map((s) => ({ start: toDate(s.date, s.startTime), end: toDate(s.date, s.endTime) }))
+    .sort((a, b) => a.start.getTime() - b.start.getTime());
+}
+
 export default function MyActivityForm<TReq extends FieldValues, TRes>({
   defaultValues,
   isEdit = false,
@@ -35,6 +49,13 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
   const [subItems, setSubItems] = useState<(File | string)[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [slots, setSlots] = useState<{ start: Date; end: Date }[]>([]);
+
+  const dv = (defaultValues ?? {}) as Partial<
+    UpdateActivityReq &
+      CreateActivityReq & {
+        __initialScheduleRows?: { id: number; date: string; startTime: string; endTime: string }[];
+      }
+  >;
 
   const initialActivityId = (defaultValues as UpdateActivityReq)?.activityId ?? 0;
   const initialMainUrls = defaultValues?.bannerImageUrl ?? "";
@@ -49,7 +70,6 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
     defaultValues,
     delayError: 300,
   });
-
   const {
     handleSubmit,
     formState: { isValid, isSubmitting, isDirty },
@@ -62,13 +82,36 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
       setBannerItems(initialMainUrls ? [initialMainUrls] : []);
       setSubItems(initialSubUrls ?? []);
     }
+
+    const seed = (isEdit ? dv.schedulesToAdd : dv.schedules) as ScheduleTime[] | undefined;
+
+    if (seed && seed.length > 0) {
+      const filled = mapSchedulesToSlots(seed);
+      setSlots(filled);
+      setSelectedDate(filled[0]?.start ?? null);
+    } else {
+      setSlots([]);
+      setSelectedDate(null);
+    }
   }, [isEdit, defaultValues, methods, initialMainUrls, initialSubUrls]);
 
+  const initialScheduleRows =
+    (dv.__initialScheduleRows as
+      | { id: number; date: string; startTime: string; endTime: string }[]
+      | undefined) ?? [];
+
+  const toKey = (date: string, start: string, end: string) => `${date}|${start}-${end}`;
+
   const onSubmit = async (data: TReq) => {
+    const toDateStr = (d: Date) =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const toHHMM = (d: Date) =>
+      `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+
     const schedules: ScheduleTime[] = slots.map((slot) => ({
-      date: slot.start.toISOString().split("T")[0],
-      startTime: slot.start.toTimeString().slice(0, 5),
-      endTime: slot.end.toTimeString().slice(0, 5),
+      date: toDateStr(slot.start),
+      startTime: toHHMM(slot.start),
+      endTime: toHHMM(slot.end),
     }));
 
     if (isEdit) {
@@ -81,14 +124,26 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
       );
       const subImageIdsToRemove = initialSubIds;
 
+      const initialKeys = new Map(
+        initialScheduleRows.map((r) => [toKey(r.date, r.startTime, r.endTime), r.id]),
+      );
+      const currentKeys = new Set(schedules.map((s) => toKey(s.date, s.startTime, s.endTime)));
+      const scheduleIdsToRemove: number[] = [];
+      for (const [k, id] of initialKeys.entries()) {
+        if (!currentKeys.has(k)) scheduleIdsToRemove.push(id);
+      }
+      const filteredSchedulesToAdd = schedules.filter(
+        (s) => !initialKeys.has(toKey(s.date, s.startTime, s.endTime)),
+      );
+
       const payload: UpdateActivityReq = {
         ...(data as unknown as UpdateActivityReq),
         activityId: initialActivityId,
         ...(bannerImageUrl && { bannerImageUrl }),
         ...(subImageUrlsToAdd.length > 0 && { subImageUrlsToAdd }),
         ...(subImageIdsToRemove.length > 0 && { subImageIdsToRemove }),
-        schedulesToAdd: schedules,
-        scheduleIdsToRemove: [],
+        schedulesToAdd: filteredSchedulesToAdd,
+        scheduleIdsToRemove,
       };
 
       const options: MutateOptions<TRes, Error, TReq> = {

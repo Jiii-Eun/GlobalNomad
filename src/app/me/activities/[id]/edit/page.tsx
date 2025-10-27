@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -13,6 +14,7 @@ import type { UpdateActivityReq, UpdateActivityRes } from "@/lib/api/my-activiti
 export type UpdateActivityFormValues = UpdateActivityReq & {
   subImageIds?: number[];
   scheduleIds?: number[];
+  __initialScheduleRows?: { id: number; date: string; startTime: string; endTime: string }[];
 };
 
 export default function EditPage() {
@@ -20,6 +22,7 @@ export default function EditPage() {
   const { id } = useParams<{ id: string }>();
   const activityId = Number(id);
   const { showToast } = useToast();
+  const queryClient = useQueryClient();
 
   const { mutateAsync: updateActivity } = useUpdateMyActivity(false);
   const [defaultValues, setDefaultValues] = useState<UpdateActivityFormValues | null>(null);
@@ -39,6 +42,13 @@ export default function EditPage() {
     const subImage = subImages?.map((sub) => sub.imageUrl) ?? [];
     const subImageIds = subImages?.map((sub) => sub.id) ?? [];
     const scheduleIds = schedules?.map((schedule) => schedule.id) ?? [];
+    const initialScheduleRows =
+      (schedules ?? []).map((s) => ({
+        id: s.id,
+        date: s.date,
+        startTime: s.startTime,
+        endTime: s.endTime,
+      })) ?? [];
 
     setDefaultValues({
       activityId,
@@ -54,6 +64,7 @@ export default function EditPage() {
       schedulesToAdd: schedules ?? [],
       scheduleIdsToRemove: [],
       scheduleIds: scheduleIds,
+      __initialScheduleRows: initialScheduleRows,
     });
   }, [detail, activityId]);
 
