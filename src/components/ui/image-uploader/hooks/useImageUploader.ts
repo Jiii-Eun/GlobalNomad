@@ -47,7 +47,11 @@ export function useImageUploader({
   });
 
   useEffect(() => {
-    if (initialImages.length && JSON.stringify(initialImages) !== JSON.stringify(images)) {
+    if (
+      initialImages.length > 0 &&
+      images.length > 0 &&
+      JSON.stringify(initialImages) !== JSON.stringify(images)
+    ) {
       setImages(initialImages);
     }
   }, [JSON.stringify(initialImages)]);

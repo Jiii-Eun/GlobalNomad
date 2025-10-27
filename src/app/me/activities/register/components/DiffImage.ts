@@ -10,19 +10,22 @@ export async function diffMainImages(
 }
 
 export async function diffSubImages(
-  initialUrls: string[],
-  initialIds: number[],
+  originalUrls: string[],
+  originalIds: number[],
   current: (File | string)[],
   uploadFn: (file: FormData) => Promise<{ activityImageUrl: string }>,
 ): Promise<{ subImageUrlsToAdd: string[]; subImageIdsToRemove: number[] }> {
   const subImageUrlsToAdd: string[] = [];
   const subImageIdsToRemove: number[] = [];
 
+  const hasFile = current.some((x) => x instanceof File);
+
   for (const item of current) {
     if (typeof item === "string") {
-      const existsInInitial = initialUrls.includes(item);
+      const existsInInitial = originalUrls.includes(item);
       if (!existsInInitial) {
-        subImageUrlsToAdd.push(item);
+        const existsInInitial = originalUrls.some((url) => url === item);
+        if (!existsInInitial) subImageUrlsToAdd.push(item);
       }
     } else if (item instanceof File) {
       const formData = new FormData();
@@ -32,13 +35,17 @@ export async function diffSubImages(
     }
   }
 
-  initialUrls.forEach((url, idx) => {
+  originalUrls.forEach((url, index) => {
     const stillExists = current.some((item) => typeof item === "string" && item === url);
     if (!stillExists) {
-      const id = initialIds[idx];
+      const id = originalIds[index];
       if (id !== undefined) subImageIdsToRemove.push(id);
     }
   });
+
+  if (!hasFile) {
+    return { subImageUrlsToAdd: [], subImageIdsToRemove };
+  }
 
   return { subImageUrlsToAdd, subImageIdsToRemove };
 }

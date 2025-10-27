@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -13,6 +14,7 @@ import type { UpdateActivityReq, UpdateActivityRes } from "@/lib/api/my-activiti
 export type UpdateActivityFormValues = UpdateActivityReq & {
   subImageIds?: number[];
   scheduleIds?: number[];
+  subImageUrls?: string[];
 };
 
 export default function EditPage() {
@@ -20,6 +22,7 @@ export default function EditPage() {
   const { id } = useParams<{ id: string }>();
   const activityId = Number(id);
   const { showToast } = useToast();
+  const queryClient = useQueryClient();
 
   const { mutateAsync: updateActivity } = useUpdateMyActivity(false);
   const [defaultValues, setDefaultValues] = useState<UpdateActivityFormValues | null>(null);
@@ -48,7 +51,8 @@ export default function EditPage() {
       address,
       category,
       bannerImageUrl,
-      subImageUrlsToAdd: subImage,
+      subImageUrlsToAdd: [],
+      subImageUrls: subImage ?? [],
       subImageIdsToRemove: [],
       subImageIds: subImageIds,
       schedulesToAdd: schedules ?? [],
@@ -67,6 +71,7 @@ export default function EditPage() {
       isEdit
       apiActivity={updateActivity}
       onAfterSubmit={() => {
+        queryClient.invalidateQueries({ queryKey: ["activityDetail", activityId] });
         showToast("update");
         router.push("/me/activities");
       }}
