@@ -94,7 +94,13 @@ export default function Mypage() {
   };
 
   return (
-    <main className="mx-auto mt-20 mb-[88px] flex w-full max-w-[1200px]">
+    <main
+      className={[
+        "mx-auto mt-20 mb-[88px] flex w-full max-w-[1200px]",
+        "tablet:w-[429px] tablet:mt-6 tablet:mb-[214px]",
+        "moblie:w-[343px] mobile:mt-6 mobile:mb-12",
+      ].join(" ")}
+    >
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="w-full max-w-[792px] space-y-8">
         <div className="flex justify-between">
           <h1 className="text-brand-black text-3xl font-bold">내정보</h1>
