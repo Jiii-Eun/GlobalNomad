@@ -97,8 +97,8 @@ export default function Mypage() {
     <main
       className={[
         "mx-auto mt-20 mb-[88px] flex w-full max-w-[1200px]",
-        "tablet:w-[429px] tablet:mt-6 tablet:mb-[214px]",
-        "moblie:w-[343px] mobile:mt-6 mobile:mb-12",
+        "tablet:w-[429px] tablet:mt-6 tablet:mb-[214px] tablet:mr-6",
+        "moblie:mr-[15px] mobile:hidden",
       ].join(" ")}
     >
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="w-full max-w-[792px] space-y-8">
