@@ -1,6 +1,7 @@
 // 브랜드(logo)
 import Big from "@/assets/brand/logo-big.svg";
 import Kakao from "@/assets/brand/logo-kakao.svg";
+import LogoOnly from "@/assets/brand/logo-only.svg";
 import Small from "@/assets/brand/logo-small.svg";
 // arrow
 import DownFill from "@/assets/icons/arrows/arrow-down-fill.svg";
@@ -54,6 +55,7 @@ import Search from "@/assets/icons/ui/search.svg";
 export const Logo = {
   Big,
   Kakao,
+  LogoOnly,
   Small,
 };
 
