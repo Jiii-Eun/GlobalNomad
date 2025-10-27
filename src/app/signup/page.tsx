@@ -114,7 +114,11 @@ export default function Signup() {
   const isPending = isSubmitting || emailSignup.isPending || kakaoSignup.isPending;
 
   return (
-    <main className="mx-auto mt-28 w-full max-w-[640px]">
+    <main
+      className={["mx-auto mt-28 w-full max-w-[640px]", "moblie: mt-[110px] max-w-[350px]"].join(
+        " ",
+      )}
+    >
       <Logo />
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-7">
         <Field id="email" label="이메일" error={errors.email?.message}>
