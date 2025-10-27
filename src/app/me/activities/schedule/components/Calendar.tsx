@@ -14,7 +14,7 @@ interface CalendarProps {
   dailyStatusMap?: Map<string, DayCounts>;
   onPrevMonth?: () => void;
   onNextMonth?: () => void;
-  onSelectDate?: (date: string) => void;
+  onSelectDate?: (date: string, anchor?: HTMLButtonElement) => void;
 }
 
 function buildWeeks(viewMonth: dayjs.Dayjs) {
@@ -127,7 +127,9 @@ export default function Calendar({
                     key={di}
                     type="button"
                     disabled={!day}
-                    onClick={() => day && onSelectDate?.(getKey(day))}
+                    onClick={(e) =>
+                      day && onSelectDate?.(getKey(day), e.currentTarget as HTMLButtonElement)
+                    }
                     className="flex h-[150px] flex-col items-start justify-start border border-[#E8E8E8] bg-white px-3 py-3 text-left"
                   >
                     {day && (

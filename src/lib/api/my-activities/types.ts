@@ -106,7 +106,7 @@ export const ReservationSchema = z.object({
 export type Reservation = z.infer<typeof ReservationSchema>;
 
 export const GetReservationsResSchema = z.object({
-  cursorId: z.number(),
+  cursorId: z.number().nullable(),
   totalCount: z.number(),
   reservations: z.array(ReservationSchema),
 });
