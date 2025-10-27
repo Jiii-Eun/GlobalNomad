@@ -12,9 +12,8 @@ import Button from "@/components/ui/button/Button";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
 import { useLogin } from "@/lib/api/auth/hooks";
-import { getMe } from "@/lib/api/users/api";
 
-import { baseProfileNeeded } from "./baseProfileNeeded";
+import { baseProfileSetting } from "./baseProfileSetting";
 import KakaoSigninHandler from "./KakaoSigninHandler";
 
 interface FormValues {
@@ -33,8 +32,17 @@ export default function Login() {
   } = useForm<FormValues>({ mode: "onBlur", defaultValues: { email: "", password: "" } });
 
   const loginMutation = useLogin(false, {
-    onSuccess: () => {
-      router.push("/");
+    onSuccess: async () => {
+      try {
+        await baseProfileSetting();
+      } catch (e) {
+        if (process.env.NODE_ENV !== "production") {
+          console.warn("[baseProfileSetting] 실패:", e);
+        }
+      } finally {
+        await qc.invalidateQueries({ queryKey: ["me"] }).catch(() => null);
+        router.push("/");
+      }
     },
     onError: (e: unknown) => {
       const msg = (e as { message?: string })?.message ?? "";
@@ -51,11 +59,6 @@ export default function Login() {
 
   const onSubmit = async (v: FormValues) => {
     await loginMutation.mutateAsync({ email: v.email.trim(), password: v.password });
-
-    const me = await getMe();
-    await baseProfileNeeded(me);
-    await qc.invalidateQueries({ queryKey: ["me"] });
-    router.push("/");
   };
 
   return (
