@@ -34,7 +34,7 @@ export function editMe(data: EditUserReq) {
   });
 }
 
-// POST: 프로필 이미지 업로드
+//POST: 프로필 이미지 URL생성
 export function uploadProfileImage(formData: FormData) {
   return apiRequest<UploadProfileImageRes>(`/users/me/image`, {
     method: "POST",

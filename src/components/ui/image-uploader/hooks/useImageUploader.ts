@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 
 import { useFileInput } from "@/components/ui/image-uploader/hooks/useFileInput";
@@ -8,15 +6,18 @@ interface UseImageUploaderOptions {
   limit?: number;
   initialImages?: (File | string)[];
   onChange?: (images: (File | string)[]) => void;
+  onError?: (msg: string | null) => void;
 }
 
 export function useImageUploader({
   limit = 1,
   initialImages = [],
   onChange,
+  onError,
 }: UseImageUploaderOptions) {
   const [images, setImages] = useState<(File | string)[]>(initialImages);
   const [replaceIndex, setReplaceIndex] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const {
     inputRef,
@@ -24,6 +25,8 @@ export function useImageUploader({
     handleFileChange: baseHandleFileChange,
   } = useFileInput({
     onFileSelect: (file) => {
+      setError(null);
+
       setImages((prev) => {
         let next: (File | string)[];
         if (replaceIndex !== null) {
@@ -36,6 +39,10 @@ export function useImageUploader({
       });
 
       setReplaceIndex(null);
+    },
+    onError: (msg) => {
+      setError(msg);
+      onError?.(msg);
     },
   });
 
@@ -65,6 +72,7 @@ export function useImageUploader({
 
   return {
     images,
+    error,
     inputRef,
     canAddMore,
     openFileDialog: handleOpenDialog,
