@@ -14,6 +14,7 @@ import type { UpdateActivityReq, UpdateActivityRes } from "@/lib/api/my-activiti
 export type UpdateActivityFormValues = UpdateActivityReq & {
   subImageIds?: number[];
   scheduleIds?: number[];
+  subImageUrls?: string[];
   __initialScheduleRows?: { id: number; date: string; startTime: string; endTime: string }[];
 };
 
@@ -58,7 +59,8 @@ export default function EditPage() {
       address,
       category,
       bannerImageUrl,
-      subImageUrlsToAdd: subImage,
+      subImageUrlsToAdd: [],
+      subImageUrls: subImage ?? [],
       subImageIdsToRemove: [],
       subImageIds: subImageIds,
       schedulesToAdd: schedules ?? [],
@@ -78,6 +80,7 @@ export default function EditPage() {
       isEdit
       apiActivity={updateActivity}
       onAfterSubmit={() => {
+        queryClient.invalidateQueries({ queryKey: ["activityDetail", activityId] });
         showToast("update");
         router.push("/me/activities");
       }}

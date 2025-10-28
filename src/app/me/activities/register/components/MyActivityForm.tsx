@@ -1,7 +1,7 @@
 "use client";
 
 import { MutateOptions, UseMutateFunction } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DefaultValues, FieldValues, FormProvider, useForm } from "react-hook-form";
 
 import DateField from "@/app/me/activities/register/components/DateField";
@@ -59,7 +59,7 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
 
   const initialActivityId = (defaultValues as UpdateActivityReq)?.activityId ?? 0;
   const initialMainUrls = defaultValues?.bannerImageUrl ?? "";
-  const initialSubUrls = defaultValues?.subImageUrlsToAdd ?? [];
+  const initialSubUrls = defaultValues?.subImageUrls ?? [];
   const initialSubIds = defaultValues?.subImageIds ?? [];
 
   const propsMainImages = isEdit ? [initialMainUrls] : [];
@@ -116,13 +116,12 @@ export default function MyActivityForm<TReq extends FieldValues, TRes>({
 
     if (isEdit) {
       const bannerImageUrl = await diffMainImages(initialMainUrls, bannerItems, uploadImage);
-      const { subImageUrlsToAdd } = await diffSubImages(
+      const { subImageUrlsToAdd, subImageIdsToRemove } = await diffSubImages(
         initialSubUrls,
         initialSubIds,
         subItems,
         uploadImage,
       );
-      const subImageIdsToRemove = initialSubIds;
 
       const initialKeys = new Map(
         initialScheduleRows.map((r) => [toKey(r.date, r.startTime, r.endTime), r.id]),
