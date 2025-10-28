@@ -1,6 +1,7 @@
 import { useQuery, UseQueryOptions, UseQueryResult, QueryKey } from "@tanstack/react-query";
 
 import { useErrorHandler } from "@/components/provider/ErrorProvider";
+import { usePostToken } from "@/lib/api/auth/hooks";
 
 export interface FetchQueryOptions<TData, TError extends Error = Error>
   extends Omit<UseQueryOptions<TData, TError, TData, QueryKey>, "queryKey" | "queryFn"> {
@@ -13,6 +14,7 @@ export function useFetchQuery<TData, TError extends Error = Error>(
   queryFn?: () => Promise<TData>,
   options?: FetchQueryOptions<TData, TError>,
 ): UseQueryResult<TData, TError> {
+  const { mutateAsync: refreshTokens } = usePostToken();
   const { handleError } = useErrorHandler();
 
   return useQuery<TData, TError, TData, QueryKey>({
@@ -25,15 +27,29 @@ export function useFetchQuery<TData, TError extends Error = Error>(
         throw new Error("useFetchQuery에는 queryFn 또는 mockData가 필요합니다");
       }
 
-      const data = await queryFn();
-      return data;
+      try {
+        return await queryFn();
+      } catch (err) {
+        const error = err as { status?: number };
+
+        if (error.status === 401) {
+          try {
+            await refreshTokens(undefined);
+            return await queryFn();
+          } catch {
+            return null as TData;
+          }
+        }
+        throw error;
+      }
     },
 
     retry: false,
 
     onError: (error: TError) => {
-      handleError(error);
       options?.onError?.(error);
+
+      handleError(error);
     },
 
     ...options,

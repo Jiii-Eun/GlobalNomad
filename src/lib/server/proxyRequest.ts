@@ -31,28 +31,34 @@ export async function proxyRequest(req: NextRequest, method: string, endpoint: s
 
     const res = await fetch(url, { method, headers, body, credentials: "include" });
 
-    if (res.status === 401 && refreshToken) {
-      const refreshRes = await fetch(`${BASE_URL}/auth/tokens`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${refreshToken}`,
-          Accept: "application/json",
-        },
-        credentials: "include",
-      });
-
-      if (refreshRes.ok) {
-        const tokens = await refreshRes.json();
-        headers["Authorization"] = `Bearer ${tokens.accessToken}`;
-        const retriedRes = await fetch(url, { method, headers, body, credentials: "include" });
-
-        const nextRes = new NextResponse(await retriedRes.text(), {
-          status: res.status,
-          headers: { "content-type": res.headers.get("content-type") ?? "application/json" },
+    if (res.status === 401) {
+      if (refreshToken) {
+        const refreshRes = await fetch(`${BASE_URL}/auth/tokens`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${refreshToken}`,
+            Accept: "application/json",
+          },
+          credentials: "include",
         });
 
-        return setAuthCookies(nextRes, tokens);
+        if (refreshRes.ok) {
+          const tokens = await refreshRes.json();
+          headers["Authorization"] = `Bearer ${tokens.accessToken}`;
+          const retriedRes = await fetch(url, { method, headers, body, credentials: "include" });
+
+          const nextRes = new NextResponse(await retriedRes.text(), {
+            status: retriedRes.status,
+            headers: {
+              "content-type": retriedRes.headers.get("content-type") ?? "application/json",
+            },
+          });
+
+          return setAuthCookies(nextRes, tokens);
+        }
       }
+
+      return NextResponse.json({ message: "Unauthorized (refresh expired)" }, { status: 200 });
     }
 
     const contentType = res.headers.get("content-type");
