@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Suspense } from "react";
@@ -12,6 +13,7 @@ import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
 import { useLogin } from "@/lib/api/auth/hooks";
 
+import { baseProfileSetting } from "./baseProfileSetting";
 import KakaoSigninHandler from "./KakaoSigninHandler";
 
 interface FormValues {
@@ -21,6 +23,7 @@ interface FormValues {
 
 export default function Login() {
   const router = useRouter();
+  const qc = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -29,8 +32,17 @@ export default function Login() {
   } = useForm<FormValues>({ mode: "onBlur", defaultValues: { email: "", password: "" } });
 
   const loginMutation = useLogin(false, {
-    onSuccess: () => {
-      router.push("/");
+    onSuccess: async () => {
+      try {
+        await baseProfileSetting();
+      } catch (e) {
+        if (process.env.NODE_ENV !== "production") {
+          console.warn("[baseProfileSetting] 실패:", e);
+        }
+      } finally {
+        await qc.invalidateQueries({ queryKey: ["me"] }).catch(() => null);
+        router.push("/");
+      }
     },
     onError: (e: unknown) => {
       const msg = (e as { message?: string })?.message ?? "";
@@ -50,7 +62,13 @@ export default function Login() {
   };
 
   return (
-    <main className="mx-auto mt-28 w-full max-w-[640px]">
+    <main
+      className={[
+        "mx-auto mt-28 w-full max-w-[640px]",
+        "tablet:px-[52px] tablet:max-w-[640px]",
+        "mobile:mt-[110px] mobile:px-[13px] mobile:max-w-[350px]",
+      ].join(" ")}
+    >
       <Logo />
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-7">
