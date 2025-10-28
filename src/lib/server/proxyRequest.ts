@@ -29,21 +29,24 @@ export async function proxyRequest(req: NextRequest, method: string, endpoint: s
       }
     }
 
-    let res = await fetch(url, { method, headers, body, credentials: "include" });
+    const res = await fetch(url, { method, headers, body, credentials: "include" });
 
     if (res.status === 401 && refreshToken) {
       const refreshRes = await fetch(`${BASE_URL}/auth/tokens`, {
         method: "POST",
-        headers: { Cookie: `refreshToken=${refreshToken}` },
+        headers: {
+          Authorization: `Bearer ${refreshToken}`,
+          Accept: "application/json",
+        },
         credentials: "include",
       });
 
       if (refreshRes.ok) {
         const tokens = await refreshRes.json();
         headers["Authorization"] = `Bearer ${tokens.accessToken}`;
-        res = await fetch(url, { method, headers, body, credentials: "include" });
+        const retriedRes = await fetch(url, { method, headers, body, credentials: "include" });
 
-        const nextRes = new NextResponse(await res.text(), {
+        const nextRes = new NextResponse(await retriedRes.text(), {
           status: res.status,
           headers: { "content-type": res.headers.get("content-type") ?? "application/json" },
         });
@@ -51,6 +54,7 @@ export async function proxyRequest(req: NextRequest, method: string, endpoint: s
         return setAuthCookies(nextRes, tokens);
       }
     }
+
     const contentType = res.headers.get("content-type");
     const text = await res.text();
 

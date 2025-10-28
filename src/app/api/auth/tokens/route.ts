@@ -20,10 +20,17 @@ export async function POST() {
     });
 
     const text = await res.text();
-    if (!res.ok) return new NextResponse(text, { status: res.status });
+
+    if (!res.ok) {
+      const nextRes = new NextResponse(text, { status: res.status });
+      nextRes.cookies.delete("accessToken");
+      nextRes.cookies.delete("refreshToken");
+      return nextRes;
+    }
 
     const tokens = JSON.parse(text);
     const nextRes = NextResponse.json(tokens, { status: 200 });
+
     return setAuthCookies(nextRes, tokens);
   } catch (error) {
     console.error("[/api/auth/tokens] Error:", error);
