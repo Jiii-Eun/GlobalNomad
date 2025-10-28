@@ -11,20 +11,18 @@ interface LogoProps {
   ariaLabel?: string;
 }
 
-export default function Logo({
-  href = "/",
-  width = 340,
-  height = 192,
-  ariaLabel = "GlobalNomad",
-}: LogoProps) {
+export default function Logo({ href = "/", ariaLabel = "GlobalNomad" }: LogoProps) {
   return (
     <Link href={href} aria-label="홈으로 이동" className="mx-auto block w-fit">
       <MainLogo
-        className="mb-14 block"
+        className={[
+          "f-auto block",
+          "mb-14 w-[340px]",
+          "tablet:w-[340px] tablet:mb-14",
+          "mobile:w-[270px] mobile:mb-6",
+        ].join(" ")}
         role="img"
         aria-label={ariaLabel}
-        width={width}
-        height={height}
       />
     </Link>
   );
