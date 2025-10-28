@@ -1,7 +1,7 @@
 "use client";
 
 import { MutateOptions, UseMutateFunction } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { DefaultValues, FieldValues, FormProvider, useForm } from "react-hook-form";
 
 import DateField from "@/app/me/activities/register/components/DateField";
