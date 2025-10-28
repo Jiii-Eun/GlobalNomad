@@ -121,7 +121,12 @@ export const UpdateResvStatusReqSchema = z.object({
 export type UpdateResvStatusReq = z.infer<typeof UpdateResvStatusReqSchema>;
 
 // PATCH: 예약 상태 변경 응답
-export const UpdateResvStatusResSchema = ReservationSchema;
+export const UpdateResvStatusResSchema = z.object({
+  id: z.number().optional(),
+  activityId: z.number().optional(),
+  scheduleId: z.number().optional(),
+  status: MyReservationStatusSchema.optional(),
+});
 export type UpdateResvStatusRes = z.infer<typeof UpdateResvStatusResSchema>;
 
 // DELETE: 내 체험 삭제 요청

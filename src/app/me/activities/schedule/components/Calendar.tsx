@@ -100,21 +100,21 @@ export default function Calendar({
                   : undefined;
                 const pills =
                   day && counts ? (
-                    <div className="mt-2 flex flex-col gap-1">
+                    <div className="flex w-full flex-col">
                       {typeof counts.pending === "number" && counts.pending > 0 && (
-                        <div className="inline-flex w-full items-center justify-between rounded-[6px] bg-[#3B82F6]/10 px-2 py-1 text-xs">
+                        <div className="rounded-4 w-full items-center justify-between bg-[#3B82F6]/10 px-1 py-[3px] text-[14px]">
                           <span className="font-medium text-[#3B82F6]">예약</span>
                           <span className="font-semibold text-[#3B82F6]">{counts.pending}</span>
                         </div>
                       )}
                       {typeof counts.confirmed === "number" && counts.confirmed > 0 && (
-                        <div className="inline-flex w-full items-center justify-between rounded-[6px] bg-[#F59E0B]/10 px-2 py-1 text-xs">
+                        <div className="rounded-4 w-full items-center justify-between bg-[#F59E0B]/10 px-1 py-[3px] text-[14px]">
                           <span className="font-medium text-[#F59E0B]">승인</span>
                           <span className="font-semibold text-[#F59E0B]">{counts.confirmed}</span>
                         </div>
                       )}
                       {typeof counts.completed === "number" && counts.completed > 0 && (
-                        <div className="inline-flex w-full items-center justify-between rounded-[6px] bg-[#9CA3AF]/10 px-2 py-1 text-xs">
+                        <div className="rounded-4 flex w-full items-center gap-0.5 bg-[#9CA3AF]/10 px-1 py-[3px] text-[14px]">
                           <span className="font-medium text-[#6B7280]">완료</span>
                           <span className="font-semibold text-[#6B7280]">{counts.completed}</span>
                         </div>
@@ -130,11 +130,13 @@ export default function Calendar({
                     onClick={(e) =>
                       day && onSelectDate?.(getKey(day), e.currentTarget as HTMLButtonElement)
                     }
-                    className="flex h-[150px] flex-col items-start justify-start border border-[#E8E8E8] bg-white px-3 py-3 text-left"
+                    className="flex h-[150px] flex-col items-start justify-start border border-[#E8E8E8] bg-white text-left"
                   >
                     {day && (
                       <>
-                        <div className="text-[21px] font-medium text-[#969696]">{day.date()}</div>
+                        <div className="px-3 py-3 text-[21px] font-medium text-[#969696]">
+                          {day.date()}
+                        </div>
                         {pills}
                       </>
                     )}
