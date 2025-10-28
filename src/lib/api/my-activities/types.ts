@@ -88,7 +88,7 @@ export type GetReservationsReq = z.infer<typeof GetReservationsReqSchema>;
 // GET: 예약 내역 조회 응답
 export const ReservationSchema = z.object({
   id: z.number(),
-  nickname: z.string(),
+  nickname: z.string().optional(),
   userId: z.number(),
   teamId: z.string(),
   activityId: z.number(),
@@ -116,17 +116,12 @@ export type GetReservationsRes = z.infer<typeof GetReservationsResSchema>;
 export const UpdateResvStatusReqSchema = z.object({
   activityId: z.number(),
   reservationId: z.number(),
-  status: ReservationStatusSchema,
+  status: MyReservationStatusSchema,
 });
 export type UpdateResvStatusReq = z.infer<typeof UpdateResvStatusReqSchema>;
 
 // PATCH: 예약 상태 변경 응답
-export const UpdateResvStatusResSchema = z.object({
-  id: z.number().optional(),
-  activityId: z.number().optional(),
-  scheduleId: z.number().optional(),
-  status: MyReservationStatusSchema.optional(),
-});
+export const UpdateResvStatusResSchema = ReservationSchema;
 export type UpdateResvStatusRes = z.infer<typeof UpdateResvStatusResSchema>;
 
 // DELETE: 내 체험 삭제 요청

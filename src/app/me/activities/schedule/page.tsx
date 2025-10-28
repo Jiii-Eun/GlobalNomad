@@ -88,14 +88,43 @@ export default function Schedule() {
   >({});
 
   const dayTotals = useMemo(() => {
-    const totals = { pending: 0, confirmed: 0, declined: 0 };
-    (daySlots ?? []).forEach((s) => {
-      totals.pending += s.count?.pending ?? 0;
-      totals.confirmed += s.count?.confirmed ?? 0;
-      totals.declined += s.count?.declined ?? 0;
-    });
+    interface Count {
+      pending: number;
+      confirmed: number;
+      declined: number;
+    }
+    const totals: Count = { pending: 0, confirmed: 0, declined: 0 };
+    const slots = daySlots ?? [];
+    for (const s of slots) {
+      const { pending = 0, confirmed = 0, declined = 0 } = s.count ?? {};
+      totals.pending += pending;
+      totals.confirmed += confirmed;
+      totals.declined += declined;
+    }
+    if (selectedScheduleId !== null) {
+      const {
+        pending = 0,
+        confirmed = 0,
+        declined = 0,
+      } = slots.find((x) => x.scheduleId === selectedScheduleId)?.count ?? {};
+      const server: Count = { pending, confirmed, declined };
+
+      const local = slotLists[selectedScheduleId];
+      if (local) {
+        const localCounts: Count = {
+          pending: local.pending?.length ?? 0,
+          confirmed: local.confirmed?.length ?? 0,
+          declined: local.declined?.length ?? 0,
+        };
+
+        totals.pending += localCounts.pending - server.pending;
+        totals.confirmed += localCounts.confirmed - server.confirmed;
+        totals.declined += localCounts.declined - server.declined;
+      }
+    }
+
     return totals;
-  }, [daySlots]);
+  }, [daySlots, slotLists, selectedScheduleId]);
 
   const tabLabel = useCallback(
     (k: "pending" | "confirmed" | "declined") => {
@@ -133,6 +162,9 @@ export default function Schedule() {
     });
 
     refreshDashboard();
+    queryClient.invalidateQueries({
+      queryKey: ["reservedSchedule", Number(activityId || 0), openDate],
+    });
   }
 
   async function confirmAndAutoDecline(target: Reservation) {
@@ -169,6 +201,9 @@ export default function Schedule() {
     });
 
     refreshDashboard();
+    queryClient.invalidateQueries({
+      queryKey: ["reservedSchedule", Number(activityId || 0), openDate],
+    });
   }
 
   useEffect(() => {
@@ -242,16 +277,6 @@ export default function Schedule() {
       const lists = slotLists[selectedScheduleId];
       if (!lists || lists.confirmed.length === 0) return;
 
-      await Promise.all(
-        lists.confirmed.map((r) =>
-          updateReservationStatus({
-            activityId: r.activityId,
-            reservationId: r.id,
-            status: "completed",
-          }),
-        ),
-      );
-
       setSlotLists((prev) => ({
         ...prev,
         [selectedScheduleId]: { ...prev[selectedScheduleId], confirmed: [] },
@@ -259,6 +284,9 @@ export default function Schedule() {
 
       queryClient.invalidateQueries({
         queryKey: ["reservationDashboard", Number(activityId || 0), year, month],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["reservedSchedule", Number(activityId || 0), openDate],
       });
     }, 60_000);
 
