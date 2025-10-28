@@ -19,7 +19,7 @@ export default function AllActivitiesList() {
   const LENGTH = isPc ? 8 : isTablet ? 9 : 4;
 
   useEffect(() => {
-    setSize(LENGTH);
+    setSize((prev) => (prev !== LENGTH ? LENGTH : prev));
   }, [LENGTH, setSize]);
 
   const params = useActivityParams();

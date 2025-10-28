@@ -1,4 +1,5 @@
 import { useAtomValue } from "jotai";
+import { useMemo } from "react";
 
 import {
   activityCategoryAtom,
@@ -18,5 +19,8 @@ export function useActivityParams(defaults?: Partial<GetActivitiesReq>): GetActi
   const page = useAtomValue(activityPageAtom) ?? defaults?.page ?? 1;
   const size = useAtomValue(activitySizeAtom) ?? defaults?.size;
 
-  return { method, category, keyword, sort, page, size };
+  return useMemo(
+    () => ({ method, category, keyword, sort, page, size }),
+    [method, category, keyword, sort, page, size],
+  );
 }
