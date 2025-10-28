@@ -2,8 +2,8 @@
 
 import { useState, useMemo } from "react";
 
-import BestActivitiesList from "@/app/components/features/best/BestACtivitiesList";
-import BestPagination from "@/app/components/features/best/BestPagination";
+import BestActivitiesList from "@/app/(header)/components/features/best/BestACtivitiesList";
+import BestPagination from "@/app/(header)/components/features/best/BestPagination";
 import { getActivities } from "@/lib/api/activities/api";
 import { useActivities } from "@/lib/api/activities/hooks";
 import type { GetActivitiesReq, GetActivitiesRes } from "@/lib/api/activities/types";

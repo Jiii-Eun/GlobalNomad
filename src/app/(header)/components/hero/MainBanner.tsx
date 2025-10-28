@@ -1,4 +1,4 @@
-import MainBannerClient from "@/app/components/hero/MainBannerClient";
+import MainBannerClient from "@/app/(header)/components/hero/MainBannerClient";
 import { getActivities } from "@/lib/api/activities/api";
 
 export default async function MainBanner() {

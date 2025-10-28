@@ -1,11 +1,11 @@
-import Features from "@/app/components/features/Features";
-import MainBenner from "@/app/components/hero/MainBenner";
-import Search from "@/app/components/hero/Search";
+import Features from "@/app/(header)/components/features/Features";
+import MainBanner from "@/app/(header)/components/hero/MainBanner";
+import Search from "@/app/(header)/components/hero/Search";
 
 export default function Home() {
   return (
     <div>
-      <MainBenner />
+      <MainBanner />
       <div className="container-base tablet:px-6 mobile:px-4 mb-52">
         <Search />
         <Features />

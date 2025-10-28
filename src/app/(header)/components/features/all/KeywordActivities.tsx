@@ -2,9 +2,9 @@
 
 import { useAtomValue } from "jotai";
 
-import AllActivitiesList from "@/app/components/features/all/AllActivitiesList";
-import ArrayActivities from "@/app/components/features/all/ArrayActivities";
-import { useActivityParams } from "@/app/components/useActivityParams";
+import AllActivitiesList from "@/app/(header)/components/features/all/AllActivitiesList";
+import ArrayActivities from "@/app/(header)/components/features/all/ArrayActivities";
+import { useActivityParams } from "@/app/(header)/components/useActivityParams";
 import { activityKeywordAtom } from "@/lib/api/activities/atoms";
 import { useActivities } from "@/lib/api/activities/hooks";
 import { cn } from "@/lib/cn";

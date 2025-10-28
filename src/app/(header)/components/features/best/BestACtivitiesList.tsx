@@ -1,5 +1,5 @@
-import ActivityCardBase from "@/app/components/features/ActivityCardBase";
-import SkeletonList from "@/app/components/features/SkeletonList";
+import ActivityCardBase from "@/app/(header)/components/features/ActivityCardBase";
+import SkeletonList from "@/app/(header)/components/features/SkeletonList";
 import type { Activity } from "@/lib/api/activities/types";
 import { cn } from "@/lib/cn";
 

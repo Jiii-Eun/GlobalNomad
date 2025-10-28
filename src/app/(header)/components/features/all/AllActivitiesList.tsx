@@ -3,10 +3,10 @@
 import { useSetAtom } from "jotai";
 import { useEffect } from "react";
 
-import ActivityCardBase from "@/app/components/features/ActivityCardBase";
-import ActivitiesPagination from "@/app/components/features/all/ActivitiesPagination";
-import SkeletonList from "@/app/components/features/SkeletonList";
-import { useActivityParams } from "@/app/components/useActivityParams";
+import ActivityCardBase from "@/app/(header)/components/features/ActivityCardBase";
+import ActivitiesPagination from "@/app/(header)/components/features/all/ActivitiesPagination";
+import SkeletonList from "@/app/(header)/components/features/SkeletonList";
+import { useActivityParams } from "@/app/(header)/components/useActivityParams";
 import { activitySizeAtom } from "@/lib/api/activities/atoms";
 import { useActivities } from "@/lib/api/activities/hooks";
 import { cn } from "@/lib/cn";
