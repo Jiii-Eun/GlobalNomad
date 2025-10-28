@@ -3,7 +3,6 @@ import { Controller, FieldError, FieldValues, useFormContext } from "react-hook-
 import { subTitleClass } from "@/app/me/activities/register/components/MyActivityForm";
 import { ActivityImageUploader } from "@/components/ui/image-uploader";
 import Field from "@/components/ui/input/Field";
-import { cn } from "@/lib/cn";
 
 interface ImageFieldProps {
   onMainChange: (files: (File | string)[]) => void;
@@ -65,7 +64,7 @@ export default function ImageField({
       <div>
         <span className={subTitleClass}>소개 이미지</span>
         <Controller
-          name="subImageUrls"
+          name={SUB_IMAGE}
           render={({ field }) => (
             <Field id={SUB_IMAGE} error={onFieldError(SUB_IMAGE)}>
               <ActivityImageUploader
