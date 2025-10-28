@@ -348,7 +348,7 @@ export function useCreateReservation(
   );
 }
 
-//POST: 체험 이미지 업로드
+//POST: 체험 이미지 URL생성
 export function useUploadActivityImage(
   isMock = false,
   options?: ApiMutationOptions<UploadImageRes, FormData>,

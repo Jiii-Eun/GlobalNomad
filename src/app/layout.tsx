@@ -1,8 +1,8 @@
 import "@/styles/globals.css";
 
 import BaseLayout from "@/components/layout/BaseLayout";
-import KakaoScriptLoader from "@/components/layout/KakaoScriptLoader";
 import { ErrorProvider } from "@/components/provider/ErrorProvider";
+import KakaoScriptLoader from "@/components/provider/KakaoScriptLoader";
 import QueryProviders from "@/components/provider/QueryProviders";
 import { ToastProvider } from "@/components/provider/ToastProvider";
 

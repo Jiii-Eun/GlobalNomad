@@ -69,7 +69,7 @@ export function createReservation(activityId: number, data: CreateReservationReq
   });
 }
 
-// POST: 체험 이미지 업로드
+//POST: 체험 이미지 URL생성
 export function uploadActivityImage(formData: FormData) {
   return apiRequest<UploadImageRes>(`/activities/image`, {
     method: "POST",
