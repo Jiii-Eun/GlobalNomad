@@ -2,7 +2,7 @@ import { useQueryClient } from "node_modules/@tanstack/react-query/build/modern/
 
 import { useApiMutation, ApiMutationOptions } from "@/lib/hooks/useApiMutation";
 
-import { login, logout, refreshToken } from "./api";
+import { login, logout, PostToken } from "./api";
 import { LoginReq, LoginRes, TokenRes } from "./types";
 
 //POST: 로그인
@@ -27,8 +27,8 @@ export function useLogin(isMock = false, options?: ApiMutationOptions<LoginRes, 
 }
 
 //POST: 토큰 재발급
-export function useRefreshToken(isMock = false, options?: ApiMutationOptions<TokenRes, undefined>) {
-  return useApiMutation<TokenRes, undefined>(isMock ? undefined : () => refreshToken(), {
+export function usePostToken(isMock = false, options?: ApiMutationOptions<TokenRes, undefined>) {
+  return useApiMutation<TokenRes, undefined>(isMock ? undefined : () => PostToken(), {
     mockResponse: isMock ? { refreshToken: "mock-refresh", accessToken: "mock-access" } : undefined,
     ...options,
   });

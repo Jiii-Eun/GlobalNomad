@@ -1,4 +1,4 @@
-import { sharedButtonClass } from "@/app/components/features/all/Categories";
+import { sharedButtonClass } from "@/app/(header)/components/features/all/Categories";
 import { Arrow } from "@/components/icons";
 import Button from "@/components/ui/button/Button";
 import { cn } from "@/lib/cn";
