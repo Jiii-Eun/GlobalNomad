@@ -1,7 +1,13 @@
 import { testData } from "@/app/activities/[id]/testData/testData";
 import { Status, Misc } from "@/components/icons";
 
-export default function ActivityHead() {
+export default function ActivityHead(data: {
+  title: string;
+  category: string;
+  rating: number;
+  reviewCount: number;
+  address: string;
+}) {
   return (
     <div>
       <div className="mt-[78px] flex max-w-[1200px] items-center justify-between">
@@ -15,7 +21,7 @@ export default function ActivityHead() {
             </div>
             <div className="flex items-center gap-[6px]">
               <Misc.Location className="svg-fill h-5 w-5" />
-              <p className="text-md text-brand-nomad-black font-normal">{testData.address}</p>
+              <p className="text-md text-brand-nomad-black font-normal">{data.address}</p>
             </div>
           </div>
         </div>
