@@ -29,6 +29,8 @@ export const TOAST_CONFIG: Record<string, ToastConfigItem> = {
   },
   update: {
     message: "체험 수정이 완료되었습니다!",
+    buttons: [{ label: "확인", primary: true, actionKey: "redirect" }],
+    redirectTo: "/me/activities",
   },
   reserveDone: {
     message: "예약이 완료되었습니다.",
