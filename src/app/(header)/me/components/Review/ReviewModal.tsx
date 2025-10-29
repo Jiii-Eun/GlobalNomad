@@ -14,7 +14,9 @@ interface ReviewProps {
   trigger: React.ReactNode;
   title: string;
   dateText: string;
-  priceText: string;
+  startTime: string;
+  endTime: string;
+  priceText: number;
   thumbnailUrl: string | null;
   reservationId: number;
 }
@@ -24,6 +26,8 @@ export default function ReviewModal({
   title,
   dateText,
   priceText,
+  startTime,
+  endTime,
   thumbnailUrl,
   reservationId,
 }: ReviewProps) {
