@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 
-// import useClickOutside from "@/app/me/components/DropDown/useClickOutside";
+// import useClickOutside from "@/app/(header)/me/components/DropDown/useClickOutside";
 import { Misc } from "@/components/icons";
 
 export default function Menu({ id: activityId }: { id: number }) {

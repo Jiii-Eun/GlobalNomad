@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import MyActivityForm from "@/app/me/activities/register/components/MyActivityForm";
+import MyActivityForm from "@/app/(header)/me/activities/register/components/MyActivityForm";
 import Toast from "@/components/ui/toast";
 import { useToast } from "@/components/ui/toast/useToast";
 import { useActivityDetail } from "@/lib/api/activities/hooks";

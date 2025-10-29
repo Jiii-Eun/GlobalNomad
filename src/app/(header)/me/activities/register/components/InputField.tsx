@@ -2,8 +2,8 @@
 
 import { FieldError, FieldValues, Path, useFormContext } from "react-hook-form";
 
-import AddressField from "@/app/me/activities/register/components/AddressField";
-import PriceField from "@/app/me/activities/register/components/PriceField";
+import AddressField from "@/app/(header)/me/activities/register/components/AddressField";
+import PriceField from "@/app/(header)/me/activities/register/components/PriceField";
 import FormField from "@/components/ui/input/FormField";
 import { ActivityCategorySchema } from "@/lib/api/activities/types";
 

@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 
-import Calendar from "@/app/me/activities/schedule/components/Calendar";
+import Calendar from "@/app/(header)/me/activities/schedule/components/Calendar";
 import { Arrow } from "@/components/icons";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";

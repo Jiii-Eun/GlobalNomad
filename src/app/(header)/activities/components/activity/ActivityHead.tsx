@@ -1,4 +1,4 @@
-import { testData } from "@/app/activities/[id]/testData/testData";
+import { testData } from "@/app/(header)/activities/[id]/testData/testData";
 import { Status, Misc } from "@/components/icons";
 
 export default function ActivityHead(data: {

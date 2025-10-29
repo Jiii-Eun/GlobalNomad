@@ -4,11 +4,14 @@ import { MutateOptions, UseMutateFunction } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { DefaultValues, FieldValues, FormProvider, useForm } from "react-hook-form";
 
-import DateField from "@/app/me/activities/register/components/DateField";
-import { diffMainImages, diffSubImages } from "@/app/me/activities/register/components/DiffImage";
-import ImageField from "@/app/me/activities/register/components/ImageField";
-import InputField from "@/app/me/activities/register/components/InputField";
-import { uploadFiles } from "@/app/me/activities/register/components/uploadFiles";
+import DateField from "@/app/(header)/me/activities/register/components/DateField";
+import {
+  diffMainImages,
+  diffSubImages,
+} from "@/app/(header)/me/activities/register/components/DiffImage";
+import ImageField from "@/app/(header)/me/activities/register/components/ImageField";
+import InputField from "@/app/(header)/me/activities/register/components/InputField";
+import { uploadFiles } from "@/app/(header)/me/activities/register/components/uploadFiles";
 import Button from "@/components/ui/button/Button";
 import { useUploadActivityImage } from "@/lib/api/activities/hooks";
 import type { CreateActivityReq, ScheduleTime } from "@/lib/api/activities/types";

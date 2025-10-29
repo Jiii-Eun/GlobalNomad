@@ -4,9 +4,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState, useRef } from "react";
+import { useMemo, useState } from "react";
 
 import { Status, Misc } from "@/components/icons";
+import DropDown from "@/components/ui/DropDown/Dropdown";
 import { useToast } from "@/components/ui/toast/useToast";
 import { getMyActivities } from "@/lib/api/my-activities/api";
 import { useDeleteMyActivity } from "@/lib/api/my-activities/hooks";
@@ -17,7 +18,6 @@ import type {
 } from "@/lib/api/my-activities/types";
 import { useInfiniteScrollQuery } from "@/lib/hooks/useInfiniteScroll";
 
-import DropDown from "../../../components/ui/DropDown/Dropdown";
 import FormatNumber from "../components/formatNumber";
 import NotingPage from "../components/NotingPage";
 

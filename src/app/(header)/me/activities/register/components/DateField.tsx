@@ -2,7 +2,7 @@
 
 import { Controller, FieldError, Path, useFormContext, FieldValues } from "react-hook-form";
 
-import { subTitleClass } from "@/app/me/activities/register/components/MyActivityForm";
+import { subTitleClass } from "@/app/(header)/me/activities/register/components/MyActivityForm";
 import Field from "@/components/ui/input/Field";
 import TimeSlotPicker from "@/components/ui/timeSlot/TimeSlotPicker";
 

@@ -3,7 +3,7 @@
 
 import { useRouter } from "next/navigation";
 
-import MyActivityForm from "@/app/me/activities/register/components/MyActivityForm";
+import MyActivityForm from "@/app/(header)/me/activities/register/components/MyActivityForm";
 import { useToast } from "@/components/ui/toast/useToast";
 import { useCreateActivity } from "@/lib/api/activities/hooks";
 import type { CreateActivityReq, CreateActivityRes } from "@/lib/api/activities/types";

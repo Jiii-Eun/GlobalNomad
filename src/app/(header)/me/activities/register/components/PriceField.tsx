@@ -2,7 +2,7 @@
 
 import { Controller, useFormContext, FieldError, Path, FieldValues } from "react-hook-form";
 
-import { subTitleClass } from "@/app/me/activities/register/components/MyActivityForm";
+import { subTitleClass } from "@/app/(header)/me/activities/register/components/MyActivityForm";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
 import { cn } from "@/lib/cn";

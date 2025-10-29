@@ -9,7 +9,7 @@ import {
   PathValue,
 } from "react-hook-form";
 
-import { subTitleClass } from "@/app/me/activities/register/components/MyActivityForm";
+import { subTitleClass } from "@/app/(header)/me/activities/register/components/MyActivityForm";
 import Button from "@/components/ui/button/Button";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";

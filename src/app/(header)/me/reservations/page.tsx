@@ -3,7 +3,6 @@
 
 import { useEffect, useState } from "react";
 
-import ActivityCardBase from "@/app/components/features/ActivityCardBase";
 import { Arrow, Misc } from "@/components/icons";
 import DropDown from "@/components/ui/DropDown/Dropdown";
 import { useMyReservations } from "@/lib/api/my-reservations/hooks";

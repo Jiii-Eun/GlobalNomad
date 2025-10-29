@@ -1,6 +1,6 @@
 import { Controller, FieldError, FieldValues, useFormContext } from "react-hook-form";
 
-import { subTitleClass } from "@/app/me/activities/register/components/MyActivityForm";
+import { subTitleClass } from "@/app/(header)/me/activities/register/components/MyActivityForm";
 import { ActivityImageUploader } from "@/components/ui/image-uploader";
 import Field from "@/components/ui/input/Field";
 
