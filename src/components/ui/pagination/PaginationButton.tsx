@@ -21,7 +21,6 @@ export default function PaginationButton({
   const buttonClass = cn(
     "flex h-[55px] w-[55px] justify-center items-center bg-white rounded-[15px]",
     "mobile:h-10 mobile:w-10",
-    !disabled && "hover:bg-brand-deep-green-50 hover:text-white hover:border-0",
   );
 
   const noneClass = cn("tablet:hidden border-0 bg-transparent hover:bg-transparent");
