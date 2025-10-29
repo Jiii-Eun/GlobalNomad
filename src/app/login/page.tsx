@@ -29,7 +29,7 @@ export default function Login() {
     handleSubmit,
     setError,
     formState: { errors, isValid, isSubmitting },
-  } = useForm<FormValues>({ mode: "onBlur", defaultValues: { email: "", password: "" } });
+  } = useForm<FormValues>({ mode: "onChange", defaultValues: { email: "", password: "" } });
 
   const loginMutation = useLogin(false, {
     onSuccess: async () => {
