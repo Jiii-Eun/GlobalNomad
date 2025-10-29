@@ -11,6 +11,7 @@ import {
 } from "@/app/(header)/me/activities/register/components/DiffImage";
 import ImageField from "@/app/(header)/me/activities/register/components/ImageField";
 import InputField from "@/app/(header)/me/activities/register/components/InputField";
+import { mapSchedulesToSlots } from "@/app/(header)/me/activities/register/components/mapSchedulesToSlots";
 import { uploadFiles } from "@/app/(header)/me/activities/register/components/uploadFiles";
 import Button from "@/components/ui/button/Button";
 import { useUploadActivityImage } from "@/lib/api/activities/hooks";
@@ -25,20 +26,6 @@ interface ActivityFormProps<TReq, TRes> {
 }
 
 export const subTitleClass = "block text-2xl font-bold mb-6";
-
-function mapSchedulesToSlots(schedules: ScheduleTime[] = []) {
-  const toDate = (date: string, hhmm: string) => {
-    const [y, m, d] = date.split("-").map(Number);
-    const [hh, mm] = hhmm.split(":").map(Number);
-    const dt = new Date(y, (m ?? 1) - 1, d ?? 1, hh ?? 0, mm ?? 0, 0, 0);
-    if (hh === 24) dt.setDate(dt.getDate() + 1);
-    return dt;
-  };
-
-  return schedules
-    .map((s) => ({ start: toDate(s.date, s.startTime), end: toDate(s.date, s.endTime) }))
-    .sort((a, b) => a.start.getTime() - b.start.getTime());
-}
 
 export default function MyActivityForm<TReq extends FieldValues, TRes>({
   defaultValues,
