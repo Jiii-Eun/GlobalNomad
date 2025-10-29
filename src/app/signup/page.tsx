@@ -35,7 +35,7 @@ export default function Signup() {
     trigger,
     getValues,
   } = useForm<FormValues>({
-    mode: "onBlur",
+    mode: "onChange",
     defaultValues: { email: "", nickname: "", password: "", confirm: "" },
   });
 
