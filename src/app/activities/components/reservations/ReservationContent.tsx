@@ -7,10 +7,23 @@ import DatePicker from "react-datepicker";
 import ReservationWrap from "./ReservationWrap";
 import ParticipantsCounter from "../participants/ParticipantsCounter";
 
-const ReservationContent = () => {
+export interface Schedule {
+  id: number;
+  date: string; // "2025-10-29"
+  startTime: string; // "10:00"
+  endTime: string; // "12:00"
+}
+
+export interface ReservationContentProps {
+  activityId: number;
+  title: string;
+  price: number;
+  schedules?: Schedule[];
+}
+
+const ReservationContent = ({ activityId, title, price, schedules }: ReservationContentProps) => {
   const [members, onChangeMembers] = React.useState(1);
 
-  const price = 100000;
   const formatWage = (wage: number) => {
     return wage.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
@@ -84,6 +97,10 @@ const ReservationContent = () => {
       >
         예약하기
       </button>
+      <div className="border-t-gray200 text-h3-bold text-nomad-black flex justify-between border-t pt-4">
+        <p>총 합계</p>
+        <div>{formatWage(price * members)}</div>
+      </div>
     </ReservationWrap>
   );
 };
