@@ -2,6 +2,8 @@ import Features from "@/app/(header)/components/features/Features";
 import MainBanner from "@/app/(header)/components/hero/MainBanner";
 import Search from "@/app/(header)/components/hero/Search";
 
+export const dynamic = "force-static";
+
 export default function Home() {
   return (
     <div>
