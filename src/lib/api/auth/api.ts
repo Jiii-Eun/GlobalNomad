@@ -12,7 +12,7 @@ export function login(data: LoginReq) {
 }
 
 // POST: 토큰 재발급
-export function refreshToken() {
+export function PostToken() {
   return apiRequest<TokenRes>(`/auth/tokens`, {
     method: "POST",
     schema: TokenResSchema,

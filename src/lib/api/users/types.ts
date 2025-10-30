@@ -27,7 +27,7 @@ export const EditUserReqSchema = z.object({
 });
 export type EditUserReq = z.infer<typeof EditUserReqSchema>;
 
-//POST: 프로필이미지 업로드
+//POST: 프로필 이미지 URL 생성
 export const UploadProfileImageReqSchema = z.object({
   image: z.instanceof(File),
 });

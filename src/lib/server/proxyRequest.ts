@@ -4,10 +4,16 @@ import { BASE_URL } from "@/lib/server/constants";
 import { setAuthCookies } from "@/lib/server/tokens";
 
 export async function proxyRequest(req: NextRequest, method: string, endpoint: string) {
+  const joinUrl = (base: string, path: string): string => {
+    const cleanBase = base.replace(/\/+$/, "");
+    const cleanPath = path.replace(/^\/+/, "");
+    return `${cleanBase}/${cleanPath}`;
+  };
+
   try {
     const url = ["GET", "DELETE"].includes(method)
-      ? `${BASE_URL}/${endpoint}${req.nextUrl.search}`
-      : `${BASE_URL}/${endpoint}`;
+      ? `${joinUrl(BASE_URL, endpoint)}${req.nextUrl.search}`
+      : joinUrl(BASE_URL, endpoint);
 
     const cookieHeader = req.headers.get("cookie") ?? "";
     const accessToken = cookieHeader.match(/accessToken=([^;]+)/)?.[1];
@@ -29,28 +35,38 @@ export async function proxyRequest(req: NextRequest, method: string, endpoint: s
       }
     }
 
-    let res = await fetch(url, { method, headers, body, credentials: "include" });
+    const res = await fetch(url, { method, headers, body, credentials: "include" });
 
-    if (res.status === 401 && refreshToken) {
-      const refreshRes = await fetch(`${BASE_URL}/auth/tokens`, {
-        method: "POST",
-        headers: { Cookie: `refreshToken=${refreshToken}` },
-        credentials: "include",
-      });
-
-      if (refreshRes.ok) {
-        const tokens = await refreshRes.json();
-        headers["Authorization"] = `Bearer ${tokens.accessToken}`;
-        res = await fetch(url, { method, headers, body, credentials: "include" });
-
-        const nextRes = new NextResponse(await res.text(), {
-          status: res.status,
-          headers: { "content-type": res.headers.get("content-type") ?? "application/json" },
+    if (res.status === 401) {
+      if (refreshToken) {
+        const refreshRes = await fetch(`${BASE_URL}/auth/tokens`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${refreshToken}`,
+            Accept: "application/json",
+          },
+          credentials: "include",
         });
 
-        return setAuthCookies(nextRes, tokens);
+        if (refreshRes.ok) {
+          const tokens = await refreshRes.json();
+          headers["Authorization"] = `Bearer ${tokens.accessToken}`;
+          const retriedRes = await fetch(url, { method, headers, body, credentials: "include" });
+
+          const nextRes = new NextResponse(await retriedRes.text(), {
+            status: retriedRes.status,
+            headers: {
+              "content-type": retriedRes.headers.get("content-type") ?? "application/json",
+            },
+          });
+
+          return setAuthCookies(nextRes, tokens);
+        }
       }
+
+      return NextResponse.json({ message: "Unauthorized (refresh expired)" }, { status: 200 });
     }
+
     const contentType = res.headers.get("content-type");
     const text = await res.text();
 

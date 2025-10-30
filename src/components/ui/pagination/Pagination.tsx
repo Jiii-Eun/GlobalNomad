@@ -4,7 +4,6 @@ import { useState } from "react";
 
 import { Arrow } from "@/components/icons";
 import PaginationButton from "@/components/ui/pagination/PaginationButton";
-import SlideFrame from "@/components/ui/pagination/SlideFrame";
 import { cn } from "@/lib/cn";
 
 interface dataProps {
@@ -17,58 +16,61 @@ interface dataProps {
 export default function Pagination({ page, setPage, totalPages, className }: dataProps) {
   const pagesGroup = 5;
 
-  const groupIndex = Math.floor((page - 1) / pagesGroup);
+  const [groupIndex, setGroupIndex] = useState(0);
   const startPage = groupIndex * pagesGroup + 1;
   const endPage = Math.min(startPage + pagesGroup - 1, totalPages);
 
+  const visiblePages = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
   const firstGroup = groupIndex === 0;
   const lastGroup = endPage >= totalPages;
-  const visiblePages = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
 
-  const [direction, setDirection] = useState<"left" | "right">("right");
-  const arrowClass = cn("svg-fill hover:text-white");
+  const arrowButtonClass = "hover:bg-transparent";
 
   const handlePrevGroup = () => {
     if (!firstGroup) {
-      setDirection("left");
-      setPage(startPage - pagesGroup);
+      setGroupIndex((prev) => prev - 1);
     }
   };
 
   const handleNextGroup = () => {
     if (!lastGroup) {
-      setDirection("right");
-      setPage(startPage + pagesGroup);
+      setGroupIndex((prev) => prev + 1);
     }
   };
 
   return (
     <div className={cn("flex-center mt-4 gap-[10px]", className)}>
-      <PaginationButton disabled={firstGroup} onClick={handlePrevGroup}>
-        <Arrow.LeftFill className={cn("size-5", !firstGroup && arrowClass)} />
+      <PaginationButton
+        disabled={firstGroup}
+        onClick={handlePrevGroup}
+        className={arrowButtonClass}
+      >
+        <Arrow.LeftFill className={cn("size-5", !firstGroup)} />
       </PaginationButton>
 
-      <SlideFrame direction={direction} uniqueKey={startPage} className="flex items-center">
-        <div className="flex gap-[10px]">
-          {visiblePages.map((num) => {
-            const isNum = page === num;
+      <div className="flex gap-[10px]">
+        {visiblePages.map((num) => {
+          const isNum = page === num;
 
-            return (
-              <PaginationButton
-                key={num}
-                onClick={() => setPage(num)}
-                aria-current={isNum ? "page" : undefined}
-                className={cn("transition-colors", isNum && "bg-brand-deep-green-500 text-white")}
-              >
-                {num}
-              </PaginationButton>
-            );
-          })}
-        </div>
-      </SlideFrame>
+          return (
+            <PaginationButton
+              key={num}
+              onClick={() => setPage(num)}
+              aria-current={isNum ? "page" : undefined}
+              className={cn(
+                "transition-colors",
+                isNum && "bg-brand-deep-green-500 text-white",
+                "hover:border-0 hover:text-white",
+              )}
+            >
+              {num}
+            </PaginationButton>
+          );
+        })}
+      </div>
 
-      <PaginationButton disabled={lastGroup} onClick={handleNextGroup}>
-        <Arrow.RightFill className={cn("size-5", !lastGroup && arrowClass)} />
+      <PaginationButton disabled={lastGroup} onClick={handleNextGroup} className={arrowButtonClass}>
+        <Arrow.RightFill className={cn("size-5", !lastGroup)} />
       </PaginationButton>
     </div>
   );
