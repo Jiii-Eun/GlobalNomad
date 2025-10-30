@@ -8,50 +8,38 @@ import Calendar from "@/app/me/activities/schedule/components/Calendar";
 import { Arrow } from "@/components/icons";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
-import { DrawerBody, DrawerFooter, DrawerHeader, DrawerLayout } from "@/components/ui/modal";
 import { getReservations, updateReservationStatus } from "@/lib/api/my-activities/api";
 import {
   useReservationDashboard,
   useMyActivities,
   useReservedSchedule,
 } from "@/lib/api/my-activities/hooks";
-import type {
-  GetReservationsRes,
-  Reservation,
-  ReservedScheduleItem,
-} from "@/lib/api/my-activities/types";
+import type { Reservation } from "@/lib/api/my-activities/types";
+import { useInfiniteScrollQuery } from "@/lib/hooks/useInfiniteScroll";
+
+import NotingPage from "../../components/NotingPage";
 
 export default function Schedule() {
   const queryClient = useQueryClient();
-  const { data: myActs } = useMyActivities({ size: 5 });
+  const { data: myActs } = useMyActivities({ size: 50 });
   const activityOtions =
     myActs?.activities.map((act) => ({ value: act.id, label: act.title })) ?? [];
+
   const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(null);
-  const drawerBtnRef = useRef<HTMLButtonElement | null>(null);
   const [activityId, setActivityId] = useState<number | "">("");
   const [viewMonth, setViewMonth] = useState(() => dayjs());
+
   const year = String(viewMonth.year());
   const month = String(viewMonth.month() + 1);
 
+  const listScrollRef = useRef<HTMLDivElement | null>(null);
   const calendarWrapRef = useRef<HTMLDivElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
   const [panelTop, setPanelTop] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 1024);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-
-  const { data: monthDash, isFetching } = useReservationDashboard(
-    Number(activityId || 0),
-    year,
-    month,
-    false,
-    { enabled: !!activityId },
-  );
+  const { data: monthDash } = useReservationDashboard(Number(activityId || 0), year, month, false, {
+    enabled: !!activityId,
+  });
 
   const dailyStatusMap = useMemo(() => {
     const map = new Map<string, { pending: number; confirmed: number; completed: number }>();
@@ -125,6 +113,29 @@ export default function Schedule() {
 
     return totals;
   }, [daySlots, slotLists, selectedScheduleId]);
+
+  const { data: pages, targetRef } = useInfiniteScrollQuery<
+    { cursorId: number | null; reservations: Reservation[] },
+    {
+      activityId: number;
+      scheduleId: number;
+      status: "pending" | "confirmed" | "declined";
+      size: number;
+      cursorId?: number;
+    }
+  >({
+    queryKey: ["reservations", Number(activityId || 0), selectedScheduleId, activeTab],
+    fetchFn: (params) => getReservations(params),
+    initialParams: {
+      activityId: Number(activityId || 0),
+      scheduleId: selectedScheduleId ?? 0,
+      status: activeTab,
+      size: 2,
+    },
+    enabled: Boolean(activityId && selectedScheduleId && openDate),
+    size: 2,
+    rootRef: listScrollRef,
+  });
 
   const tabLabel = useCallback(
     (k: "pending" | "confirmed" | "declined") => {
@@ -218,42 +229,6 @@ export default function Schedule() {
     });
   }, [openDate, daySlots]);
 
-  useEffect(() => {
-    if (!activityId || !openDate || !selectedScheduleId) return;
-
-    (async () => {
-      const [pending, confirmed, declined] = await Promise.all([
-        getReservations({
-          activityId: Number(activityId),
-          scheduleId: selectedScheduleId,
-          status: "pending",
-          size: 50,
-        }),
-        getReservations({
-          activityId: Number(activityId),
-          scheduleId: selectedScheduleId,
-          status: "confirmed",
-          size: 50,
-        }),
-        getReservations({
-          activityId: Number(activityId),
-          scheduleId: selectedScheduleId,
-          status: "declined",
-          size: 50,
-        }),
-      ]);
-
-      setSlotLists((prev) => ({
-        ...prev,
-        [selectedScheduleId]: {
-          pending: pending.reservations,
-          confirmed: confirmed.reservations,
-          declined: declined.reservations,
-        },
-      }));
-    })();
-  }, [activityId, openDate, selectedScheduleId]);
-
   const hasConfirmed = useMemo(() => {
     if (!selectedScheduleId) return false;
 
@@ -294,7 +269,7 @@ export default function Schedule() {
   }, [openDate, selectedScheduleId, daySlots, slotLists, activityId, year, month, queryClient]);
 
   useEffect(() => {
-    if (isMobile || !openDate) return;
+    if (!openDate) return;
 
     const wrap = calendarWrapRef.current?.getBoundingClientRect();
     const panel = panelRef.current?.getBoundingClientRect();
@@ -306,268 +281,229 @@ export default function Schedule() {
     const maxTop = Math.max(MARGIN, wrap.height - panel.height - MARGIN);
 
     setPanelTop(Math.round(Math.min(Math.max(centerTop, minTop), maxTop)));
-  }, [isMobile, openDate, activeTab, selectedScheduleId, daySlots, slotLists, viewMonth]);
+  }, [openDate, activeTab, selectedScheduleId, daySlots, slotLists, viewMonth]);
+
+  useEffect(() => {
+    if (!selectedScheduleId) return;
+
+    const items = (pages ?? []).flatMap((p) => p.reservations ?? []);
+    const merged = Array.from(new Map(items.map((r) => [r.id, r])).values());
+
+    setSlotLists((prev) => {
+      const cur = prev[selectedScheduleId] ?? { pending: [], confirmed: [], declined: [] };
+      const prevList = cur[activeTab] ?? [];
+
+      if (prevList.length === merged.length && prevList.every((x, i) => x.id === merged[i]?.id)) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        [selectedScheduleId]: {
+          ...cur,
+          [activeTab]: merged,
+        },
+      };
+    });
+  }, [pages, activeTab, selectedScheduleId]);
+
+  if (!myActs || myActs.activities.length === 0) {
+    return (
+      <div className="w-full">
+        <h1 className="text-3xl font-bold">예약 현황</h1>
+        <NotingPage />
+      </div>
+    );
+  }
 
   return (
     <>
       <div className="flex w-[792px] flex-col gap-6">
         <div className="flex w-[768px] flex-col gap-8">
           <h1 className="text-3xl font-bold">예약 현황</h1>
-          <Field id="activity" className="h-20">
-            <Input
-              as="select"
-              id="activity"
-              className="rounded-4 appearance-none border border-gray-400 bg-white"
-              rightIcon={<Arrow.Down className="h-6 w-6" />}
-              placeholderOption="내 체험 선택"
-              options={activityOtions}
-              value={activityId}
-              onChange={(e) => setActivityId(Number((e.target as HTMLSelectElement).value))}
-            ></Input>
-          </Field>
-        </div>
-        <div ref={calendarWrapRef} className="relative w-[800px]">
-          <Calendar
-            dailyStatusMap={dailyStatusMap}
-            year={Number(year)}
-            month={Number(month)}
-            onPrevMonth={() => setViewMonth((m) => m.subtract(1, "month"))}
-            onNextMonth={() => setViewMonth((m) => m.add(1, "month"))}
-            onSelectDate={(d) => {
-              setOpenDate(d);
-              if (isMobile) queueMicrotask(() => drawerBtnRef.current?.click());
-            }}
-          />
-          {!isMobile && openDate && (
-            <>
-              <div
-                className="absolute inset-0 z-40"
-                onClick={() => setOpenDate(null)}
-                aria-hidden
-              />
-
-              <div
-                ref={panelRef}
-                role="dialog"
-                aria-modal="true"
-                className="absolute right-0 z-50 flex min-h-[620px] w-[420px] flex-col gap-4 rounded-3xl border border-gray-200 bg-white px-6 py-7 shadow-lg"
-                style={{ top: Math.max(0, panelTop) }}
-              >
-                <div className="border-brand-gray-200 flex flex-col gap-10 border-b">
-                  <div className="flex justify-between">
-                    <div className="text-2xl font-bold">예약 정보</div>
-                    <button
-                      type="button"
-                      className="rounded text-2xl hover:bg-gray-100"
-                      onClick={() => setOpenDate(null)}
-                      aria-label="닫기"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                  <div className="flex gap-3">
-                    {(["pending", "confirmed", "declined"] as const).map((k) => (
-                      <button
-                        key={k}
-                        type="button"
-                        className={`rounded px-3 py-1 text-xl ${activeTab === k ? "bg-black text-white" : "bg-white"}`}
-                        onClick={() => setActiveTab(k)}
-                      >
-                        {tabLabel(k)}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="flex flex-col gap-4">
-                  <div className="text-xl font-semibold">예약 날짜</div>
-                  <div className="flex flex-col">
-                    <div className="text-xl">{openDate}</div>
-                    <Field id="slot" className="h-20">
-                      <Input
-                        as="select"
-                        id="slot"
-                        className="rounded-4 appearance-none border border-gray-400 bg-white"
-                        rightIcon={<Arrow.Down className="h-6 w-6" />}
-                        placeholderOption="시간 선택"
-                        options={(daySlots ?? []).map((s) => ({
-                          value: s.scheduleId,
-                          label: `${s.startTime} ~ ${s.endTime}`,
-                        }))}
-                        value={selectedScheduleId ?? ""}
-                        disabled={!daySlots || daySlots.length === 0}
-                        onChange={(e) => {
-                          const v = (e.target as HTMLSelectElement).value;
-                          setSelectedScheduleId(v === "" ? null : Number(v));
-                        }}
-                      />
-                    </Field>
-                  </div>
-                  {selectedScheduleId && (
-                    <div className="flex flex-col gap-4">
-                      <span className="text-xl font-semibold">예약 내역</span>
-
-                      <ul className="flex flex-col gap-3.5">
-                        {(slotLists[selectedScheduleId]?.[activeTab] ?? []).map((r) => (
-                          <li
-                            key={r.id}
-                            className="rounded-4 border-brand-gray-300 flex h-[116px] justify-between border px-4 py-2"
-                          >
-                            <div className="flex flex-col gap-2.5">
-                              <div className="text-brand-gray-600 font-semibold">
-                                닉네임 <span className="font-medium text-black">{r.nickname}</span>
-                              </div>
-                              <div className="text-brand-gray-600 font-semibold">
-                                인원 <span className="font-medium text-black">{r.headCount}명</span>
-                              </div>
-                            </div>
-                            <div className="flex items-end gap-2">
-                              {activeTab === "pending" && (
-                                <button
-                                  className="text-md h-fit w-fit rounded bg-black px-5 py-2.5 text-center text-white"
-                                  disabled={hasConfirmed}
-                                  onClick={() => confirmAndAutoDecline(r)}
-                                >
-                                  승인하기
-                                </button>
-                              )}
-                              {activeTab !== "declined" && (
-                                <button
-                                  className="text-md h-fit w-fit rounded border px-5 py-2.5 text-center"
-                                  onClick={() => decline(r)}
-                                >
-                                  거절하기
-                                </button>
-                              )}
-                            </div>
-                          </li>
-                        ))}
-
-                        {(slotLists[selectedScheduleId]?.[activeTab] ?? []).length === 0 && (
-                          <li className="rounded bg-gray-50 px-3 py-6 text-center text-sm text-gray-500">
-                            내역이 없습니다.
-                          </li>
-                        )}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-        <div className="mt-2 flex gap-4 text-sm">
-          <span>
-            완료: {(monthDash ?? []).reduce((a, b) => a + (b.reservations.completed ?? 0), 0)}
-          </span>
-          <span>
-            예약: {(monthDash ?? []).reduce((a, b) => a + (b.reservations.pending ?? 0), 0)}
-          </span>
-          <span>
-            승인: {(monthDash ?? []).reduce((a, b) => a + (b.reservations.confirmed ?? 0), 0)}
-          </span>
-        </div>
-        <DrawerLayout
-          trigger={<span ref={drawerBtnRef} className="hidden" />}
-          title="예약 정보"
-          width="full"
-        >
-          <DrawerHeader />
-          <DrawerBody frameClass="flex flex-col gap-4">
-            <Field id="slot" className="h-20">
+          {myActs && myActs.activities.length > 0 && (
+            <Field id="activity" className="h-20">
               <Input
                 as="select"
-                id="slot"
-                className="rounded-4 border border-gray-400 bg-white px-4 py-2"
-                placeholderOption="시간 선택"
-                options={(daySlots ?? []).map((s) => ({
-                  value: s.scheduleId,
-                  label: `${s.startTime} ~ ${s.endTime}`,
-                }))}
-                value={selectedScheduleId ?? ""}
-                disabled={!daySlots || daySlots.length === 0}
-                onChange={(e) => {
-                  const v = (e.target as HTMLSelectElement).value;
-                  setSelectedScheduleId(v === "" ? null : Number(v));
-                }}
+                id="activity"
+                className="rounded-4 appearance-none border border-gray-400 bg-white"
+                rightIcon={<Arrow.Down className="h-6 w-6" />}
+                placeholderOption="내 체험 선택"
+                options={activityOtions}
+                value={activityId}
+                onChange={(e) => setActivityId(Number((e.target as HTMLSelectElement).value))}
               />
             </Field>
+          )}
+        </div>
+        {!myActs || myActs.activities.length === 0 ? (
+          <NotingPage />
+        ) : (
+          <div ref={calendarWrapRef} className="relative w-[800px]">
+            <Calendar
+              dailyStatusMap={dailyStatusMap}
+              year={Number(year)}
+              month={Number(month)}
+              onPrevMonth={() => setViewMonth((m) => m.subtract(1, "month"))}
+              onNextMonth={() => setViewMonth((m) => m.add(1, "month"))}
+              onSelectDate={(d) => {
+                setOpenDate(d);
+              }}
+              onChangeMonth={(y, m) =>
+                setViewMonth(() => dayjs(`${y}-${String(m).padStart(2, "0")}-01`))
+              }
+            />
             {openDate && (
-              <section className="rounded-4 mt-0 border border-gray-200 bg-white p-4">
-                <header className="mb-4 flex items-center justify-between">
-                  <h2 className="text-xl font-semibold">{openDate} 예약 내역</h2>
+              <>
+                <div
+                  className="absolute inset-0 z-40"
+                  onClick={() => setOpenDate(null)}
+                  aria-hidden
+                />
 
-                  <div className="flex gap-2">
-                    {(["pending", "confirmed", "declined"] as const).map((k) => (
+                <div
+                  ref={panelRef}
+                  role="dialog"
+                  aria-modal="true"
+                  className="absolute right-0 z-50 flex h-[700px] w-[420px] flex-col gap-4 overflow-hidden rounded-3xl border border-gray-200 bg-white px-6 py-7 shadow-lg"
+                  style={{ top: Math.max(0, panelTop) }}
+                >
+                  <div className="border-brand-gray-200 flex flex-col gap-10 border-b">
+                    <div className="flex justify-between">
+                      <div className="text-2xl font-bold">예약 정보</div>
                       <button
-                        key={k}
-                        className={`rounded px-3 py-1 text-sm ${activeTab === k ? "bg-black text-white" : "bg-gray-100"}`}
-                        onClick={() => setActiveTab(k)}
+                        type="button"
+                        className="rounded text-2xl hover:bg-gray-100"
+                        onClick={() => setOpenDate(null)}
+                        aria-label="닫기"
                       >
-                        {k === "pending" ? "신청" : k === "confirmed" ? "승인" : "거절"}
+                        ✕
                       </button>
-                    ))}
-                  </div>
-                </header>
-                {selectedScheduleId && (
-                  <div className="rounded border border-gray-200 p-3">
-                    <div className="mb-2 text-sm text-gray-600">
-                      {(() => {
-                        const s = (daySlots ?? []).find((x) => x.scheduleId === selectedScheduleId);
-                        return s ? `${s.startTime} ~ ${s.endTime}` : "";
-                      })()}
-                      <span className="ml-2">
-                        (예약 {slotLists[selectedScheduleId]?.pending.length ?? 0} / 승인{" "}
-                        {slotLists[selectedScheduleId]?.confirmed.length ?? 0})
-                      </span>
                     </div>
-
-                    <ul className="flex flex-col gap-2">
-                      {(slotLists[selectedScheduleId]?.[activeTab] ?? []).map((r) => (
-                        <li
-                          key={r.id}
-                          className="flex items-center justify-between rounded bg-gray-50 px-3 py-2"
+                    <div className="flex gap-3">
+                      {(["pending", "confirmed", "declined"] as const).map((k) => (
+                        <button
+                          key={k}
+                          type="button"
+                          className={`rounded px-3 py-1 text-xl ${activeTab === k ? "bg-black text-white" : "bg-white"}`}
+                          onClick={() => setActiveTab(k)}
                         >
-                          <div className="flex items-center gap-3">
-                            <span className="text-sm text-gray-500">#{r.id}</span>
-                            <span className="font-medium">{r.nickname}</span>
-                            <span className="text-sm text-gray-500">
-                              {r.headCount}명 · {r.totalPrice.toLocaleString()}원
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {activeTab !== "declined" && (
-                              <button
-                                className="rounded border border-gray-300 px-3 py-1 text-sm"
-                                onClick={() => decline(r)}
-                              >
-                                거절하기
-                              </button>
-                            )}
-                            {activeTab === "pending" && (
-                              <button
-                                className="rounded bg-black px-3 py-1 text-sm text-white disabled:opacity-50"
-                                disabled={hasConfirmed}
-                                onClick={() => confirmAndAutoDecline(r)}
-                              >
-                                확정하기
-                              </button>
-                            )}
-                          </div>
-                        </li>
+                          {tabLabel(k)}
+                        </button>
                       ))}
-                      {(slotLists[selectedScheduleId]?.[activeTab] ?? []).length === 0 && (
-                        <li className="rounded bg-gray-50 px-3 py-6 text-center text-sm text-gray-500">
-                          내역이 없습니다.
-                        </li>
-                      )}
-                    </ul>
+                    </div>
                   </div>
-                )}
-              </section>
+                  <div className="flex min-h-0 flex-1 flex-col gap-4">
+                    <div className="shrink-0 text-xl font-semibold">예약 날짜</div>
+                    <div className="flex shrink-0 flex-col">
+                      <div className="text-xl">{openDate}</div>
+                      <Field id="slot" className="h-20">
+                        <Input
+                          as="select"
+                          id="slot"
+                          className="rounded-4 appearance-none border border-gray-400 bg-white"
+                          rightIcon={<Arrow.Down className="h-6 w-6" />}
+                          placeholderOption="시간 선택"
+                          options={(daySlots ?? []).map((s) => ({
+                            value: s.scheduleId,
+                            label: `${s.startTime} ~ ${s.endTime}`,
+                          }))}
+                          value={selectedScheduleId ?? ""}
+                          disabled={!daySlots || daySlots.length === 0}
+                          onChange={(e) => {
+                            const v = (e.target as HTMLSelectElement).value;
+                            setSelectedScheduleId(v === "" ? null : Number(v));
+                          }}
+                        />
+                      </Field>
+                    </div>
+                    {selectedScheduleId && (
+                      <div className="flex min-h-0 flex-1 flex-col gap-4">
+                        <span className="text-xl font-semibold">예약 내역</span>
+                        <div
+                          ref={listScrollRef}
+                          className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+                        >
+                          <ul className="flex flex-col gap-3.5">
+                            {(slotLists[selectedScheduleId]?.[activeTab] ?? []).map((r) => (
+                              <li
+                                key={r.id}
+                                className="rounded-4 border-brand-gray-300 flex h-[116px] justify-between border px-4 py-2"
+                              >
+                                <div className="flex flex-col gap-2.5">
+                                  <div className="text-brand-gray-600 font-semibold">
+                                    닉네임{" "}
+                                    <span className="font-medium text-black">{r.nickname}</span>
+                                  </div>
+                                  <div className="text-brand-gray-600 font-semibold">
+                                    인원{" "}
+                                    <span className="font-medium text-black">{r.headCount}명</span>
+                                  </div>
+                                </div>
+                                <div className="flex items-end gap-2">
+                                  {activeTab === "pending" && (
+                                    <>
+                                      <button
+                                        className="text-md h-fit w-fit rounded bg-black px-5 py-2.5 text-center text-white"
+                                        disabled={hasConfirmed}
+                                        onClick={() => confirmAndAutoDecline(r)}
+                                      >
+                                        승인하기
+                                      </button>
+                                      <button
+                                        className="text-md h-fit w-fit rounded border px-5 py-2.5 text-center"
+                                        onClick={() => decline(r)}
+                                      >
+                                        거절하기
+                                      </button>
+                                    </>
+                                  )}
+                                  {activeTab === "confirmed" && (
+                                    <span className="bg-brand-orange-50 text-brand-orange-500 text-md rounded-3xl px-[15px] py-2.5 font-bold">
+                                      예약 승인
+                                    </span>
+                                  )}
+
+                                  {activeTab === "declined" && (
+                                    <span className="bg-brand-red-50 text-brand-red-500 text-md rounded-3xl px-[15px] py-2.5 font-bold">
+                                      예약 거절
+                                    </span>
+                                  )}
+                                </div>
+                              </li>
+                            ))}
+
+                            {(slotLists[selectedScheduleId]?.[activeTab] ?? []).length === 0 && (
+                              <li className="rounded bg-gray-50 px-3 py-6 text-center text-sm text-gray-500">
+                                내역이 없습니다.
+                              </li>
+                            )}
+                            <li ref={targetRef} className="h-6" aria-hidden />
+                          </ul>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </>
             )}
-          </DrawerBody>
-          <DrawerFooter />
-        </DrawerLayout>
+          </div>
+        )}
+        {myActs && myActs.activities.length > 0 && (
+          <>
+            <div className="mt-2 flex gap-4 text-sm">
+              <span>
+                완료: {(monthDash ?? []).reduce((a, b) => a + (b.reservations.completed ?? 0), 0)}
+              </span>
+              <span>
+                예약: {(monthDash ?? []).reduce((a, b) => a + (b.reservations.pending ?? 0), 0)}
+              </span>
+              <span>
+                승인: {(monthDash ?? []).reduce((a, b) => a + (b.reservations.confirmed ?? 0), 0)}
+              </span>
+            </div>
+          </>
+        )}
       </div>
     </>
   );
