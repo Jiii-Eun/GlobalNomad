@@ -6,13 +6,12 @@ import SettingsIcon from "@/assets/icons/me-sns/me-register.svg";
 import ReceiptIcon from "@/assets/icons/me-sns/me-reservations.svg";
 import CalendarIcon from "@/assets/icons/me-sns/me-schedule.svg";
 import UserIcon from "@/assets/icons/me-sns/me.svg";
-import { ProfileImageUploader } from "@/components/ui/image-uploader";
+import ProfileImageUploader from "@/components/ui/image-uploader/ProfileImageUploader";
 
 type ItemKey = "me" | "reservations" | "experiences" | "calendar";
 
 export default function ProfileSidebar({
   initialProfileUrl,
-  selectedActivityId,
 }: {
   initialProfileUrl?: string | null;
   selectedActivityId?: string;
@@ -76,6 +75,7 @@ export default function ProfileSidebar({
       </button>
     );
   };
+  console.log("[Sidebar] initialProfileUrl:", initialProfileUrl);
 
   return (
     <aside
