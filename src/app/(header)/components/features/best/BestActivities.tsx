@@ -36,7 +36,11 @@ export default function BestActivities({ initialData }: InitActivityProps) {
 
   const queryKey = useMemo(() => ["activities", page], [page]);
 
-  const { data: offsetData, isLoading } = useActivities(baseParams, false, { initialData });
+  const { data: offsetData, isLoading } = useActivities(
+    baseParams,
+    false,
+    page === 1 ? { placeholderData: initialData } : undefined,
+  );
 
   const {
     data: cursorData,
