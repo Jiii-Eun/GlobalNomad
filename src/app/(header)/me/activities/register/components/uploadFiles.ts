@@ -1,5 +1,3 @@
-"use client";
-
 import toFormData from "@/app/(header)/me/activities/register/components/toFormData";
 
 export async function uploadFiles(

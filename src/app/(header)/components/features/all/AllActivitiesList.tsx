@@ -36,7 +36,7 @@ export default function AllActivitiesList({ initialData }: InitActivityProps) {
     if (isFirstRender.current) {
       isFirstRender.current = false;
     }
-  }, [params]);
+  }, []);
 
   const activities = data?.activities;
 

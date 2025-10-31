@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "pretendard/dist/web/static/pretendard.css";
 
+/* @import "./custom-datepicker.css"; */
 
 @theme inline {
   /* border-radius */
