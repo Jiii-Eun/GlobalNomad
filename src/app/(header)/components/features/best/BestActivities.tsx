@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 
 import BestActivitiesList from "@/app/(header)/components/features/best/BestACtivitiesList";
 import BestPagination from "@/app/(header)/components/features/best/BestPagination";
@@ -19,6 +19,7 @@ export interface InitActivityProps {
 export default function BestActivities({ initialData }: InitActivityProps) {
   const { isPc } = useDevice();
   const [page, setPage] = useState(1);
+  const isFirstRender = useRef(true);
 
   const PC_SIZE = 3;
   const TABLET_SIZE = 5;
@@ -36,7 +37,17 @@ export default function BestActivities({ initialData }: InitActivityProps) {
 
   const queryKey = useMemo(() => ["activities", page], [page]);
 
-  const { data: offsetData, isLoading } = useActivities(baseParams, false, { initialData });
+  const { data: offsetData, isLoading } = useActivities(
+    baseParams,
+    false,
+    isFirstRender.current ? { initialData } : undefined,
+  );
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+    }
+  }, [baseParams]);
 
   const {
     data: cursorData,
