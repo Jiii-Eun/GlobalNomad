@@ -37,26 +37,24 @@ export default function DateField<TReq extends FieldValues>({
         rules={{ required: "예약 가능한 시간을 선택해주세요." }}
         render={({ field }) => (
           <Field id={fieldName} error={(errors[fieldName] as FieldError | undefined)?.message}>
-            <div className="relative z-[999]">
-              <TimeSlotPicker
-                selectDate={selectedDate}
-                onSelectedDateChange={(date) => {
-                  setSelectedDate(date);
-                  field.onChange({
-                    date,
-                    slots,
-                  });
-                }}
-                slots={slots}
-                onSlotsChange={(newSlots) => {
-                  setSlots(newSlots);
-                  field.onChange({
-                    date: selectedDate,
-                    slots: newSlots,
-                  });
-                }}
-              />
-            </div>
+            <TimeSlotPicker
+              selectDate={selectedDate}
+              onSelectedDateChange={(date) => {
+                setSelectedDate(date);
+                field.onChange({
+                  date,
+                  slots,
+                });
+              }}
+              slots={slots}
+              onSlotsChange={(newSlots) => {
+                setSlots(newSlots);
+                field.onChange({
+                  date: selectedDate,
+                  slots: newSlots,
+                });
+              }}
+            />
           </Field>
         )}
       />

@@ -1,5 +1,3 @@
-"use client";
-
 import { FieldError, FieldValues, Path, useFormContext } from "react-hook-form";
 
 import AddressField from "@/app/(header)/me/activities/register/components/AddressField";
