@@ -105,7 +105,7 @@ export default function Calendar({
   };
 
   return (
-    <div className="rounded-4 border-gray-20 flex w-[768px] flex-col gap-6">
+    <div className="rounded-4 border-gray-20 tablet:max-w-[768px] flex w-full flex-col gap-6">
       <div className="mx-auto flex w-[342px] items-center justify-between py-[5px]">
         <button onClick={handlePrev} className="h-6 w-6">
           ◀
@@ -171,7 +171,7 @@ export default function Calendar({
           ▶
         </button>
       </div>
-      <div className="w-[800px]">
+      <div className="w-full">
         <div className="grid grid-cols-7">
           {["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"].map((d, i) => (
             <div
