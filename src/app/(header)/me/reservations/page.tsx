@@ -1,3 +1,4 @@
+// /me/reservations/page.tsx (또는 해당 컴포넌트 파일)
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
@@ -10,9 +11,10 @@ import type { GetMyResvsReq, GetMyResvsRes } from "@/lib/api/my-reservations/typ
 import { useInfiniteScrollQuery } from "@/lib/hooks/useInfiniteScroll";
 
 import ReservationsCard from "../components/ReservationsCard";
+import SkeletonReservationCard from "../components/SkeletonReservationCard";
 
+// ---- Status 정의
 type ReservationStatus = "pending" | "canceled" | "confirmed" | "declined" | "completed";
-
 const STATUS_LABELS = ["예약 완료", "예약 취소", "예약 승인", "예약 거절", "체험 완료"] as const;
 const STATUS_KEYS: readonly ReservationStatus[] = [
   "pending",
@@ -22,13 +24,45 @@ const STATUS_KEYS: readonly ReservationStatus[] = [
   "completed",
 ];
 
+// ---- 다음 커서 계산 유틸 (id 우선, 없으면 createdAt)
+function deriveNextCursor(items: { id?: number; createdAt?: string }[], fallback?: number | null) {
+  if (!items || items.length === 0) return null;
+  const last = items[items.length - 1];
+  if (typeof last.id === "number") return last.id;
+  if (typeof last.createdAt === "string") {
+    const t = Date.parse(last.createdAt);
+    if (!Number.isNaN(t)) return t;
+  }
+  return fallback ?? null;
+}
+
+// ---- 안전 fetch: size 기준으로 더 없음(null) 처리 + next cursor 계산
+async function getMyReservationsSafe(params: GetMyResvsReq): Promise<GetMyResvsRes> {
+  const res = await getMyReservations(params);
+  const size = params.size ?? 10;
+  const items = res.reservations ?? [];
+
+  if (items.length < size) return { ...res, cursorId: null };
+
+  const next = deriveNextCursor(items, res.cursorId ?? null);
+  return { ...res, cursorId: next };
+}
+
 export default function Reservations() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const queryClient = useQueryClient();
 
-  // 🚀 IntersectionObserver 내장 훅 사용
-  // 훅 쓰는 컴포넌트 파일
+  // 선택된 상태(없으면 전체)
   const status = selectedIndex === null ? undefined : STATUS_KEYS[selectedIndex];
+
+  // 페이지 사이즈 & 쿼리키 (status를 포함해야 필터 변경 시 새 쿼리로 전환됨)
+  const PAGE_SIZE = 6 as const;
+  const QUERY_KEY = [
+    "myReservations",
+    "infinite",
+    { status: status ?? "__ALL__", size: PAGE_SIZE },
+  ] as const;
 
   const {
     data: pages,
@@ -36,47 +70,39 @@ export default function Reservations() {
     isFetchingNextPage,
     hasNextPage,
     targetRef,
-    error,
+    isError,
   } = useInfiniteScrollQuery<GetMyResvsRes, GetMyResvsReq>({
-    queryKey: ["myReservations", { status: status ?? "__ALL__", size: 6 }],
-    fetchFn: async (params) => {
-      console.log("[REQ]", params); // ★ 보낸 쿼리 기록
-      const res = await getMyReservations(params);
-      console.log("[RES]", {
-        cursorId: res.cursorId,
-        count: res.reservations?.length,
-        ids: res.reservations?.map((r) => r.id),
-      }); // ★ 받은 응답 요약
-      return res;
-    },
+    queryKey: QUERY_KEY,
+    fetchFn: getMyReservationsSafe,
     initialParams: {
-      size: 6,
-      // status: selectedIndex === null ? undefined : STATUS_KEYS[selectedIndex],
-      // status,
+      size: PAGE_SIZE,
+      ...(status ? { status } : {}), // 전체 보기일 땐 status 생략
     },
     enabled: true,
-    size: 6,
+    size: PAGE_SIZE,
   });
 
-  const allReservations = useMemo(() => pages.flatMap((p) => p.reservations ?? []), [pages]);
+  // 평평하게 펼치고(필요시 중복 제거 가능), 그대로 카드에 전달
+  const allReservations = useMemo(() => {
+    const flat = (pages ?? []).flatMap((p) => p.reservations ?? []);
+    // id 중복 방지(서버 페이지 경계에서 중복될 수 있을 때)
+    const seen = new Set<number>();
+    return flat.filter((r) => {
+      if (typeof r.id !== "number") return true;
+      if (seen.has(r.id)) return false;
+      seen.add(r.id);
+      return true;
+    });
+  }, [pages]);
 
-  const queryClient = useQueryClient();
-
+  // 필터 선택 시: 드롭닫고, 이전 쿼리 정리(선택) → status가 포함된 QUERY_KEY가 바뀌므로 자동 리셋됨
   const handleSelect = (index: number | null) => {
     setSelectedIndex(index);
     setIsOpen(false);
-    // 필터 변경 시 진행중 요청/캐시 리셋
-    queryClient.cancelQueries({ queryKey: ["myReservations"] });
-    queryClient.removeQueries({ queryKey: ["myReservations"] });
+    // 선택: 혹시 진행중 요청/캐시를 바로 정리하고 싶다면 아래 두 줄 유지
+    queryClient.cancelQueries({ queryKey: ["myReservations", "infinite"] });
+    queryClient.removeQueries({ queryKey: ["myReservations", "infinite"] });
   };
-
-  if (error) {
-    return (
-      <main className="bg-[#FAFAFA] py-18">
-        <div className="text-center text-red-600">예약 내역을 불러오는 중 오류가 발생했습니다.</div>
-      </main>
-    );
-  }
 
   return (
     <main className="bg-[#FAFAFA] py-18">
@@ -107,31 +133,48 @@ export default function Reservations() {
             </div>
           </div>
 
-          {/* 본문 */}
-          {isLoading && <p className="text-center text-gray-500">Loading...</p>}
+          {isLoading && (
+            <ul className="flex list-none flex-col gap-6">
+              {Array.from({ length: PAGE_SIZE }).map((_, i) => (
+                <SkeletonReservationCard key={`skel-first-${i}`} />
+              ))}
+            </ul>
+          )}
+          {isError && (
+            <div className="text-center text-red-600">
+              예약 내역을 불러오는 중 오류가 발생했습니다.
+            </div>
+          )}
 
-          {!isLoading && allReservations.length === 0 && (
+          {!isLoading && !isError && allReservations.length === 0 && (
             <div className="mt-[90px] flex flex-col items-center gap-5">
               <Misc.NotingPage className="h-[178px] w-[130px]" />
               <p className="text-2xl font-medium text-[#79747E]">아직 등록한 체험이 없어요</p>
             </div>
           )}
 
-          <ul className="flex list-none flex-col gap-6">
-            {allReservations.map((item) => (
-              <ReservationsCard key={item.id} {...item} />
-            ))}
-          </ul>
+          {allReservations.length > 0 && (
+            <>
+              <ul className="flex list-none flex-col gap-6">
+                {allReservations.map((item) => (
+                  <ReservationsCard key={item.id} {...item} />
+                ))}
 
-          {/* 무한 스크롤 트리거 */}
-          {hasNextPage && <div ref={targetRef} className="h-10 w-full" aria-hidden />}
+                {/* 다음 페이지 로딩 중: 하단에 스켈레톤 2~3개 */}
+                {isFetchingNextPage &&
+                  Array.from({ length: 3 }).map((_, i) => (
+                    <SkeletonReservationCard key={`skel-more-${i}`} />
+                  ))}
 
-          {/* 상태 안내 */}
-          {isFetchingNextPage && <p className="mt-4 text-center text-gray-500">더 불러오는 중…</p>}
+                {/* 인터섹션 옵저버 트리거 */}
+                {hasNextPage && <li ref={targetRef} className="h-24 w-full" aria-hidden />}
+              </ul>
 
-          {/* ✅ 모든 데이터를 다 불러왔을 때 표시 */}
-          {!hasNextPage && allReservations.length > 0 && (
-            <p className="mt-6 text-center text-lg font-medium text-gray-400">마지막 입니다.</p>
+              {/* 안내 문구 */}
+              {!hasNextPage && (
+                <p className="mt-6 text-center text-lg font-medium text-gray-400">마지막 입니다.</p>
+              )}
+            </>
           )}
         </div>
       </div>

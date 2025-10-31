@@ -34,7 +34,7 @@ export const MyReservationSchema = z.object({
 export type MyReservation = z.infer<typeof MyReservationSchema>;
 
 export const GetMyResvsResSchema = z.object({
-  cursorId: z.number(),
+  cursorId: z.number().nullable(),
   reservations: z.array(MyReservationSchema),
   totalCount: z.number(),
 });

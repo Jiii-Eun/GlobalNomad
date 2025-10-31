@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useEffect } from "react";
 
 import { useActivityDetail } from "@/lib/api/activities/hooks";
+import { useKakaoReady } from "@/lib/hooks/useKakaoReady";
 import { useMyPendingDatesForActivity } from "@/lib/hooks/useMyPendingDatesForActivity";
 
 import ActivityHead from "../components/activity/ActivityHead";
@@ -19,13 +19,8 @@ export default function ActivitiesDetailPage() {
   const { data, error, isLoading } = useActivityDetail(numericId);
   //로그인한 유저의 'pending' 예약 날짜 수집
   const { pendingDates } = useMyPendingDatesForActivity(numericId);
+  const kakaoReady = useKakaoReady();
 
-  useEffect(() => {
-    if (!isLoading) {
-      console.log("data:", data);
-      console.log("pendingDates:", pendingDates); // 항상 [] 또는 ["2025-11-02", ...]
-    }
-  }, [isLoading, pendingDates]);
   if (!id || Number.isNaN(numericId)) {
     return <main className="container-base px-[24px]">잘못된 경로입니다.</main>;
   }
@@ -85,7 +80,10 @@ export default function ActivitiesDetailPage() {
                 {data.description}
               </p>
             </div>
-            <Map location={data.address} />
+            <>
+              {!kakaoReady && <div className="h-[450px] w-full rounded-2xl bg-gray-100" />}
+              {kakaoReady && <Map location={data.address} />}
+            </>
             <Reviews averageRating={data?.rating} totalCount={data.reviewCount} id={data.id} />
           </div>
 

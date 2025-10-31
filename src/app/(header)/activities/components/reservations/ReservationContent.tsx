@@ -1,7 +1,7 @@
 // ReservationContent.tsx
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { enUS, type Locale } from "date-fns/locale";
@@ -26,10 +26,12 @@ export interface Schedule {
 }
 export interface ReservationContentProps {
   activityId: number;
-  title: string; // 시그니처 유지용
+  /** 외부 시그니처 유지용: 사용하지 않지만 prop은 받습니다. */
+  title: string;
   price: number;
   schedules?: Schedule[];
-  pendingDates?: string[]; // 나의 '대기(pending)' 날짜들
+  /** 나의 '대기(pending)' 날짜들 */
+  pendingDates?: string[];
 }
 
 // ---------- Utils ----------
@@ -54,7 +56,7 @@ const getIn = (obj: unknown, path: string[]): unknown => {
   }
   return cur;
 };
-// 로컬 에러 표준화 (any 금지)
+
 function toStatusAndMessage(err: unknown): { status?: number; message: string } {
   const status =
     (typeof getIn(err, ["status"]) === "number" ? (getIn(err, ["status"]) as number) : undefined) ??
@@ -65,9 +67,9 @@ function toStatusAndMessage(err: unknown): { status?: number; message: string } 
       ? (getIn(err, ["payload", "status"]) as number)
       : undefined);
 
-  const messageFromError = err instanceof Error ? err.message : undefined;
+  const msgFromError = err instanceof Error ? err.message : undefined;
   const message =
-    messageFromError ??
+    msgFromError ??
     (typeof getIn(err, ["message"]) === "string"
       ? (getIn(err, ["message"]) as string)
       : undefined) ??
@@ -78,7 +80,6 @@ function toStatusAndMessage(err: unknown): { status?: number; message: string } 
       ? (getIn(err, ["payload", "message"]) as string)
       : undefined) ??
     "요청 중 오류가 발생했습니다.";
-
   return { status, message };
 }
 
@@ -90,7 +91,7 @@ interface SelectedSlot {
 
 export default function ReservationContent({
   activityId,
-  title: _title,
+  // title: 외부 시그니처 유지 목적, 내부 미사용
   price,
   schedules,
   pendingDates = [],
@@ -134,7 +135,6 @@ export default function ReservationContent({
     return new Set(fromProp);
   }, [monthlyAvailable, schedules, year, month]);
 
-  // (전역) 선택 가능한 날짜가 하나라도 있는가? (오늘 이후 기준)
   const todayStr = format(new Date(), "yyyy-MM-dd");
   const hasSelectableDates = useMemo(() => {
     const fromHookDates = (monthlyAvailable ?? []).map((g) => g.date);
@@ -143,14 +143,11 @@ export default function ReservationContent({
     return all.some((d) => d >= todayStr);
   }, [monthlyAvailable, schedules, todayStr]);
 
-  // 나의 '대기(pending)' 날짜
-  const pendingDatesSet = useMemo(() => new Set(pendingDates ?? []), [pendingDates]);
+  const pendingDatesSet = useMemo(() => new Set(pendingDates), [pendingDates]);
 
   // 5) 선택한 날짜의 시간 슬롯
   const ymd = selectedDate ? format(selectedDate, "yyyy-MM-dd") : "";
-  const isSelectedDatePending = selectedDate
-    ? pendingDatesSet.has(format(selectedDate, "yyyy-MM-dd"))
-    : false;
+  const isSelectedDatePending = selectedDate ? pendingDatesSet.has(ymd) : false;
 
   const daySlots: ScheduleSlot[] = useMemo(() => {
     if (!selectedDate || isSelectedDatePending) return [];
@@ -180,7 +177,21 @@ export default function ReservationContent({
     });
   };
 
-  // 7) 예약 실행 (로컬 토스트로만 처리)
+  // 에러 공통 처리
+  const handleKnownError = (status?: number, message?: string) => {
+    if (status === 409) return showToast("reserveReject");
+    if (status === 401) {
+      openToast(<Toast message="로그인이 필요합니다." icon="error" />);
+      router.push("/login");
+      return;
+    }
+    if (status === 404) return router.push("/not-found");
+    if (status === 500)
+      return openToast(<Toast message="서버 오류가 발생했습니다." icon="error" />);
+    if (message) openToast(<Toast message={message} icon="error" />);
+  };
+
+  // 7) 예약 실행
   const handleReserve = async () => {
     const disabled = reserved || isPending || !hasSelectableDates || selectedSlots.length === 0;
     if (disabled) return;
@@ -193,28 +204,9 @@ export default function ReservationContent({
       const firstRejected = results.find((r) => r.status === "rejected") as
         | PromiseRejectedResult
         | undefined;
-
       if (firstRejected) {
         const { status, message } = toStatusAndMessage(firstRejected.reason);
-
-        if (status === 409) {
-          showToast("reserveReject");
-          return;
-        }
-        if (status === 401) {
-          openToast(<Toast message="로그인이 필요합니다." icon="error" />);
-          router.push("/login");
-          return;
-        }
-        if (status === 404) {
-          router.push("/not-found");
-          return;
-        }
-        if (status === 500) {
-          openToast(<Toast message="서버 오류가 발생했습니다." icon="error" />);
-          return;
-        }
-        openToast(<Toast message={message} icon="error" />);
+        handleKnownError(status, message);
         return;
       }
 
@@ -222,25 +214,7 @@ export default function ReservationContent({
       showToast("reserveDone");
     } catch (e) {
       const { status, message } = toStatusAndMessage(e);
-
-      if (status === 409) {
-        showToast("reserveReject");
-        return;
-      }
-      if (status === 401) {
-        openToast(<Toast message="로그인이 필요합니다." icon="error" />);
-        router.push("/login");
-        return;
-      }
-      if (status === 404) {
-        router.push("/not-found");
-        return;
-      }
-      if (status === 500) {
-        openToast(<Toast message="서버 오류가 발생했습니다." icon="error" />);
-        return;
-      }
-      openToast(<Toast message={message} icon="error" />);
+      handleKnownError(status, message);
     }
   };
 
@@ -276,8 +250,8 @@ export default function ReservationContent({
               setSelectedDate(d);
               if (d && pendingDatesSet.has(format(d, "yyyy-MM-dd"))) setSelectedSlots([]);
             }}
-            onMonthChange={(d) => setCalendarMonth(d)}
-            onYearChange={(d) => setCalendarMonth(d)}
+            onMonthChange={setCalendarMonth}
+            onYearChange={setCalendarMonth}
             showDisabledMonthNavigation
             filterDate={(d) => availableSet.has(format(d, "yyyy-MM-dd"))}
             highlightDates={[
