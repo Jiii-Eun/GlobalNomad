@@ -1,5 +1,3 @@
-"use client";
-
 import { useAtomValue } from "jotai";
 
 import AllActivitiesList from "@/app/(header)/components/features/all/AllActivitiesList";

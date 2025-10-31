@@ -111,14 +111,14 @@ const TimeSlotPicker: React.FC<TimeSlotPicker> = ({
   };
 
   return (
-    <div className="flex w-[792px] flex-col">
+    <div className="flex flex-col">
       <div className="flex flex-wrap items-end gap-5">
         <div className="flex flex-col gap-[10px]">
           <label>날짜</label>
-          <div className="relative">
+          <div className="relative z-30">
             <DatePicker
               ref={datePickerRef}
-              className="h-[56px] w-[379px] rounded-[4px] border border-[#79747E] px-4 py-2"
+              className="border-brand-gray-800 rounded-4 h-[56px] w-[379px] border px-4 py-2"
               dateFormat="yy/MM/dd"
               selected={selectDate}
               onChange={onSelectedDateChange}

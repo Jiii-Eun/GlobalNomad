@@ -70,9 +70,9 @@ export default function EditPage() {
     });
   }, [detail, activityId]);
 
-  if (isLoading) return <div>불러오는 중...</div>;
+  if (isLoading) return <div className="p-4">불러오는 중...</div>;
 
-  if (!detail || !defaultValues) return <div>데이터를 불러올 수 없습니다.</div>;
+  if (!detail || !defaultValues) return <div className="p-4">데이터를 불러올 수 없습니다.</div>;
 
   return (
     <MyActivityForm<UpdateActivityReq, UpdateActivityRes>

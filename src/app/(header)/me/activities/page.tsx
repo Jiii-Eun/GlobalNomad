@@ -179,10 +179,16 @@ export default function Activities() {
                               <Misc.MenuDot className="mobile:h-8 mobile:w-8 h-10 w-10" />
                             </DropDown.Trigger>
                             <DropDown.Menu isOpen={openId === item.id}>
-                              <DropDown.Item onClick={() => moveEdit(item.id)}>
+                              <DropDown.Item
+                                onClick={() => moveEdit(item.id)}
+                                className="cursor-pointer"
+                              >
                                 수정하기
                               </DropDown.Item>
-                              <DropDown.Item onClick={() => openDelete(item.id)}>
+                              <DropDown.Item
+                                onClick={() => openDelete(item.id)}
+                                className="cursor-pointer"
+                              >
                                 삭제하기
                               </DropDown.Item>
                             </DropDown.Menu>
