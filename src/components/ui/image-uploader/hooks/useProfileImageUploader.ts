@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 
 import { useFileInput } from "@/components/ui/image-uploader/hooks/useFileInput";

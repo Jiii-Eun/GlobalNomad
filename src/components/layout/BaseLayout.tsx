@@ -12,10 +12,10 @@ export default function BaseLayout({ children }: { children: React.ReactNode }) 
   if (isAuthPage) return <>{children}</>;
 
   return (
-    <div className="flex h-screen flex-col">
+    <>
       <Header />
-      <main className="flex-1">{children}</main>
+      <main>{children}</main>
       <Footer />
-    </div>
+    </>
   );
 }

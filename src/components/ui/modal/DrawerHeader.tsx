@@ -12,7 +12,7 @@ export default function DrawerHeader() {
   const { title, prevStep, onClose, isClose, isBack } = useDrawerContext();
 
   return (
-    <div className="flex items-center justify-between pb-2">
+    <div className="flex items-center justify-between border-b pb-2">
       <AnimatePresence mode="popLayout" initial={false}>
         {isBack && (
           <motion.div

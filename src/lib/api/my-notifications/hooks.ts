@@ -45,7 +45,6 @@ export function useDeleteMyNotification(
     isMock ? undefined : (data) => deleteMyNotification(data),
     {
       mockResponse: isMock ? null : undefined,
-      invalidateQueryKeys: [["myNotifications"]],
       ...options,
     },
   );

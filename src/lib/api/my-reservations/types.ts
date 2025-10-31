@@ -4,6 +4,7 @@ import { ReservationStatusSchema } from "@/lib/api/activities/types";
 
 // GET: 내 예약 리스트 조회 요청
 export const GetMyResvsReqSchema = z.object({
+  teamId: z.string(),
   cursorId: z.number().optional(),
   size: z.number().optional(),
   status: ReservationStatusSchema.optional(),
@@ -42,6 +43,7 @@ export type GetMyResvsRes = z.infer<typeof GetMyResvsResSchema>;
 
 // PATCH: 내 예약 수정 (취소) 요청
 export const CancelResvReqSchema = z.object({
+  teamId: z.string(),
   reservationId: z.number(),
   status: ReservationStatusSchema.extract(["canceled"]),
 });
@@ -68,6 +70,7 @@ export type CancelResvRes = z.infer<typeof CancelResvResSchema>;
 
 // POST: 내 예약 리뷰 작성 요청
 export const CreateReviewReqSchema = z.object({
+  teamId: z.string(),
   reservationId: z.number(),
   rating: z.number(),
   content: z.string(),

@@ -16,7 +16,7 @@ export type ActivitySort = z.infer<typeof ActivitySortSchema>;
 
 export const GetActivitiesReqSchema = z.object({
   method: z.enum(["offset", "cursor"]),
-  cursorId: z.number().nullable().optional(),
+  cursorId: z.number().optional(),
   category: ActivityCategorySchema.optional(),
   keyword: z.string().optional(),
   sort: ActivitySortSchema.optional(),
@@ -43,7 +43,7 @@ export const ActivitySchema = z.object({
 export type Activity = z.infer<typeof ActivitySchema>;
 
 export const GetActivitiesResSchema = z.object({
-  cursorId: z.number().nullable().optional(),
+  cursorId: z.number(),
   totalCount: z.number(),
   activities: z.array(ActivitySchema),
 });
@@ -102,8 +102,8 @@ export const ScheduleSchema = ScheduleTimeSchema.extend({
 export type Schedule = z.infer<typeof ScheduleSchema>;
 
 export const ActivityDetailSchema = ActivitySchema.extend({
-  subImages: z.array(SubImageSchema).optional(),
-  schedules: z.array(ScheduleSchema).optional(),
+  subImages: z.array(SubImageSchema),
+  schedules: z.array(ScheduleSchema),
 });
 export type ActivityDetail = z.infer<typeof ActivityDetailSchema>;
 
@@ -124,7 +124,7 @@ export const ReviewSchema = z.object({
   user: UserSummarySchema,
   activityId: z.number(),
   rating: z.number(),
-  content: z.string().optional(),
+  content: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),
 });
@@ -172,13 +172,13 @@ export const CreateReservationResSchema = z.object({
 });
 export type CreateReservationRes = z.infer<typeof CreateReservationResSchema>;
 
-// POST: 체험 이미지 URL 생성
+// POST: 체험 이미지 업로드 요청
 export const UploadImageReqSchema = z.object({
   image: z.instanceof(File),
 });
 export type UploadImageReq = z.infer<typeof UploadImageReqSchema>;
 
-// POST: 체험 이미지 URL 생성
+// POST: 체험 이미지 업로드 응답
 export const UploadImageResSchema = z.object({
   activityImageUrl: z.string(),
 });

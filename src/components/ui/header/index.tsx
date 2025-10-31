@@ -1,23 +1,27 @@
-import BackgroundImage from "@/components/ui/BackgroundImage";
+import Link from "next/link";
+
+import { Logo } from "@/components/icons";
 import AuthNav from "@/components/ui/header/AuthNav";
-import HeaderLogo from "@/components/ui/header/HeaderLogo";
 import Notification from "@/components/ui/header/Notification";
 import UserMenu from "@/components/ui/header/UserMenu";
 import { useGetMe } from "@/lib/api/users/hooks";
 
+// MyNotifications 내 알림 리스트 조회 연동
 export default function Header() {
-  const { data: user, isLoading } = useGetMe();
+  const { data: user } = useGetMe(true);
 
-  const hasLogin = !!user;
+  const hasLogin = !user;
 
   return (
-    <div className="border-b-brand-gray-300 bg-brand-gray-100 sticky top-0 z-600 border-b">
+    <div className="border-b-brand-gray-300 border-b">
       <div className="container-base mobile:px-5 tablet:px-6 flex h-[70px] items-center justify-between">
-        <HeaderLogo />
+        <h1 className="w-[166px]">
+          <Link href={"/"}>
+            <Logo.Small />
+          </Link>
+        </h1>
         <div className="flex-center">
-          {isLoading ? (
-            <BackgroundImage className="rounded-4 h-9 w-40 overflow-hidden" />
-          ) : hasLogin ? (
+          {hasLogin ? (
             <>
               <Notification />
               <div className="mobile:mx-3 mx-[25px] h-[22px] w-[1px] bg-gray-300" />
