@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { useState, useRef, useMemo, useEffect } from "react";
 import DatePicker from "react-datepicker";
 
@@ -124,6 +125,7 @@ const TimeSlotPicker: React.FC<TimeSlotPicker> = ({
               onChange={onSelectedDateChange}
               minDate={minDate}
               placeholderText="YY/MM/DD"
+              formatWeekDay={(day) => day.substring(0, 3)}
             />
             <Misc.Calendar
               className="pointer-events-auto absolute top-1/2 right-3 h-8 w-8 -translate-y-1/2 cursor-pointer"

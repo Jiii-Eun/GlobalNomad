@@ -2,11 +2,12 @@ import { FieldError, FieldValues, Path, useFormContext } from "react-hook-form";
 
 import AddressField from "@/app/(header)/me/activities/register/components/AddressField";
 import PriceField from "@/app/(header)/me/activities/register/components/PriceField";
+import { Arrow } from "@/components/icons";
 import FormField from "@/components/ui/input/FormField";
 import { ActivityCategorySchema } from "@/lib/api/activities/types";
 
 interface SelectOption {
-  value: string | number;
+  value: string;
   label: string;
 }
 
@@ -95,6 +96,7 @@ export default function InputField<TReq extends FieldValues>() {
             options={as === "select" ? (options ?? []) : []}
             error={fieldError}
             maxLength={maxLength}
+            rightIcon={as === "select" ? <Arrow.Down className="size-6" /> : undefined}
             register={register(id, {
               setValueAs: (v: string) => v.trim(),
               required,
