@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Arrow } from "@/components/icons";
 import PaginationButton from "@/components/ui/pagination/PaginationButton";
@@ -11,9 +11,10 @@ interface dataProps {
   setPage: (page: number) => void;
   totalPages: number;
   className?: string;
+  size?: number;
 }
 
-export default function Pagination({ page, setPage, totalPages, className }: dataProps) {
+export default function Pagination({ page, setPage, totalPages, className, size }: dataProps) {
   const pagesGroup = 5;
 
   const [groupIndex, setGroupIndex] = useState(0);
@@ -37,6 +38,13 @@ export default function Pagination({ page, setPage, totalPages, className }: dat
       setGroupIndex((prev) => prev + 1);
     }
   };
+
+  useEffect(() => {
+    setPage(1);
+    setGroupIndex(0);
+  }, [size, setPage]);
+
+  if (totalPages <= 1) return null;
 
   return (
     <div className={cn("flex-center mt-4 gap-[10px]", className)}>
