@@ -41,6 +41,9 @@ export const ErrorProvider = ({ children }: { children: React.ReactNode }) => {
       case 404:
         router.push("/not-found");
         break;
+      case 409:
+        openToast(<Toast message="이미 예약한 일정입니다." icon="error" />);
+        break;
       case 500:
         openToast(<Toast message="서버 오류가 발생했습니다." icon="error" />);
         break;

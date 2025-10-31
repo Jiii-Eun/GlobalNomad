@@ -41,6 +41,15 @@ export const TOAST_CONFIG: Record<string, ToastConfigItem> = {
     ],
     redirectTo: "/me/reservations",
   },
+  reserveReject: {
+    message: "이미 예약된 체험입니다.",
+    btnAlign: "center",
+    buttons: [
+      { label: "예약 내역", actionKey: "redirect" },
+      { label: "확인", primary: true },
+    ],
+    redirectTo: "/me/reservations",
+  },
   isCancel: {
     size: "sm",
     icon: "check",

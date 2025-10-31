@@ -3,6 +3,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import Button from "@/components/ui/button/Button";
+import Toast from "@/components/ui/toast";
+import { useUpdateReservationStatus } from "@/lib/api/my-activities/hooks";
+import { useCancelMyReservation } from "@/lib/api/my-reservations/hooks";
 import { MyReservation } from "@/lib/api/my-reservations/types";
 
 import ReviewModal from "./Review/ReviewModal";
@@ -39,6 +42,13 @@ export default function ReservationsCard({
   endTime,
 }: CardProps) {
   const [reservStatus, setReservStatus] = useState(status);
+  // const { mutate: updateStatus } = useCancelMyReservation({
+  //   onSuccess:
+  // });
+
+  // const showAlert = () => {
+  //   updateStatus({ reservationId: id, status: "canceled" });
+  // };
 
   const textProps = () => {
     const textPropsObj = { color: "", text: "-" };
@@ -118,7 +128,9 @@ export default function ReservationsCard({
                 <div>
                   {status === "pending" && (
                     <>
-                      <Button>예약취소</Button>
+                      <Button className="text-brand-nomad-black hover:bg-brand-nomad-black h-[40px] w-[144px] border bg-white text-lg font-bold hover:text-white">
+                        예약 취소
+                      </Button>
                     </>
                   )}
                 </div>
@@ -132,7 +144,11 @@ export default function ReservationsCard({
                     endTime={endTime}
                     priceText={totalPrice}
                     reservationId={id}
-                    trigger={<Button>리뷰작성</Button>}
+                    trigger={
+                      <Button className="hover:text-brand-nomad-black bg-brand-nomad-black h-[40px] w-[144px] border text-lg font-bold text-white hover:bg-white">
+                        후기 작성
+                      </Button>
+                    }
                   />
                 )}
               </div>
