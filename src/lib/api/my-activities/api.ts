@@ -58,14 +58,9 @@ export function getReservations(params: GetReservationsReq) {
 
 // PATCH: 예약 상태 변경
 export function updateReservationStatus(data: UpdateResvStatusReq) {
-  const { activityId, reservationId, status } = data;
   return apiRequest<UpdateResvStatusRes>(
-    `/my-activities/${activityId}/reservations/${reservationId}`,
-    {
-      method: "PATCH",
-      data: { status },
-      schema: UpdateResvStatusResSchema,
-    },
+    `/my-activities/${data.activityId}/reservations/${data.reservationId}`,
+    { method: "PATCH", data, schema: UpdateResvStatusResSchema },
   );
 }
 

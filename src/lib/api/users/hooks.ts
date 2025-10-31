@@ -1,5 +1,5 @@
 import { useApiMutation, ApiMutationOptions } from "@/lib/hooks/useApiMutation";
-import { FetchQueryOptions, useFetchQuery } from "@/lib/hooks/useFetchQuery";
+import { useFetchQuery, FetchQueryOptions } from "@/lib/hooks/useFetchQuery";
 
 import { signUp, getMe, editMe, uploadProfileImage } from "./api";
 import { SignUpReq, UserRes, EditUserReq, UploadProfileImageRes } from "./types";
@@ -55,7 +55,7 @@ export function useEditMe(isMock = false, options?: ApiMutationOptions<UserRes, 
   });
 }
 
-//POST: 프로필 이미지 URL 생성
+//POST: 프로필 이미지 업로드
 export function useUploadProfileImage(
   isMock = false,
   options?: ApiMutationOptions<UploadProfileImageRes, FormData>,

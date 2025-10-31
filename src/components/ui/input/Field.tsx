@@ -1,6 +1,6 @@
 "use client";
 
-import { cloneElement, isValidElement, ReactElement, ReactNode } from "react";
+import { cloneElement, isValidElement, ReactElement } from "react";
 
 const cn = (...xs: (string | false | null | undefined)[]) =>
   xs.filter((v): v is string => Boolean(v)).join(" ");
@@ -16,14 +16,12 @@ interface FieldChildProps {
 interface FieldProps {
   id: string;
   label?: string;
-  // 커스텀 라벨
-  labelNode?: ReactNode;
   error?: string;
   className?: string;
   children: ReactElement<FieldChildProps>;
 }
 
-export default function Field({ id, label, labelNode, error, className, children }: FieldProps) {
+export default function Field({ id, label, error, className, children }: FieldProps) {
   if (!isValidElement(children)) return null;
 
   const isInvalid = Boolean(error);
@@ -38,13 +36,11 @@ export default function Field({ id, label, labelNode, error, className, children
 
   return (
     <div className={className}>
-      {labelNode ? (
-        labelNode
-      ) : label ? (
+      {label && (
         <label htmlFor={id} className="text-brand-black mb-2 block text-lg">
           {label}
         </label>
-      ) : null}
+      )}
       {child}
       {error && (
         <p id={errorId} role="alert" aria-live="polite" className="text-brand-red-500 mt-2 text-sm">
