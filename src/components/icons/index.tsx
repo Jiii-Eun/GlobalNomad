@@ -1,6 +1,7 @@
 // 브랜드(logo)
 import Big from "@/assets/brand/logo-big.svg";
 import Kakao from "@/assets/brand/logo-kakao.svg";
+import LogoOnly from "@/assets/brand/logo-only.svg";
 import Small from "@/assets/brand/logo-small.svg";
 // arrow
 import DownFill from "@/assets/icons/arrows/arrow-down-fill.svg";
@@ -29,6 +30,7 @@ import Instagram from "@/assets/icons/me-sns/sns-instagram.svg";
 import X from "@/assets/icons/me-sns/sns-x.svg";
 import Youtube from "@/assets/icons/me-sns/sns-youtube.svg";
 // Status
+import CheckErrorFill from "@/assets/icons/status/check-error-fill.svg";
 import CheckMarkFill from "@/assets/icons/status/check-mark-fill.svg";
 import CheckMark from "@/assets/icons/status/check-mark.svg";
 import CloseFill from "@/assets/icons/status/close-fill.svg";
@@ -42,6 +44,7 @@ import VisibilityOff from "@/assets/icons/status/visibility-off.svg";
 import Visibility from "@/assets/icons/status/visibility.svg";
 // UI
 import Calendar from "@/assets/icons/ui/calendar.svg";
+import Location from "@/assets/icons/ui/location.svg";
 import MenuDot from "@/assets/icons/ui/menu-dot.svg";
 import NotificationBell from "@/assets/icons/ui/notification-bell.svg";
 import NotingPage from "@/assets/icons/ui/noting-page.svg";
@@ -52,6 +55,7 @@ import Search from "@/assets/icons/ui/search.svg";
 export const Logo = {
   Big,
   Kakao,
+  LogoOnly,
   Small,
 };
 
@@ -95,6 +99,7 @@ export const Sns = {
 
 // 상태
 export const Status = {
+  CheckErrorFill,
   CheckMarkFill,
   CheckMark,
   CloseFill,
@@ -115,4 +120,5 @@ export const Misc = {
   NotificationBell,
   NotingPage,
   Search,
+  Location,
 };

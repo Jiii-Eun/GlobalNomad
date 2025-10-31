@@ -1,75 +1,96 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
 import { Status } from "@/components/icons";
-import { useToast } from "@/components/provider/ToastProvider";
+import { useToastProvider } from "@/components/provider/ToastProvider";
 import Button from "@/components/ui/button/Button";
-import {
-  TOAST_ALIGN_CLASS,
-  TOAST_BUTTON_ALIGN_CLASS,
-  TOAST_BUTTON_CLASS,
-  TOAST_FRAME_CLASS,
-} from "@/components/ui/toast/constants";
 import { cn } from "@/lib/cn";
 
-import { ALERT_CONFIG } from "./alertConfig";
-
-interface AlertProps {
-  variant: keyof typeof ALERT_CONFIG;
-  onClick?: () => void;
+export interface ToastProps {
+  message?: string;
+  children?: React.ReactNode;
+  icon?: React.ReactNode | string;
+  buttons?: {
+    label: string;
+    primary?: boolean;
+    actionKey?: string;
+  }[];
+  onAction?: (actionKey?: string) => void;
+  size?: "sm" | "lg";
+  align?: "start" | "center" | "end";
   frameClass?: string;
   buttonClass?: string;
 }
 
-export default function AlertToast({ variant, onClick, frameClass, buttonClass }: AlertProps) {
-  const { closeToast } = useToast();
-  const router = useRouter();
-  const config = ALERT_CONFIG[variant];
-  const size = config.size ?? "lg";
+const FRAME = {
+  sm: "rounded-12 h-[184px] w-[296px] p-6 gap-7 justify-between",
+  lg: "w-[540px] h-[240px] gap-10 mobile:w-[327px] mobile:h-[220px] mobile:gap-11 justify-end",
+};
+const ALIGN = {
+  start: "justify-start",
+  center: "justify-center",
+  end: "justify-end",
+};
 
-  const icon = config.icon ? <Status.CheckMarkFill className="h-6 w-6" /> : null;
-  const buttons = config.buttons ?? [{ label: "확인", primary: true }];
-  const message = config.message;
-  const btnAlign = config.btnAlign;
+const BUTTON_ALIGN = {
+  sm: "",
+  lg: "mobile:justify-center justify-end",
+};
 
-  const frameStyle = TOAST_FRAME_CLASS[size];
-  const buttonAlignStyle = TOAST_BUTTON_ALIGN_CLASS[size];
-  const buttonStyle = TOAST_BUTTON_CLASS[size];
+const BUTTON = {
+  sm: "rounded-6 text-md h-[38px] w-20 font-bold",
+  lg: "rounded-8 h-12 w-[120px] px-4 py-2",
+};
 
-  const alignStyle = btnAlign ? TOAST_ALIGN_CLASS[btnAlign] : "";
+export default function Toast({
+  message,
+  children,
+  icon,
+  buttons = [{ label: "확인", primary: true }],
+  onAction,
+  size = "lg",
+  align = "end",
+  frameClass,
+  buttonClass,
+}: ToastProps) {
+  const frameStyle = FRAME[size];
+  const alignStyle = ALIGN[align];
+  const buttonAlignStyle = BUTTON_ALIGN[size];
+  const buttonStyle = BUTTON[size];
+  const icons =
+    typeof icon === "string"
+      ? (icon === "check" && <Status.CheckMarkFill className="size-full" />) ||
+        (icon === "error" && <Status.CheckErrorFill className="size-full" />)
+      : icon;
+
+  const { closeToast } = useToastProvider();
 
   const handleButtonClick = (actionKey?: string) => {
-    closeToast();
-
-    onClick?.();
-
-    if (actionKey === "redirect" && config.redirectTo) {
-      router.push(config.redirectTo);
+    if (actionKey) {
+      onAction?.(actionKey);
     }
+
+    closeToast();
   };
 
   return (
-    <div className={cn("rounded-8 flex flex-col justify-end bg-white p-7", frameStyle, frameClass)}>
-      <div className="flex flex-col gap-4">
-        {icon && <div className="flex justify-center">{icon}</div>}
-        <p className="text-center">{message}</p>
+    <div className={cn("rounded-8 flex flex-col bg-white p-7 shadow-lg", frameStyle, frameClass)}>
+      <div className="flex flex-col items-center gap-4">
+        {icon && <div className="size-6">{icons}</div>}
+        {children ? children : <p className="text-center text-lg">{message}</p>}
       </div>
 
-      {buttons && (
-        <div className={cn("flex items-center justify-center gap-2", buttonAlignStyle, alignStyle)}>
-          {buttons.map((btn, i) => (
-            <Button
-              key={i}
-              onClick={() => handleButtonClick(btn.actionKey)}
-              variant={btn.primary ? "b" : "w"}
-              className={cn(buttonStyle, buttonClass)}
-            >
-              {btn.label}
-            </Button>
-          ))}
-        </div>
-      )}
+      <div className={cn("flex items-center gap-2", buttonAlignStyle, alignStyle)}>
+        {buttons.map((btn, i) => (
+          <Button
+            key={i}
+            variant={btn.primary ? "b" : "w"}
+            onClick={() => handleButtonClick(btn?.actionKey)}
+            className={cn(buttonStyle, buttonClass)}
+          >
+            {btn.label}
+          </Button>
+        ))}
+      </div>
     </div>
   );
 }

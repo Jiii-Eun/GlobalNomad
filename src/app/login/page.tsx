@@ -1,12 +1,20 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Suspense } from "react";
 import { useForm } from "react-hook-form";
 
-import MainLogo from "@/assets/brand/logo-big.svg";
+import KaKaoLoginButton from "@/components/oauth/KaKaoAuthButton";
+import Logo from "@/components/ui/brand/Logo";
 import Button from "@/components/ui/button/Button";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
+import { useLogin } from "@/lib/api/auth/hooks";
+
+import { baseProfileSetting } from "./baseProfileSetting";
+import KakaoSigninHandler from "./KakaoSigninHandler";
 
 interface FormValues {
   email: string;
@@ -14,27 +22,55 @@ interface FormValues {
 }
 
 export default function Login() {
+  const router = useRouter();
+  const qc = useQueryClient();
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isValid, isSubmitting },
   } = useForm<FormValues>({ mode: "onBlur", defaultValues: { email: "", password: "" } });
 
-  const onSubmit = async () => {
-    // 추후 api 연동
+  const loginMutation = useLogin(false, {
+    onSuccess: async () => {
+      try {
+        await baseProfileSetting();
+      } catch (e) {
+        if (process.env.NODE_ENV !== "production") {
+          console.warn("[baseProfileSetting] 실패:", e);
+        }
+      } finally {
+        await qc.invalidateQueries({ queryKey: ["me"] }).catch(() => null);
+        router.push("/");
+      }
+    },
+    onError: (e: unknown) => {
+      const msg = (e as { message?: string })?.message ?? "";
+      if (/비밀번호/i.test(msg) || /password/i.test(msg)) {
+        alert("비밀번호가 일치하지 않습니다.");
+        setError("password", { type: "server", message: "비밀번호가 일치하지 않습니다." });
+      } else if (/이메일/i.test(msg) || /email/i.test(msg)) {
+        setError("email", { type: "server", message: "이메일 형식으로 작성해 주세요." });
+      } else {
+        setError("email", { type: "server", message: msg || "로그인에 실패했습니다." });
+      }
+    },
+  });
+
+  const onSubmit = async (v: FormValues) => {
+    await loginMutation.mutateAsync({ email: v.email.trim(), password: v.password });
   };
 
   return (
-    <main className="mx-auto mt-28 w-full max-w-[640px]">
-      <Link href="/" aria-label="홈으로 이동" className="inline-block">
-        <MainLogo
-          className="mx-auto mb-14"
-          role="img"
-          aria-label="GlobalNomad"
-          width={340}
-          height={192}
-        />
-      </Link>
+    <main
+      className={[
+        "mx-auto mt-28 w-full max-w-[640px]",
+        "tablet:px-[52px] tablet:max-w-[640px]",
+        "mobile:mt-[110px] mobile:px-[13px] mobile:max-w-[350px]",
+      ].join(" ")}
+    >
+      <Logo />
+
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-7">
         <Field id="email" label="이메일" error={errors.email?.message}>
           <Input
@@ -45,8 +81,10 @@ export default function Login() {
             {...register("email", {
               setValueAs: (v) => (typeof v === "string" ? v.trim() : v),
               required: "이메일을 입력해 주세요.",
-              validate: (v) =>
-                /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) || "이메일 형식이 올바르지 않습니다.",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "이메일을 입력해 주세요.",
+              },
             })}
           />
         </Field>
@@ -67,11 +105,35 @@ export default function Login() {
         <Button
           type="submit"
           variant="b"
-          isDisabled={!isValid || isSubmitting}
-          className="w-full text-lg"
+          isDisabled={!isValid || isSubmitting || loginMutation.isPending}
+          className="h-12 w-full text-lg"
         >
           {isSubmitting ? "로그인 중..." : "로그인"}
         </Button>
+
+        <div className="mx-auto mt-8 flex w-fit gap-3">
+          <span className="text-brand-gray-900 text-lg whitespace-nowrap">회원이 아니신가요?</span>
+          <Link
+            href="/signup"
+            className="text-brand-deep-green-500 text-lg underline decoration-solid"
+          >
+            회원가입하기
+          </Link>
+        </div>
+
+        <div className="mt-12 flex items-center gap-4 text-gray-500">
+          <span className="h-px flex-1 bg-gray-200" />
+          <span className="text-lg">SNS 계정으로 로그인하기</span>
+          <span className="h-px flex-1 bg-gray-200" />
+        </div>
+
+        <div className="mt-6 flex justify-center">
+          <KaKaoLoginButton mode="signin" />
+        </div>
+
+        <Suspense fallback={null}>
+          <KakaoSigninHandler />
+        </Suspense>
       </form>
     </main>
   );

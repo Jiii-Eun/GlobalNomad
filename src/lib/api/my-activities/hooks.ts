@@ -153,7 +153,7 @@ export function useUpdateReservationStatus(
   options?: ApiMutationOptions<UpdateResvStatusRes, UpdateResvStatusReq>,
 ) {
   return useApiMutation<UpdateResvStatusRes, UpdateResvStatusReq>(
-    isMock ? undefined : (data) => updateReservationStatus(data),
+    isMock ? undefined : updateReservationStatus,
     {
       mockResponse: isMock
         ? {

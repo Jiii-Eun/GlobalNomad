@@ -36,12 +36,12 @@ export function useActivities(
       mockData: isMock
         ? {
             cursorId: 0,
-            totalCount: 1,
+            totalCount: 9,
             activities: [
               {
                 id: 1,
                 userId: 1,
-                title: "Mock 체험",
+                title: "Mock1 체험",
                 description: "목데이터 설명",
                 category: "문화 · 예술",
                 price: 10000,
@@ -236,7 +236,7 @@ export function useCreateReservation(
   );
 }
 
-//POST: 체험 이미지 업로드
+//POST: 체험 이미지 URL생성
 export function useUploadActivityImage(
   isMock = false,
   options?: ApiMutationOptions<UploadImageRes, FormData>,

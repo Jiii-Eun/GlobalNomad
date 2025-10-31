@@ -1,5 +1,7 @@
 import "@/styles/globals.css";
-import BaseLayout from "@/components/layout/BaseLayout";
+
+import { ErrorProvider } from "@/components/provider/ErrorProvider";
+import KakaoScriptLoader from "@/components/provider/KakaoScriptLoader";
 import QueryProviders from "@/components/provider/QueryProviders";
 import { ToastProvider } from "@/components/provider/ToastProvider";
 
@@ -18,7 +20,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div id="portal" />
         <QueryProviders>
           <ToastProvider>
-            <BaseLayout>{children}</BaseLayout>
+            <ErrorProvider>
+              <KakaoScriptLoader />
+              {children}
+            </ErrorProvider>
           </ToastProvider>
         </QueryProviders>
       </body>

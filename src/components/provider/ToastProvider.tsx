@@ -37,18 +37,19 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
   const openToast = useCallback((content: ReactNode, options?: ToastOptions) => {
     clearTimer();
-    setToast(content);
+    setToast(null);
 
-    const merged = { ...DEFAULT_OPTIONS, ...options };
-    const autoClose = merged.autoClose;
-    const duration = merged.duration;
+    setTimeout(() => {
+      setToast(content);
 
-    if (autoClose) {
-      timerRef.current = setTimeout(() => {
-        setToast(null);
-        timerRef.current = null;
-      }, duration);
-    }
+      const merged = { ...DEFAULT_OPTIONS, ...options };
+      if (merged.autoClose) {
+        timerRef.current = setTimeout(() => {
+          setToast(null);
+          timerRef.current = null;
+        }, merged.duration);
+      }
+    }, 10);
   }, []);
 
   const closeToast = useCallback(() => {
@@ -83,7 +84,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               y: 20,
               transition: { duration: 0.15, ease: "easeInOut" },
             }}
-            className="fixed top-1/2 left-1/2 z-[999] -translate-x-1/2 -translate-y-1/2 shadow-[0_4px_16px_0_rgba(17,34,17,0.05)]"
+            className="shadow-green fixed top-1/2 left-1/2 z-[999] -translate-x-1/2 -translate-y-1/2"
           >
             {toast}
           </motion.div>
@@ -93,7 +94,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useToast() {
+export function useToastProvider() {
   const ctx = useContext(ToastContext);
   if (!ctx) throw new Error("ToastProvider와 함께 사용해야합니다.");
   return ctx;

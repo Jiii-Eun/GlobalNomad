@@ -1,6 +1,8 @@
+import { useQueryClient } from "node_modules/@tanstack/react-query/build/modern/QueryClientProvider";
+
 import { useApiMutation, ApiMutationOptions } from "@/lib/hooks/useApiMutation";
 
-import { login, refreshToken } from "./api";
+import { login, logout, PostToken } from "./api";
 import { LoginReq, LoginRes, TokenRes } from "./types";
 
 //POST: 로그인
@@ -25,9 +27,31 @@ export function useLogin(isMock = false, options?: ApiMutationOptions<LoginRes, 
 }
 
 //POST: 토큰 재발급
-export function useRefreshToken(isMock = false, options?: ApiMutationOptions<TokenRes, undefined>) {
-  return useApiMutation<TokenRes, undefined>(isMock ? undefined : () => refreshToken(), {
+export function usePostToken(isMock = false, options?: ApiMutationOptions<TokenRes, undefined>) {
+  return useApiMutation<TokenRes, undefined>(isMock ? undefined : () => PostToken(), {
     mockResponse: isMock ? { refreshToken: "mock-refresh", accessToken: "mock-access" } : undefined,
     ...options,
   });
+}
+
+// POST: 로그아웃
+export function useLogout(options?: ApiMutationOptions<undefined, undefined>) {
+  const queryClient = useQueryClient();
+
+  const mutation = useApiMutation<undefined, undefined>(() => logout(), {
+    onSuccess: () => {
+      queryClient.clear();
+      window.location.reload();
+    },
+    onError: (error) => {
+      console.error("로그아웃 실패:", error);
+    },
+    ...options,
+  });
+
+  return {
+    ...mutation,
+    mutate: () => mutation.mutate(undefined),
+    mutateAsync: () => mutation.mutateAsync(undefined),
+  };
 }
