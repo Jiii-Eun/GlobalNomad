@@ -4,10 +4,16 @@ import { BASE_URL } from "@/lib/server/constants";
 import { setAuthCookies } from "@/lib/server/tokens";
 
 export async function proxyRequest(req: NextRequest, method: string, endpoint: string) {
+  const joinUrl = (base: string, path: string): string => {
+    const cleanBase = base.replace(/\/+$/, "");
+    const cleanPath = path.replace(/^\/+/, "");
+    return `${cleanBase}/${cleanPath}`;
+  };
+
   try {
     const url = ["GET", "DELETE"].includes(method)
-      ? `${BASE_URL}/${endpoint}${req.nextUrl.search}`
-      : `${BASE_URL}/${endpoint}`;
+      ? `${joinUrl(BASE_URL, endpoint)}${req.nextUrl.search}`
+      : joinUrl(BASE_URL, endpoint);
 
     const cookieHeader = req.headers.get("cookie") ?? "";
     const accessToken = cookieHeader.match(/accessToken=([^;]+)/)?.[1];
