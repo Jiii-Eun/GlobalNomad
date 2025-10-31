@@ -5,7 +5,8 @@ import { useEffect } from "react";
 
 import { useOAuthSignIn } from "@/lib/api/oauth/hooks";
 
-const OAUTH_LOGIN_REDIRECT = "http://localhost:3000/oauth";
+const OAUTH_LOGIN_REDIRECT =
+  process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI ?? "http://localhost:3000/oauth";
 
 export default function KakaoSigninHandler() {
   const sp = useSearchParams();

@@ -24,6 +24,6 @@ export function rememberKakaoStateFromUrl(url: string) {
 }
 
 export function verifyKakaoState(returnedState: string | null): boolean {
-  const saved = sessionStorage.getItme("kakao_oauth_state");
+  const saved = sessionStorage.getItem("kakao_oauth_state");
   return saved ? saved === (returnedState ?? "") : true;
 }
