@@ -26,6 +26,7 @@ export function getActivities(params: GetActivitiesReq) {
   const query = toQueryString(params);
   return apiRequest<GetActivitiesRes>(`/activities?${query}`, {
     schema: GetActivitiesResSchema,
+    next: { revalidate: 60 },
   });
 }
 

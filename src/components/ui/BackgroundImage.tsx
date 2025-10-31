@@ -39,6 +39,7 @@ export default function BackgroundImage({
           src={src}
           alt={alt}
           fill
+          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
           loading="lazy"
           decoding="async"
           className={cn(
