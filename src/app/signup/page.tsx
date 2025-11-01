@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import KaKaoLoginButton from "@/components/oauth/KaKaoAuthButton";
@@ -10,10 +10,7 @@ import Logo from "@/components/ui/brand/Logo";
 import Button from "@/components/ui/button/Button";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
-import { useOAuthSignUp } from "@/lib/api/oauth/hooks";
 import { useSignUp } from "@/lib/api/users/hooks";
-
-import KakaoSignupBridge from "./KakaoSignupBridge";
 
 interface FormValues {
   email: string;
@@ -21,10 +18,18 @@ interface FormValues {
   password: string;
   confirm: string;
 }
+function isRecord(v: unknown): v is Record<string, unknown> {
+  return typeof v === "object" && v !== null;
+}
 
 export default function Signup() {
   const router = useRouter();
-  const [kakaoToken, setKakaoToken] = useState<string | null>(null);
+  const sp = useSearchParams();
+  const code = sp.get("code");
+  const state = sp.get("state");
+  const isKakaoSignup = !!code && (state === null || state === "signup");
+  const redirectUri =
+    (typeof window !== "undefined" ? window.location.origin : "") + "/oauth/signup/kakao";
 
   const {
     register,
@@ -34,6 +39,7 @@ export default function Signup() {
     control,
     trigger,
     getValues,
+    watch,
   } = useForm<FormValues>({
     mode: "onChange",
     defaultValues: { email: "", nickname: "", password: "", confirm: "" },
@@ -41,13 +47,15 @@ export default function Signup() {
 
   const pw = useWatch({ control, name: "password" });
   useEffect(() => {
-    const hasPw = !!pw;
-    const confirmPw = getValues("confirm");
-    const confirmTouched = touchedFields.confirm || dirtyFields.confirm;
-    if (hasPw && (confirmPw || confirmTouched)) {
-      void trigger("confirm");
+    if (!isKakaoSignup) {
+      const hasPw = !!pw;
+      const confirmPw = getValues("confirm");
+      const confirmTouched = touchedFields.confirm || dirtyFields.confirm;
+      if (hasPw && (confirmPw || confirmTouched)) {
+        void trigger("confirm");
+      }
     }
-  }, [pw, trigger, getValues, touchedFields.confirm, dirtyFields.confirm]);
+  }, [isKakaoSignup, pw, trigger, getValues, touchedFields.confirm, dirtyFields.confirm]);
 
   //일반 회원가입
   const emailSignup = useSignUp(false, {
@@ -71,47 +79,93 @@ export default function Signup() {
     },
   });
 
-  //카카오 회원가입
-  const kakaoSignup = useOAuthSignUp(false, {
-    onSuccess: (res) => {
-      if (res.accessToken || res.refreshToken) router.push("/");
-      else router.push("/login");
-    },
-    onError: (e: unknown) => {
-      const msg = (e as { message?: string })?.message ?? "";
-      setError("nickname", { type: "server", message: msg || "간편회원가입에 실패했습니다." });
-    },
-  });
-
-  const REQUIRED_LITERAL = "http://localhost:3000/oauth/kakao" as const;
-
-  const ACTUAL_REDIRECT_URI =
-    process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI ??
-    "https://global-nomad-henna.vercel.app/oauth/kakao/callback";
-
-  if (ACTUAL_REDIRECT_URI !== REQUIRED_LITERAL && process.env.NODE_ENV !== "production") {
-    console.warn("[KAKAO_REDIRECT_URI] 타입 리터럴과 ENV 값이 다릅니다:", ACTUAL_REDIRECT_URI);
-  }
-
-  const REDIRECT_URI_FOR_TYPE = ACTUAL_REDIRECT_URI as unknown as typeof REQUIRED_LITERAL;
-
   const onSubmit = async (values: FormValues) => {
-    if (kakaoToken) {
-      await kakaoSignup.mutateAsync({
-        nickname: values.nickname.trim(),
-        redirectUri: REDIRECT_URI_FOR_TYPE,
-        token: kakaoToken,
-      });
-    } else {
-      await emailSignup.mutateAsync({
-        email: values.email.trim(),
-        nickname: values.nickname.trim(),
-        password: values.password,
-      });
+    if (isKakaoSignup && code) {
+      try {
+        const res = await fetch("/api/oauth/kakao", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            code,
+            state: "signup",
+            redirectUri,
+            nickname: values.nickname.trim(),
+          }),
+        });
+
+        const txt = await res.text();
+        let payload: unknown;
+        try {
+          payload = JSON.parse(txt);
+        } catch {
+          payload = { message: txt };
+        }
+
+        if (res.status === 409) {
+          setError("nickname", { type: "server", message: "이미 사용중인 닉네임입니다." });
+          return;
+        }
+        if (!res.ok) {
+          const msg =
+            isRecord(payload) && typeof payload.message === "string"
+              ? payload.message
+              : "간편회원가입에 실패했습니다.";
+          setError("nickname", { type: "server", message: msg });
+          return;
+        }
+
+        router.replace("/");
+        return;
+      } catch {
+        setError("nickname", { type: "server", message: "간편회원가입에 실패했습니다." });
+        return;
+      }
     }
+
+    await emailSignup.mutateAsync({
+      email: values.email.trim(),
+      nickname: values.nickname.trim(),
+      password: values.password,
+    });
   };
 
-  const isPending = isSubmitting || emailSignup.isPending || kakaoSignup.isPending;
+  const emailRules = isKakaoSignup
+    ? {}
+    : {
+        setValueAs: (v: unknown) => (typeof v === "string" ? v.trim() : v),
+        required: "이메일을 입력해 주세요.",
+        pattern: {
+          value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+          message: "이메일을 입력해 주세요.",
+        },
+      };
+
+  const nicknameRules = {
+    setValueAs: (v: unknown) => (typeof v === "string" ? v.trim() : v),
+    required: "닉네임을 입력해주세요.",
+    validate: (v: string) => (v?.length ?? 0) > 0 || "닉네임을 입력해 주세요.",
+  } as const;
+
+  const passwordRules = isKakaoSignup
+    ? {}
+    : {
+        required: "비밀번호를 입력해 주세요.",
+        minLength: { value: 8, message: "비밀번호는 8자 이상이어야 합니다." },
+      };
+
+  const confirmRules = isKakaoSignup
+    ? {}
+    : {
+        required: "비밀번호를 다시 입력해 주세요.",
+        validate: (v: string) => v === getValues("password") || "비밀번호가 일치하지 않습니다.",
+      };
+
+  // 카카오 가입 시에는 닉네임만 유효하면 버튼 활성화
+  const nickname = watch("nickname");
+  const isPending =
+    isSubmitting || (isKakaoSignup ? !(nickname && nickname.trim().length > 0) : !isValid);
+  const submitDisabled =
+    isPending || (isKakaoSignup ? !(nickname && nickname.trim().length > 0) : !isValid);
 
   return (
     <main
@@ -129,14 +183,8 @@ export default function Signup() {
             type="email"
             placeholder="이메일을 입력해 주세요."
             aria-invalid={!!errors.email}
-            {...register("email", {
-              setValueAs: (v) => (typeof v === "string" ? v.trim() : v),
-              required: "이메일을 입력해 주세요.",
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "이메일을 입력해 주세요.",
-              },
-            })}
+            disabled={isKakaoSignup}
+            {...register("email", emailRules)}
           />
         </Field>
 
@@ -147,11 +195,7 @@ export default function Signup() {
             placeholder="닉네임을 입력해 주세요."
             maxLength={10}
             aria-invalid={!!errors.nickname}
-            {...register("nickname", {
-              setValueAs: (v) => (typeof v === "string" ? v.trim() : v),
-              required: "닉네임을 입력해주세요.",
-              validate: (v) => (v?.length ?? 0) > 0 || "닉네임을 입력해 주세요.",
-            })}
+            {...register("nickname", nicknameRules)}
           />
         </Field>
 
@@ -161,10 +205,8 @@ export default function Signup() {
             type="password"
             placeholder="비밀번호를 입력해 주세요."
             aria-invalid={!!errors.password}
-            {...register("password", {
-              required: "비밀번호를 입력해 주세요.",
-              minLength: { value: 8, message: "비밀번호는 8자 이상이어야 합니다." },
-            })}
+            disabled={isKakaoSignup}
+            {...register("password", passwordRules)}
           />
         </Field>
 
@@ -174,20 +216,18 @@ export default function Signup() {
             type="password"
             placeholder="비밀번호를 다시 입력해 주세요."
             aria-invalid={!!errors.confirm}
-            {...register("confirm", {
-              required: "비밀번호를 다시 입력해 주세요.",
-              validate: (v) => v === getValues("password") || "비밀번호가 일치하지 않습니다.",
-            })}
+            disabled={isKakaoSignup}
+            {...register("confirm", confirmRules)}
           />
         </Field>
 
         <Button
           type="submit"
           variant="b"
-          isDisabled={!isValid || isPending}
+          isDisabled={submitDisabled}
           className="h-12 w-full text-lg"
         >
-          {isPending ? "가입 중..." : "회원가입"}
+          {isPending ? "가입 중..." : isKakaoSignup ? "카카오로 가입 완료" : "회원가입"}
         </Button>
 
         <div className="mx-auto mt-8 flex w-fit gap-3">
@@ -209,10 +249,6 @@ export default function Signup() {
         <div className="mt-6 flex justify-center">
           <KaKaoLoginButton mode="signup" />
         </div>
-
-        <Suspense fallback={null}>
-          <KakaoSignupBridge onToken={setKakaoToken} />
-        </Suspense>
       </form>
     </main>
   );

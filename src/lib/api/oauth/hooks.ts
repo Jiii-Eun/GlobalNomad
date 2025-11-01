@@ -57,21 +57,17 @@ export function useOAuthSignUp(
   );
 }
 
-const MOCK_REDIRECT = "http://localhost:3000/oauth/kakao" as const;
-
 //POST: 간편 로그인
 export function useOAuthSignIn(
   isMock = false,
   options?: ApiMutationOptions<OAuthLoginRes, OAuthLoginReq>,
 ) {
-  const redirectUri =
-    process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI ?? "http://localhost:3000/oauth/kakao/callback";
   return useApiMutation<OAuthLoginRes, OAuthLoginReq>(
-    isMock ? undefined : (data) => oauthSignIn("kakao", { ...data, redirectUri }),
+    isMock ? undefined : (data) => oauthSignIn("kakao", data),
     {
       mockResponse: isMock
         ? {
-            redirectUri: MOCK_REDIRECT,
+            redirectUri: "http://localhost:3000/oauth/kakao",
             token: "mock-token",
           }
         : undefined,
