@@ -2,7 +2,6 @@
 import KaKaoLogin from "@/assets/brand/logo-kakao.svg";
 
 type Mode = "signin" | "signup";
-const REST_KEY = process.env.NEXT_PUBLIC_KAKAO_REST_KEY ?? "";
 
 function getRedirectUri(mode: Mode): string {
   const origin = typeof window !== "undefined" ? window.location.origin : "";
@@ -11,20 +10,13 @@ function getRedirectUri(mode: Mode): string {
 
 export default function KaKaoAuthButton({ mode }: { mode: Mode }) {
   const onClick = () => {
-    if (!REST_KEY) {
-      alert("NEXT_PUBLIC_KAKAO_REST_KEY 누락");
-      return;
-    }
+    const K = typeof window !== "undefined" ? window.Kakao : undefined;
+
+    if (!K) return alert("카카오 SDK가 아직 로드되지 않았습니다.");
+    if (!K.isInitialized()) return alert("카카오 SDK 초기화 전입니다.");
+
     const redirectUri = getRedirectUri(mode);
-
-    const params = new URLSearchParams({
-      client_id: REST_KEY,
-      redirect_uri: redirectUri,
-      response_type: "code",
-      state: mode,
-    });
-
-    window.location.href = `https://kauth.kakao.com/oauth/authorize?${params.toString()}`;
+    K.Auth.authorize({ redirectUri, state: mode });
   };
 
   return (

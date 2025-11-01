@@ -106,7 +106,7 @@ export default function Login() {
           isDisabled={!isValid || isSubmitting || loginMutation.isPending}
           className="h-12 w-full text-lg"
         >
-          {isSubmitting ? "로그인 중..." : "로그인"}
+          {isSubmitting ? "로그인 중" : "로그인 하기"}
         </Button>
 
         <div className="mx-auto mt-8 flex w-fit gap-3">
