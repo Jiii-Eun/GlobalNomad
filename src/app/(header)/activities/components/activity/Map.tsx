@@ -1,5 +1,6 @@
 "use client";
 import { useEffect } from "react";
+import { _MapProps } from "react-kakao-maps-sdk";
 
 import { Misc } from "@/components/icons";
 

@@ -4,9 +4,12 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 
 import { useActivityDetail } from "@/lib/api/activities/hooks";
+import { useKakaoReady } from "@/lib/hooks/useKakaoReady";
+import { useMyPendingDatesForActivity } from "@/lib/hooks/useMyPendingDatesForActivity";
 
 import ActivityHead from "../components/activity/ActivityHead";
 import Map from "../components/activity/Map";
+import { CalendarProvider } from "../components/calendar/Calendar.provider";
 import ReservationContent from "../components/reservations/ReservationContent";
 import Reviews from "../components/reviews/Reviews";
 
@@ -14,7 +17,10 @@ export default function ActivitiesDetailPage() {
   const { id } = useParams<{ id: string }>();
   const numericId = Number(id);
   const { data, error, isLoading } = useActivityDetail(numericId);
-  console.log("data", data);
+  //로그인한 유저의 'pending' 예약 날짜 수집
+  const { pendingDates } = useMyPendingDatesForActivity(numericId);
+  const kakaoReady = useKakaoReady();
+
   if (!id || Number.isNaN(numericId)) {
     return <main className="container-base px-[24px]">잘못된 경로입니다.</main>;
   }
@@ -39,7 +45,7 @@ export default function ActivitiesDetailPage() {
         >
           <div className="mobile:hidden h-full w-1/2 shrink-0">
             <Image
-              src={data?.bannerImageUrl}
+              src={data.bannerImageUrl}
               alt="체험 메인이미지"
               width={600}
               height={540}
@@ -71,20 +77,26 @@ export default function ActivitiesDetailPage() {
             <div className="border-brand-nomad-black/25 flex flex-col gap-[16px] border-t py-[40px]">
               <p className="text-brand-nomad-black text-xl font-bold">체험 설명</p>
               <p className="text-brand-nomad-black/75 text-lg whitespace-pre-wrap">
-                {data?.description}
+                {data.description}
               </p>
             </div>
-            <Map location={data?.address} />
-            <Reviews averageRating={data?.rating} totalCount={data?.reviewCount} id={data?.id} />
+            <>
+              {!kakaoReady && <div className="h-[450px] w-full rounded-2xl bg-gray-100" />}
+              {kakaoReady && <Map location={data.address} />}
+            </>
+            <Reviews averageRating={data?.rating} totalCount={data.reviewCount} id={data.id} />
           </div>
 
           <div>
-            <ReservationContent
-              activityId={data.id}
-              title={data.title}
-              price={data.price}
-              schedules={data.schedules}
-            />
+            <CalendarProvider activityId={data.id}>
+              <ReservationContent
+                activityId={data.id}
+                title={data.title}
+                price={data.price}
+                schedules={data.schedules}
+                pendingDates={pendingDates}
+              />
+            </CalendarProvider>
           </div>
         </div>
       </main>
