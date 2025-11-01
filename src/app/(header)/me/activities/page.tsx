@@ -111,9 +111,6 @@ export default function Activities() {
 
         return { ...prev, pages: nextPages };
       });
-
-      // (선택) 서버와 재동기화가 필요하면 invalidate를 추가
-      // queryClient.invalidateQueries({ queryKey: QUERY_KEY });
     },
   });
 
@@ -131,8 +128,8 @@ export default function Activities() {
 
   return (
     <>
-      <div className="tablet:max-w-[430px] mobile:max-w-[344px] flex h-fit min-h-[800px] w-[800px] flex-col gap-10">
-        <div className="flex justify-between">
+      <div className="tablet:max-w-[800px] mobile:max-w-[430px] flex h-fit w-full flex-col gap-10">
+        <div className="flex w-full justify-between">
           <h1 className="text-3xl font-bold">내 체험 관리</h1>
           <Link
             href="./activities/register"
@@ -141,7 +138,7 @@ export default function Activities() {
             체험 등록하기
           </Link>
         </div>
-        <div>
+        <div className="w-full">
           {isLoading && <div>불러오는 중…</div>}
           {isError && <div>목록을 불러오지 못했습니다.</div>}
           {!isLoading && !isError && items.length === 0 && <NotingPage />}
@@ -151,9 +148,9 @@ export default function Activities() {
               {items.map((item) => (
                 <li
                   key={item.id}
-                  className="tablet:w-[430px] tablet:h-[156px] mobile:w-[344px] mobile:h-[128px] flex h-[204px] w-[800px] rounded-3xl bg-white"
+                  className="tablet:max-w-[800px] tablet:max-h-[204px] mobile:max-w-[430px] mobile:max-h-[156px] flex h-[204px] w-full rounded-3xl bg-white"
                 >
-                  <div className="tablet:w-[156px] tablet:h-[156px] mobile:w-[128px] mobile:h-[128px] h-[204px] w-[204px] overflow-hidden rounded-l-3xl">
+                  <div className="tablet:max-w-[204px] tablet:max-h-[204px] mobile:max-w-[156px] mobile:max-h-[156px] h-[204px] w-[204px] overflow-hidden rounded-l-3xl">
                     <Image
                       src={item.bannerImageUrl}
                       alt="썸네일"

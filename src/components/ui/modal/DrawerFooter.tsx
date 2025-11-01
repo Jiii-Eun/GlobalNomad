@@ -21,32 +21,33 @@ export default function DrawerFooter({
   isDisabled,
   frameClass,
   buttonClass,
-  isNext = false,
 }: footerProps) {
-  const { nextStep } = useDrawerContext();
+  const { onClose } = useDrawerContext();
 
   const handleClick = () => {
-    onClick?.();
-    if (isNext && nextStep) {
-      nextStep();
+    if (onClick) {
+      onClick();
+    } else if (onClose) {
+      onClose();
     }
   };
 
-  const Wrapper = isNext ? "div" : Drawer.Close;
-
+  const FooterButton = (
+    <Button
+      className={cn("mobile:h-12 h-13 w-full", buttonClass)}
+      onClick={handleClick}
+      isDisabled={isDisabled}
+    >
+      {buttonText ?? "확인"}
+    </Button>
+  );
   return (
-    <Wrapper className={cn("flex w-full items-center justify-center", frameClass)}>
+    <div className={cn("flex w-full items-center justify-center", frameClass)}>
       {children ? (
-        children
+        <Drawer.Close asChild>{children}</Drawer.Close>
       ) : (
-        <Button
-          className={cn("mobile:h-12 h-13 w-full", buttonClass)}
-          onClick={handleClick}
-          isDisabled={isDisabled}
-        >
-          {buttonText ?? "확인"}
-        </Button>
+        <Drawer.Close asChild>{FooterButton}</Drawer.Close>
       )}
-    </Wrapper>
+    </div>
   );
 }

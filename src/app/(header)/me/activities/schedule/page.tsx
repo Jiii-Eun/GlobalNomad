@@ -17,6 +17,10 @@ import {
 import type { Reservation } from "@/lib/api/my-activities/types";
 import { useInfiniteScrollQuery } from "@/lib/hooks/useInfiniteScroll";
 
+import { DesktopReservationPanel } from "./components/DesktopReservationPanel";
+import { MobileReservationDrawer } from "./components/MobileReservationDrawer";
+import ReservationPanelContent from "./components/ReservationPanelContent";
+import { useIsTabletOrBelow } from "./components/useTabletOrBelow";
 import NotingPage from "../../components/NotingPage";
 
 export default function Schedule() {
@@ -36,6 +40,8 @@ export default function Schedule() {
   const calendarWrapRef = useRef<HTMLDivElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
   const [panelTop, setPanelTop] = useState(0);
+
+  const isTabletOrBelow = useIsTabletOrBelow();
 
   const { data: monthDash } = useReservationDashboard(Number(activityId || 0), year, month, false, {
     enabled: !!activityId,
@@ -353,140 +359,48 @@ export default function Schedule() {
                 setViewMonth(() => dayjs(`${y}-${String(m).padStart(2, "0")}-01`))
               }
             />
-            {openDate && (
-              <>
-                <div
-                  className="absolute inset-0 z-40"
-                  onClick={() => setOpenDate(null)}
-                  aria-hidden
-                />
-
-                <div
-                  ref={panelRef}
-                  role="dialog"
-                  aria-modal="true"
-                  className="tablet:left-1/2 tablet:right-auto tablet:-translate-x-1/2 tablet:translate-y-0 mobile:max-w-[375px] absolute right-0 z-50 flex h-[700px] w-[420px] flex-col gap-4 overflow-hidden rounded-3xl border border-gray-200 bg-white px-6 py-7 shadow-lg"
-                  style={{ top: Math.max(0, panelTop) }}
+            {openDate &&
+              (isTabletOrBelow ? (
+                <MobileReservationDrawer open={!!openDate} onClose={() => setOpenDate(null)}>
+                  <ReservationPanelContent
+                    openDate={openDate}
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                    daySlots={daySlots}
+                    selectedScheduleId={selectedScheduleId}
+                    setSelectedScheduleId={setSelectedScheduleId}
+                    tabLabel={tabLabel}
+                    slotLists={slotLists}
+                    confirmAndAutoDecline={confirmAndAutoDecline}
+                    decline={decline}
+                    hasConfirmed={hasConfirmed}
+                    listScrollRef={listScrollRef}
+                    targetRef={targetRef}
+                  />
+                </MobileReservationDrawer>
+              ) : (
+                <DesktopReservationPanel
+                  onClose={() => setOpenDate(null)}
+                  panelRef={panelRef}
+                  panelTop={panelTop}
                 >
-                  <div className="border-brand-gray-200 flex flex-col gap-10 border-b">
-                    <div className="flex justify-between">
-                      <div className="text-2xl font-bold">예약 정보</div>
-                      <button
-                        type="button"
-                        className="rounded text-2xl hover:bg-gray-100"
-                        onClick={() => setOpenDate(null)}
-                        aria-label="닫기"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                    <div className="flex gap-3">
-                      {(["pending", "confirmed", "declined"] as const).map((k) => (
-                        <button
-                          key={k}
-                          type="button"
-                          className={`rounded px-3 py-1 text-xl ${activeTab === k ? "bg-black text-white" : "bg-white"}`}
-                          onClick={() => setActiveTab(k)}
-                        >
-                          {tabLabel(k)}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex min-h-0 flex-1 flex-col gap-4">
-                    <div className="shrink-0 text-xl font-semibold">예약 날짜</div>
-                    <div className="flex shrink-0 flex-col">
-                      <div className="text-xl">{openDate}</div>
-                      <Field id="slot" className="h-20">
-                        <Input
-                          as="select"
-                          id="slot"
-                          className="rounded-4 appearance-none border border-gray-400 bg-white"
-                          rightIcon={<Arrow.Down className="h-6 w-6" />}
-                          placeholderOption="시간 선택"
-                          options={(daySlots ?? []).map((s) => ({
-                            value: s.scheduleId,
-                            label: `${s.startTime} ~ ${s.endTime}`,
-                          }))}
-                          value={selectedScheduleId ?? ""}
-                          disabled={!daySlots || daySlots.length === 0}
-                          onChange={(e) => {
-                            const v = (e.target as HTMLSelectElement).value;
-                            setSelectedScheduleId(v === "" ? null : Number(v));
-                          }}
-                        />
-                      </Field>
-                    </div>
-                    {selectedScheduleId && (
-                      <div className="flex min-h-0 flex-1 flex-col gap-4">
-                        <span className="text-xl font-semibold">예약 내역</span>
-                        <div
-                          ref={listScrollRef}
-                          className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
-                        >
-                          <ul className="flex flex-col gap-3.5">
-                            {(slotLists[selectedScheduleId]?.[activeTab] ?? []).map((r) => (
-                              <li
-                                key={r.id}
-                                className="rounded-4 border-brand-gray-300 flex h-[116px] justify-between border px-4 py-2"
-                              >
-                                <div className="flex flex-col gap-2.5">
-                                  <div className="text-brand-gray-600 font-semibold">
-                                    닉네임{" "}
-                                    <span className="font-medium text-black">{r.nickname}</span>
-                                  </div>
-                                  <div className="text-brand-gray-600 font-semibold">
-                                    인원{" "}
-                                    <span className="font-medium text-black">{r.headCount}명</span>
-                                  </div>
-                                </div>
-                                <div className="flex items-end gap-2">
-                                  {activeTab === "pending" && (
-                                    <>
-                                      <button
-                                        className="text-md h-fit w-fit rounded bg-black px-5 py-2.5 text-center text-white"
-                                        disabled={hasConfirmed}
-                                        onClick={() => confirmAndAutoDecline(r)}
-                                      >
-                                        승인하기
-                                      </button>
-                                      <button
-                                        className="text-md h-fit w-fit rounded border px-5 py-2.5 text-center"
-                                        onClick={() => decline(r)}
-                                      >
-                                        거절하기
-                                      </button>
-                                    </>
-                                  )}
-                                  {activeTab === "confirmed" && (
-                                    <span className="bg-brand-orange-50 text-brand-orange-500 text-md rounded-3xl px-[15px] py-2.5 font-bold">
-                                      예약 승인
-                                    </span>
-                                  )}
-
-                                  {activeTab === "declined" && (
-                                    <span className="bg-brand-red-50 text-brand-red-500 text-md rounded-3xl px-[15px] py-2.5 font-bold">
-                                      예약 거절
-                                    </span>
-                                  )}
-                                </div>
-                              </li>
-                            ))}
-
-                            {(slotLists[selectedScheduleId]?.[activeTab] ?? []).length === 0 && (
-                              <li className="rounded bg-gray-50 px-3 py-6 text-center text-sm text-gray-500">
-                                내역이 없습니다.
-                              </li>
-                            )}
-                            <li ref={targetRef} className="h-6" aria-hidden />
-                          </ul>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </>
-            )}
+                  <ReservationPanelContent
+                    openDate={openDate}
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                    daySlots={daySlots}
+                    selectedScheduleId={selectedScheduleId}
+                    setSelectedScheduleId={setSelectedScheduleId}
+                    tabLabel={tabLabel}
+                    slotLists={slotLists}
+                    confirmAndAutoDecline={confirmAndAutoDecline}
+                    decline={decline}
+                    hasConfirmed={hasConfirmed}
+                    listScrollRef={listScrollRef}
+                    targetRef={targetRef}
+                  />
+                </DesktopReservationPanel>
+              ))}
           </div>
         )}
         {myActs && myActs.activities.length > 0 && (
