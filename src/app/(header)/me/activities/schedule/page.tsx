@@ -318,8 +318,8 @@ export default function Schedule() {
 
   return (
     <>
-      <div className="flex w-[792px] flex-col gap-6">
-        <div className="flex w-[768px] flex-col gap-8">
+      <div className="mobile:max-w-[744px] tablet:max-w-[792px] flex w-full flex-col gap-6">
+        <div className="tablet:max-w-[768px] flex w-full flex-col gap-8">
           <h1 className="text-3xl font-bold">예약 현황</h1>
           {myActs && myActs.activities.length > 0 && (
             <Field id="activity" className="h-20">
@@ -339,7 +339,7 @@ export default function Schedule() {
         {!myActs || myActs.activities.length === 0 ? (
           <NotingPage />
         ) : (
-          <div ref={calendarWrapRef} className="relative w-[800px]">
+          <div ref={calendarWrapRef} className="relative w-full">
             <Calendar
               dailyStatusMap={dailyStatusMap}
               year={Number(year)}
@@ -365,7 +365,7 @@ export default function Schedule() {
                   ref={panelRef}
                   role="dialog"
                   aria-modal="true"
-                  className="absolute right-0 z-50 flex h-[700px] w-[420px] flex-col gap-4 overflow-hidden rounded-3xl border border-gray-200 bg-white px-6 py-7 shadow-lg"
+                  className="tablet:left-1/2 tablet:right-auto tablet:-translate-x-1/2 tablet:translate-y-0 mobile:max-w-[375px] absolute right-0 z-50 flex h-[700px] w-[420px] flex-col gap-4 overflow-hidden rounded-3xl border border-gray-200 bg-white px-6 py-7 shadow-lg"
                   style={{ top: Math.max(0, panelTop) }}
                 >
                   <div className="border-brand-gray-200 flex flex-col gap-10 border-b">
