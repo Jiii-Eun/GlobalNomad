@@ -1,20 +1,27 @@
-"use client";
-
 import toFormData from "@/app/(header)/me/activities/register/components/toFormData";
 
 export async function uploadFiles(
   files: (File | string)[],
   uploadImage: (formData: FormData) => Promise<{ activityImageUrl: string }>,
 ): Promise<string[]> {
-  const uploadedUrls = await Promise.all(
-    files
-      .filter((file): file is File => file instanceof File)
-      .map(async (file) => {
-        const result = await uploadImage(toFormData(file));
-        return result.activityImageUrl;
-      }),
-  );
+  if (!files.length) return [];
 
-  const existingUrls = files.filter((v): v is string => typeof v === "string");
-  return [...existingUrls, ...uploadedUrls];
+  const uploadedUrls: string[] = [];
+
+  for (const file of files) {
+    if (typeof file === "string") {
+      uploadedUrls.push(file);
+      continue;
+    }
+
+    try {
+      const formData = toFormData(file);
+      const { activityImageUrl } = await uploadImage(formData);
+      uploadedUrls.push(activityImageUrl);
+    } catch (error) {
+      console.error("이미지 업로드 실패:", error);
+    }
+  }
+
+  return uploadedUrls;
 }

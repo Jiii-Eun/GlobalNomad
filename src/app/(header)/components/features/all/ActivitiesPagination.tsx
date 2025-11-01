@@ -1,5 +1,3 @@
-"use client";
-
 import { useAtom } from "jotai";
 
 import Pagination from "@/components/ui/pagination/Pagination";
@@ -17,5 +15,5 @@ export default function ActivitiesPagination({ size, data }: AllProps) {
   const totalCount = data?.totalCount ?? 0;
   const totalPages = Math.ceil(totalCount / size);
 
-  return <Pagination page={page} setPage={setPage} totalPages={totalPages} />;
+  return <Pagination page={page} setPage={setPage} totalPages={totalPages} size={size} />;
 }

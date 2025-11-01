@@ -1,10 +1,11 @@
 "use client";
 
 import { useSetAtom } from "jotai";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import ActivityCardBase from "@/app/(header)/components/features/ActivityCardBase";
 import ActivitiesPagination from "@/app/(header)/components/features/all/ActivitiesPagination";
+import { InitActivityProps } from "@/app/(header)/components/features/best/BestActivities";
 import SkeletonList from "@/app/(header)/components/features/SkeletonList";
 import { useActivityParams } from "@/app/(header)/components/useActivityParams";
 import { activitySizeAtom } from "@/lib/api/activities/atoms";
@@ -12,9 +13,11 @@ import { useActivities } from "@/lib/api/activities/hooks";
 import { cn } from "@/lib/cn";
 import { useDevice } from "@/lib/hooks/useDevice";
 
-export default function AllActivitiesList() {
+export default function AllActivitiesList({ initialData }: InitActivityProps) {
   const setSize = useSetAtom(activitySizeAtom);
   const { isTablet, isPc } = useDevice();
+
+  const isFirstRender = useRef(true);
 
   const LENGTH = isPc ? 8 : isTablet ? 9 : 4;
 
@@ -23,7 +26,17 @@ export default function AllActivitiesList() {
   }, [LENGTH, setSize]);
 
   const params = useActivityParams();
-  const { data, isLoading } = useActivities(params);
+  const { data, isLoading } = useActivities(
+    params,
+    false,
+    isFirstRender.current ? { initialData } : undefined,
+  );
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+    }
+  }, []);
 
   const activities = data?.activities;
 

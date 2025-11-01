@@ -1,5 +1,3 @@
-"use client";
-
 import { Controller, useFormContext, FieldError, Path, FieldValues } from "react-hook-form";
 
 import { subTitleClass } from "@/app/(header)/me/activities/register/components/MyActivityForm";

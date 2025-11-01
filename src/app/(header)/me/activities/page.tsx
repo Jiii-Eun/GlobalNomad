@@ -131,7 +131,7 @@ export default function Activities() {
 
   return (
     <>
-      <div className="flex h-fit min-h-[800px] w-[800px] flex-col gap-10">
+      <div className="tablet:max-w-[430px] mobile:max-w-[344px] flex h-fit min-h-[800px] w-[800px] flex-col gap-10">
         <div className="flex justify-between">
           <h1 className="text-3xl font-bold">내 체험 관리</h1>
           <Link
@@ -149,8 +149,11 @@ export default function Activities() {
           {items.length > 0 && (
             <ul className="flex list-none flex-col gap-6">
               {items.map((item) => (
-                <li key={item.id} className="flex h-[204px] w-[800px] rounded-3xl bg-white">
-                  <div className="h-[204px] w-[204px] overflow-hidden rounded-l-3xl">
+                <li
+                  key={item.id}
+                  className="tablet:w-[430px] tablet:h-[156px] mobile:w-[344px] mobile:h-[128px] flex h-[204px] w-[800px] rounded-3xl bg-white"
+                >
+                  <div className="tablet:w-[156px] tablet:h-[156px] mobile:w-[128px] mobile:h-[128px] h-[204px] w-[204px] overflow-hidden rounded-l-3xl">
                     <Image
                       src={item.bannerImageUrl}
                       alt="썸네일"
@@ -159,27 +162,33 @@ export default function Activities() {
                       className="h-full w-full object-cover"
                     />
                   </div>
-                  <div className="flex w-full flex-col gap-1.5 px-4 py-4">
+                  <div className="tablet:py-2 flex w-full flex-col gap-1.5 px-4 py-4">
                     <div className="flex items-center gap-1.5">
-                      <Status.StarFill className="h-[19px] w-[19px]" />
-                      <span>
+                      <Status.StarFill className="mobile:h-[14px] mobile:w-[14px] h-[19px] w-[19px]" />
+                      <span className="mobile:text-md">
                         {item.rating} ({item.reviewCount})
                       </span>
                     </div>
-                    <div className="flex h-full flex-col justify-between text-xl font-bold">
+                    <div className="tablet:text-2lg mobile:text-md flex h-full flex-col justify-between text-xl font-bold">
                       {item.title}
-                      <div className="text-brand-gray-800 flex justify-between text-2xl font-medium">
+                      <div className="text-brand-gray-800 tablet:text-xl mobile:text-lg flex items-center justify-between text-2xl font-medium">
                         ₩{FormatNumber(item.price)} / 인
                         <div className="relative">
                           <DropDown handleClose={closeMenu}>
                             <DropDown.Trigger onClick={() => toggleMenu(item.id)}>
-                              <Misc.MenuDot className="h-10 w-10" />
+                              <Misc.MenuDot className="mobile:h-8 mobile:w-8 h-10 w-10" />
                             </DropDown.Trigger>
                             <DropDown.Menu isOpen={openId === item.id}>
-                              <DropDown.Item onClick={() => moveEdit(item.id)}>
+                              <DropDown.Item
+                                onClick={() => moveEdit(item.id)}
+                                className="cursor-pointer"
+                              >
                                 수정하기
                               </DropDown.Item>
-                              <DropDown.Item onClick={() => openDelete(item.id)}>
+                              <DropDown.Item
+                                onClick={() => openDelete(item.id)}
+                                className="cursor-pointer"
+                              >
                                 삭제하기
                               </DropDown.Item>
                             </DropDown.Menu>

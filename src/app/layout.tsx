@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 
+import KakaoSDKLoader from "@/components/oauth/KakaoSDKLoader";
 import { ErrorProvider } from "@/components/provider/ErrorProvider";
 import KakaoScriptLoader from "@/components/provider/KakaoScriptLoader";
 import QueryProviders from "@/components/provider/QueryProviders";
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <QueryProviders>
           <ToastProvider>
             <ErrorProvider>
+              <KakaoSDKLoader />
               <KakaoScriptLoader />
               {children}
             </ErrorProvider>

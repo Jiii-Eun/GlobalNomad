@@ -2,8 +2,9 @@ import ActivitiesTitle from "@/app/(header)/components/features/all/ActivitiesTi
 import AllActivitiesList from "@/app/(header)/components/features/all/AllActivitiesList";
 import ArrayActivities from "@/app/(header)/components/features/all/ArrayActivities";
 import Categories from "@/app/(header)/components/features/all/Categories";
+import { InitActivityProps } from "@/app/(header)/components/features/best/BestActivities";
 
-export default function AllActivities() {
+export default function AllActivities({ initialData }: InitActivityProps) {
   return (
     <div>
       <div className="mt-[60px] flex items-center justify-between">
@@ -13,7 +14,7 @@ export default function AllActivities() {
 
       <ActivitiesTitle />
 
-      <AllActivitiesList />
+      <AllActivitiesList initialData={initialData} />
     </div>
   );
 }

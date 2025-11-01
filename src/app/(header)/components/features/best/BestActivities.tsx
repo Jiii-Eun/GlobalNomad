@@ -12,13 +12,17 @@ import { useDevice } from "@/lib/hooks/useDevice";
 import { useInfiniteScrollQuery } from "@/lib/hooks/useInfiniteScroll";
 import { flattenPages } from "@/lib/utills/flattenPages";
 
-export default function BestActivities() {
+export interface InitActivityProps {
+  initialData?: GetActivitiesRes;
+}
+
+export default function BestActivities({ initialData }: InitActivityProps) {
   const { isPc } = useDevice();
   const [page, setPage] = useState(1);
 
   const PC_SIZE = 3;
-  const MOBILE_SIZE = 5;
-  const size = isPc ? PC_SIZE : MOBILE_SIZE;
+  const TABLET_SIZE = 5;
+  const size = isPc ? PC_SIZE : TABLET_SIZE;
 
   const baseParams: GetActivitiesReq = useMemo(
     () => ({
@@ -30,18 +34,24 @@ export default function BestActivities() {
     [isPc, size, page],
   );
 
-  const { data: offsetData, isLoading } = useActivities(baseParams);
+  const queryKey = useMemo(() => ["activities", page], [page]);
+
+  const { data: offsetData, isLoading } = useActivities(
+    baseParams,
+    false,
+    page === 1 ? { placeholderData: initialData } : undefined,
+  );
 
   const {
     data: cursorData,
     targetRef,
     isLoading: cursorIsLoading,
   } = useInfiniteScrollQuery<GetActivitiesRes, GetActivitiesReq>({
-    queryKey: ["bestActivities", baseParams],
+    queryKey,
     fetchFn: getActivities,
     initialParams: baseParams,
     enabled: !isPc,
-    size: MOBILE_SIZE,
+    size: TABLET_SIZE,
   });
 
   const activities = isPc

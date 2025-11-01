@@ -3,7 +3,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Suspense } from "react";
 import { useForm } from "react-hook-form";
 
 import KaKaoLoginButton from "@/components/oauth/KaKaoAuthButton";
@@ -14,7 +13,6 @@ import Input from "@/components/ui/input/Input";
 import { useLogin } from "@/lib/api/auth/hooks";
 
 import { baseProfileSetting } from "./baseProfileSetting";
-import KakaoSigninHandler from "./KakaoSigninHandler";
 
 interface FormValues {
   email: string;
@@ -29,7 +27,7 @@ export default function Login() {
     handleSubmit,
     setError,
     formState: { errors, isValid, isSubmitting },
-  } = useForm<FormValues>({ mode: "onBlur", defaultValues: { email: "", password: "" } });
+  } = useForm<FormValues>({ mode: "onChange", defaultValues: { email: "", password: "" } });
 
   const loginMutation = useLogin(false, {
     onSuccess: async () => {
@@ -130,10 +128,6 @@ export default function Login() {
         <div className="mt-6 flex justify-center">
           <KaKaoLoginButton mode="signin" />
         </div>
-
-        <Suspense fallback={null}>
-          <KakaoSigninHandler />
-        </Suspense>
       </form>
     </main>
   );

@@ -38,6 +38,7 @@ export default function ImagePreview({
         )}
       >
         <Image
+          key={src}
           src={src}
           alt="이미지 미리보기"
           fill
