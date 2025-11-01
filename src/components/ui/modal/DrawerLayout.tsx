@@ -18,6 +18,7 @@ interface DrawerLayoutProps {
   onBack?: () => void;
   onClose?: () => void;
   isClose?: boolean;
+  isOpen?: boolean;
   isBack?: boolean;
   contentClass?: string;
 }
@@ -36,6 +37,7 @@ export default function DrawerLayout({
   onBack,
   onClose,
   isClose = true,
+  isOpen = false,
   contentClass,
 }: DrawerLayoutProps) {
   const [step, setStep] = useState(0);
@@ -73,7 +75,14 @@ export default function DrawerLayout({
 
   return (
     <DrawerContext.Provider value={contextValue}>
-      <Drawer.Root>
+      <Drawer.Root
+        open={isOpen}
+        onOpenChange={(next) => {
+          if (!next && onClose) {
+            onClose();
+          }
+        }}
+      >
         <Drawer.Trigger asChild>{trigger}</Drawer.Trigger>
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 z-[900] bg-black/40" />
