@@ -111,14 +111,14 @@ const TimeSlotPicker: React.FC<TimeSlotPicker> = ({
   };
 
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-wrap items-end gap-5">
+    <div className="flex w-full flex-col">
+      <div className="tablet:gap-[5px] mobile:gap-1 flex items-end gap-5">
         <div className="flex flex-col gap-[10px]">
           <label>날짜</label>
           <div className="relative z-30">
             <DatePicker
               ref={datePickerRef}
-              className="border-brand-gray-800 rounded-4 h-[56px] w-[379px] border px-4 py-2"
+              className="border-brand-gray-800 rounded-4 tablet:w-[149px] mobile:w-[130px] mobile:text-md mobile:h-11 h-[56px] w-[379px] border px-4 py-2"
               dateFormat="yy/MM/dd"
               selected={selectDate}
               onChange={onSelectedDateChange}
@@ -138,7 +138,7 @@ const TimeSlotPicker: React.FC<TimeSlotPicker> = ({
               <select
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className={`${startTime ? "text-black" : "text-[#A1A1A1]"} h-[56px] w-[140px] rounded-[4px] border border-[#79747E] px-4 py-1`}
+                className={`${startTime ? "text-black" : "text-[#A1A1A1]"} tablet:w-[104px] mobile:w-[79px] mobile:h-11 tablet:mr-[5px] mobile:mr-1 mobile:text-md mobile:px-2 h-[56px] w-[140px] rounded-[4px] border border-[#79747E] px-4 py-1`}
               >
                 {startOptions.map((t) => (
                   <option key={t} value={t}>
@@ -146,7 +146,7 @@ const TimeSlotPicker: React.FC<TimeSlotPicker> = ({
                   </option>
                 ))}
               </select>
-              <span className="mx-2.5">~</span>
+              <span className="tablet:hidden mobile:hidden mx-2.5">~</span>
             </div>
           </div>
           <div className="flex flex-col gap-[10px]">
@@ -154,7 +154,7 @@ const TimeSlotPicker: React.FC<TimeSlotPicker> = ({
             <select
               value={endTime}
               onChange={(e) => setEndTime(e.target.value)}
-              className={`${endTime ? "text-black" : "text-[#A1A1A1]"} h-[56px] w-[140px] rounded-[4px] border border-[#79747E] px-4 py-1`}
+              className={`${endTime ? "text-black" : "text-[#A1A1A1]"} tablet:w-[104px] mobile:w-[79px] mobile:h-11 mobile:text-md mobile:px-2 h-[56px] w-[140px] rounded-[4px] border border-[#79747E] px-4 py-1`}
             >
               {endOptions.map((t) => (
                 <option key={t} value={t}>
@@ -172,38 +172,38 @@ const TimeSlotPicker: React.FC<TimeSlotPicker> = ({
           title="시간대 추가"
           aria-label="시간대 추가"
         >
-          <Btn.Plus className="h-[56px] w-[56px]" />
+          <Btn.Plus className="mobile:w-11 mobile:h-11 h-[56px] w-[56px]" />
         </button>
       </div>
       {slots.length > 0 && (
         <div className="my-6 h-px w-full bg-[#E5E7EB]" role="separator" aria-hidden="true" />
       )}
-      <div className="flex flex-col gap-5">
+      <div className="mobile:text-md flex flex-col gap-5">
         {slots.length === 0 && <p className="text-[13px] text-gray-500">추가된 시간이 없습니다.</p>}
 
         {slots.map((slot, idx) => (
           <div
             key={`${slot.start.toISOString()}-${slot.end.toISOString()}`}
-            className="flex items-center gap-5"
+            className="tablet:gap-[5px] mobile:gap-1 flex items-center gap-5"
           >
             <input
               readOnly
               value={fmtDateTime(slot.start)}
-              className="h-[56px] w-[379px] rounded-[4px] border border-[#79747E] px-4 py-2"
+              className="tablet:w-[149px] mobile:w-[130px] mobile:h-11 mobile:text-md h-[56px] w-[379px] rounded-[4px] border border-[#79747E] px-4 py-2"
             />
             <div>
               <input
                 readOnly
                 value={`${String(slot.start.getHours()).padStart(2, "0")}:00`}
-                className="h-[56px] w-[140px] rounded-[4px] border border-[#79747E] px-4 py-1"
+                className="tablet:w-[104px] tablet:mr-[5px] mobile:w-[79px] mobile:h-11 mobile:mr-1 mobile:px-2 h-[56px] w-[140px] rounded-[4px] border border-[#79747E] px-4 py-1"
               />
-              <span className="mx-2.5">~</span>
+              <span className="tablet:hidden mobile:hidden mx-2.5">~</span>
               <input
                 readOnly
                 value={`${String(slot.end.getHours()).padStart(2, "0")}:${String(
                   slot.end.getMinutes(),
                 ).padStart(2, "0")}`}
-                className="h-[56px] w-[140px] rounded-[4px] border border-[#79747E] px-4 py-1"
+                className="tablet:w-[104px] mobile:w-[79px] mobile:h-11 mobile:px-2 h-[56px] w-[140px] rounded-[4px] border border-[#79747E] px-4 py-1"
               />
             </div>
             <button
@@ -213,7 +213,7 @@ const TimeSlotPicker: React.FC<TimeSlotPicker> = ({
               title="시간대 삭제"
               aria-label="시간대 삭제"
             >
-              <Btn.Minus className="h-[56px] w-[56px]" />
+              <Btn.Minus className="mobile:w-11 mobile:h-11 h-[56px] w-[56px]" />
             </button>
           </div>
         ))}
