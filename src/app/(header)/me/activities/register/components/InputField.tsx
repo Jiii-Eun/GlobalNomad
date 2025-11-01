@@ -16,6 +16,7 @@ interface FormConfig<TReq extends FieldValues> {
   label?: string;
   as?: "input" | "select" | "textarea";
   placeholder?: string;
+  placeholderOption?: string;
   options?: SelectOption[];
   required: string;
   maxLength?: number;
@@ -54,7 +55,7 @@ export default function InputField<TReq extends FieldValues>() {
       config: {
         id: "category" as Path<TReq>,
         as: "select",
-        placeholder: "카테고리를 선택해주세요",
+        placeholderOption: "카테고리",
         options: CATEGORY_OPTIONS,
         required: "카테고리를 선택해주세요.",
       },
@@ -81,7 +82,8 @@ export default function InputField<TReq extends FieldValues>() {
       {FIELD_STRUCTURE.map((item) => {
         if (item.type === "custom") return item.element;
 
-        const { id, label, as, placeholder, options, required, maxLength } = item.config;
+        const { id, label, as, placeholder, options, required, maxLength, placeholderOption } =
+          item.config;
         const fieldError: FieldError | undefined = errors[id]?.message
           ? (errors[id] as FieldError)
           : undefined;
@@ -93,6 +95,7 @@ export default function InputField<TReq extends FieldValues>() {
             label={label}
             as={as ?? "input"}
             placeholder={placeholder}
+            placeholderOption={placeholderOption}
             options={as === "select" ? (options ?? []) : []}
             error={fieldError}
             maxLength={maxLength}
