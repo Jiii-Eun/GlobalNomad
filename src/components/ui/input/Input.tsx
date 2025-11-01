@@ -4,17 +4,18 @@ import { ComponentPropsWithoutRef, Ref, useState } from "react";
 
 import VisibilityOff from "@/assets/icons/status/visibility-off.svg";
 import Visibility from "@/assets/icons/status/visibility.svg";
+import SelectInput from "@/components/ui/input/SelectInput";
 import { cn } from "@/lib/cn";
 
-const INPUT_BASE =
+export const INPUT_BASE =
   "w-full h-[58px] px-5 bg-white border border-brand-gray-400 rounded " +
   "text-lg placeholder:text-brand-gray-500/60";
 
 const INPUT_HEIGHT = "h-[58px]"; // input 전용 높이
 const TEXTAREA_BASE = "min-h-[346px] py-3 resize-none"; // textarea 전용
 
-const padIfRightIcon = (has: boolean) => (has ? "pr-12" : "pr-5 ");
-const padIfLeftIcon = (has: boolean) => (has ? "pl-10" : "pl-5 ");
+export const padIfRightIcon = (has: boolean) => (has ? "pr-12" : "pr-5 ");
+export const padIfLeftIcon = (has: boolean) => (has ? "pl-10" : "pl-5 ");
 
 type NativeInputProps = ComponentPropsWithoutRef<"input">;
 type NativeSelectProps = ComponentPropsWithoutRef<"select">;
@@ -65,56 +66,7 @@ export default function Input(props: Props) {
   const [showPw, setShowPw] = useState(false);
 
   if (isSelectProps(props)) {
-    const {
-      id,
-      isInvalid,
-      className,
-      wrapperClass,
-      leftIcon,
-      rightIcon,
-      options,
-      placeholderOption,
-      ref,
-      as: _as,
-      ...rest
-    } = props;
-    return (
-      <div className={cn("relative", wrapperClass)}>
-        {leftIcon && (
-          <span className="absolute inset-y-0 left-3 flex items-center text-gray-400">
-            {leftIcon}
-          </span>
-        )}
-        <select
-          id={id}
-          ref={ref as Ref<HTMLSelectElement>}
-          className={[
-            INPUT_BASE,
-            padIfLeftIcon(Boolean(leftIcon)),
-            padIfRightIcon(Boolean(rightIcon)),
-            className,
-          ].join(" ")}
-          aria-invalid={isInvalid || undefined}
-          {...rest}
-        >
-          {placeholderOption && (
-            <option value="" disabled hidden>
-              {placeholderOption}
-            </option>
-          )}
-          {options.map((op) => (
-            <option key={String(op.value)} value={op.value} disabled={op.disabled}>
-              {op.label}
-            </option>
-          ))}
-        </select>
-        {rightIcon && (
-          <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
-            {rightIcon}
-          </span>
-        )}
-      </div>
-    );
+    return <SelectInput {...props} />;
   }
 
   if (isTextareaProps(props)) {
