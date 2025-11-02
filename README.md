@@ -17,6 +17,8 @@ GlobalNomad는 다양한 문화 체험 상품을 한눈에 확인하고,
 ### State & Data
 ![React Query](https://img.shields.io/badge/React_Query-FF4154?style=for-the-badge&logo=reactquery&logoColor=white)
 ![Jotai](https://img.shields.io/badge/Jotai-2B2B2B?style=for-the-badge)
+![Zod](https://img.shields.io/badge/Zod-blue?style=for-the-badge)
+![React Hook Form](https://img.shields.io/badge/React_Hook_Form-EC5990?style=for-the-badge&logo=reacthookform&logoColor=white)
 
 ### Styling & Design System
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
@@ -24,16 +26,22 @@ GlobalNomad는 다양한 문화 체험 상품을 한눈에 확인하고,
 ### 날짜/지도/주소
 ![Day.js](https://img.shields.io/badge/Day.js-CF2B2B?style=for-the-badge&logo=dayjs&logoColor=white)
 ![Kakao Maps SDK](https://img.shields.io/badge/Kakao_Maps_SDK-FEE500?style=for-the-badge&logo=kakaotalk&logoColor=000000)
+![React Datepicker](https://img.shields.io/badge/React_Datepicker-61DAFB?style=for-the-badge&logo=react&logoColor=white)
 
 ### UI 컴포넌트 & 애니메이션
 ![Embla Carousel](https://img.shields.io/badge/Embla_Carousel-2B2B2B?style=for-the-badge)
 ![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)
 ![Vaul Drawer](https://img.shields.io/badge/Vaul_Drawer-2B2B2B?style=for-the-badge)
+![react-intersection-observer](https://img.shields.io/badge/react--intersection--observer-2B2B2B?style=for-the-badge&logo=react&logoColor=61DAFB)
 
 ### Deploy & Storage
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 ![AWS S3](https://img.shields.io/badge/AWS_S3-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white)
 
+### 협업 도구
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
+![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white)
+![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)
 ---
 
 ## ⏱️ 개발 기간
@@ -77,6 +85,8 @@ GlobalNomad는 다양한 문화 체험 상품을 한눈에 확인하고,
   - 키워드 검색  
   - 인기 체험 무한 스크롤 표시  
 
+## 🙋‍♂️ 유저 플로우
+<img width="912" height="506" alt="image" src="https://github.com/user-attachments/assets/f625ff28-0b28-4a9c-993d-094024a95d7a" />
 
 ## 📂 폴더 구조
 ```
@@ -101,3 +111,4 @@ GlobalNomad는 다양한 문화 체험 상품을 한눈에 확인하고,
 - `main` : 배포용
 - `develop` : 다음 버전 통합용
 - `feature/*` : 기능 단위 개발 브랜치 ( develop에서 분기 )
+
