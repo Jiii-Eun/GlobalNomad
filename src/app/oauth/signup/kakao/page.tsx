@@ -136,7 +136,7 @@ export default function KakaoSignupCallback() {
           isDisabled={!nickname.trim() || pending}
           className="h-12 w-full text-lg"
         >
-          {pending ? "가입 처리 중..." : "카카오로 가입 완료"}
+          {pending ? "가입 처리 중" : "카카오로 가입하기"}
         </Button>
 
         <Button

@@ -10,6 +10,7 @@ import Logo from "@/components/ui/brand/Logo";
 import Button from "@/components/ui/button/Button";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
+import { useToast } from "@/components/ui/toast/useToast";
 import { useSignUp } from "@/lib/api/users/hooks";
 
 interface FormValues {
@@ -30,6 +31,7 @@ export default function Signup() {
   const isKakaoSignup = !!code && (state === null || state === "signup");
   const redirectUri =
     (typeof window !== "undefined" ? window.location.origin : "") + "/oauth/signup/kakao";
+  const { showToast } = useToast();
 
   const {
     register,
@@ -60,12 +62,14 @@ export default function Signup() {
   //일반 회원가입
   const emailSignup = useSignUp(false, {
     onSuccess: () => {
+      showToast("signup");
       router.push("/login");
     },
     onError: (e: unknown) => {
       const msg = (e as { message?: string })?.message ?? "";
       if (/이메일/i.test(msg) || /email/i.test(msg)) {
         setError("email", { type: "server", message: msg || "이메일을 입력해 주세요" });
+        showToast("email");
       } else if (/닉네임/i.test(msg) || /nickname/i.test(msg)) {
         setError("nickname", { type: "server", message: msg || "닉네임을 입력해 주세요" });
       } else if (/비밀번호/i.test(msg) || /password/i.test(msg)) {
@@ -113,7 +117,7 @@ export default function Signup() {
           setError("nickname", { type: "server", message: msg });
           return;
         }
-
+        showToast("signup");
         router.replace("/");
         return;
       } catch {
@@ -162,10 +166,9 @@ export default function Signup() {
 
   // 카카오 가입 시에는 닉네임만 유효하면 버튼 활성화
   const nickname = watch("nickname");
-  const isPending =
-    isSubmitting || (isKakaoSignup ? !(nickname && nickname.trim().length > 0) : !isValid);
-  const submitDisabled =
-    isPending || (isKakaoSignup ? !(nickname && nickname.trim().length > 0) : !isValid);
+  const isSubmittingNow = isSubmitting || emailSignup.isPending;
+  const canSubmitKakao = Boolean(nickname && nickname.trim().length > 0);
+  const submitDisabled = isSubmittingNow || (isKakaoSignup ? !canSubmitKakao : !isValid);
 
   return (
     <main
@@ -227,7 +230,7 @@ export default function Signup() {
           isDisabled={submitDisabled}
           className="h-12 w-full text-lg"
         >
-          {isPending ? "가입 중..." : isKakaoSignup ? "카카오로 가입 완료" : "회원가입"}
+          {isSubmittingNow ? "가입 중" : isKakaoSignup ? "카카오로 가입 완료" : "회원가입 하기"}
         </Button>
 
         <div className="mx-auto mt-8 flex w-fit gap-3">
