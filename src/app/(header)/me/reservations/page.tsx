@@ -105,7 +105,7 @@ export default function Reservations() {
   };
 
   return (
-    <main className="bg-[#FAFAFA] py-18">
+    <main className="bg-[#FAFAFA]">
       <div className="mx-auto flex max-w-[1320px] gap-5">
         <div className="flex h-fit min-h-[800px] w-[800px] flex-col gap-10">
           {/* 헤더 */}
