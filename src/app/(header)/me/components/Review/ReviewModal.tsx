@@ -33,12 +33,14 @@ export default function ReviewModal({
 }: ReviewProps) {
   const [rating, setRating] = useState(0);
   const [content, setContent] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
   const canSubmit = rating > 0 && content.trim().length > 0;
 
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const { mutateAsync, isPending, error } = useCreateMyReservationReview(false, {
     onSuccess: () => {
       closeButtonRef.current?.click();
+      setIsOpen(false);
     },
   });
   console.log("reservationId:", reservationId);
@@ -56,8 +58,27 @@ export default function ReviewModal({
     });
   }
 
+  const wrappedTrigger = (
+    <div
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsOpen(true);
+      }}
+    >
+      {trigger}
+    </div>
+  );
+
   return (
-    <DrawerLayout trigger={trigger} title="후기 작성" width="md" isClose>
+    <DrawerLayout
+      trigger={wrappedTrigger}
+      title="후기 작성"
+      width="md"
+      isClose
+      isOpen={isOpen}
+      onClose={() => setIsOpen(false)}
+    >
       <DrawerHeader />
       <DrawerBody>
         <section className="flex items-center gap-6">
@@ -94,18 +115,21 @@ export default function ReviewModal({
       </DrawerBody>
 
       <DrawerFooter isNext>
-        <Drawer.Close asChild>
-          <button ref={closeButtonRef} className="hidden" aria-hidden />
-        </Drawer.Close>
-        <Button
-          type="button"
-          className="h-14 w-full text-lg"
-          variant="b"
-          isDisabled={!canSubmit || isPending}
-          onClick={handleSubmit}
-        >
-          {isPending ? "작성 중..." : "작성하기"}
-        </Button>
+        <div className="w-full">
+          <Drawer.Close asChild>
+            <button ref={closeButtonRef} className="hidden" aria-hidden />
+          </Drawer.Close>
+
+          <Button
+            type="button"
+            className="h-14 w-full text-lg"
+            variant="b"
+            isDisabled={!canSubmit || isPending}
+            onClick={handleSubmit}
+          >
+            {isPending ? "작성 중..." : "작성하기"}
+          </Button>
+        </div>
       </DrawerFooter>
     </DrawerLayout>
   );

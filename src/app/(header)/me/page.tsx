@@ -103,7 +103,7 @@ export default function Mypage() {
   return (
     <main
       className={[
-        "mx-auto mt-20 mb-[88px] flex w-full max-w-[1200px]",
+        "mx-auto flex w-full max-w-[1200px]",
         "tablet:w-[429px] tablet:mt-6 tablet:mb-[214px] tablet:mr-6",
         "moblie:mr-[15px] mobile:hidden",
       ].join(" ")}
