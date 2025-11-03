@@ -7,8 +7,16 @@
 .rdp-available {
   font-weight: 600;
 }
+.rdp-available span {
+  color: #111827; /* 기본 날짜 색상 */
+}
 
 /* 비활성 날짜는 연하게 */
 .rdp-unavailable {
   opacity: 0.45;
+}
+
+.rdp-pending span {
+  color: #9ca3af;
+  pointer-events: none;
 }
