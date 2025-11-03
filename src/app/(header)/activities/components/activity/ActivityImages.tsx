@@ -130,25 +130,25 @@ export default function ActivityImages({
       </div>
 
       {/* 모바일/태블릿(<lg): Embla 캐러셀 */}
-      <div
-        className="mt-[42px] w-full overflow-hidden lg:hidden"
-        style={{ boxShadow: "0px 4px 12px rgba(17,34,17,0.05)" }}
-      >
-        <div className="embla" ref={emblaRef}>
-          <div className="embla__container">
-            {[bannerImageUrl, ...subs].map((src, i) => (
-              <div key={i} className="embla__slide">
-                <div className="relative h-[310px] w-full">
-                  <Image
-                    src={src}
-                    alt={`이미지 ${i}`}
-                    fill
-                    className="object-cover"
-                    priority={i === 0}
-                  />
+      <div className="mobile:-mx-6 pt-[15px] lg:mx-0">
+        {/* 부모 px-6 상쇄 (24px) */}
+        <div className="overflow-hidden">
+          <div className="embla" ref={emblaRef}>
+            <div className="embla__container">
+              {[bannerImageUrl, ...subs].map((src, i) => (
+                <div key={i} className="embla__slide">
+                  <div className="relative h-[310px] w-full">
+                    <Image
+                      src={src}
+                      alt={`이미지 ${i}`}
+                      fill
+                      className="object-cover"
+                      priority={i === 0}
+                    />
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
