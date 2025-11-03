@@ -40,9 +40,6 @@
   color: #0B3B2D;
 }
 
-.react-datepicker__day--outside-month{
-  color: #A4A1AA !important;
-}
 
 .react-datepicker__day--outside-month.react-datepicker__day--selected{
   color: #ffffff !important;
@@ -51,4 +48,8 @@
 .react-datepicker__day{
   font-size: 13px !important;
   font-weight: 600;
+}
+
+.react-datepicker__day--outside-month, .react-datepicker__day--disabled{
+  color: #A4A1AA !important;
 }
