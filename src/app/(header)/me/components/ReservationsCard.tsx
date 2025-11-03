@@ -151,26 +151,26 @@ export default function ReservationsCard({
                   {isPending ? "취소 중..." : "예약 취소"}
                 </Button>
               )}
+
+              {reservStatus === "completed" && (
+                <ReviewModal
+                  title={activity.title}
+                  thumbnailUrl={activity.bannerImageUrl}
+                  dateText={`${date} (${startTime}~${endTime})`}
+                  startTime={startTime}
+                  endTime={endTime}
+                  priceText={totalPrice}
+                  reservationId={id}
+                  trigger={
+                    <Button className="hover:text-brand-nomad-black bg-brand-nomad-black h-[40px] w-[144px] border text-lg font-bold text-white hover:bg-white">
+                      후기 작성
+                    </Button>
+                  }
+                />
+              )}
             </div>
           </div>
         </Link>
-
-        {reservStatus === "completed" && (
-          <ReviewModal
-            title={activity.title}
-            thumbnailUrl={activity.bannerImageUrl}
-            dateText={`${date} (${startTime}~${endTime})`}
-            startTime={startTime}
-            endTime={endTime}
-            priceText={totalPrice}
-            reservationId={id}
-            trigger={
-              <Button className="hover:text-brand-nomad-black bg-brand-nomad-black h-[40px] w-[144px] border text-lg font-bold text-white hover:bg-white">
-                후기 작성
-              </Button>
-            }
-          />
-        )}
       </li>
     </>
   );
