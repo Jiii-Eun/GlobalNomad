@@ -123,54 +123,54 @@ export default function ReservationsCard({
               className="rounded-l-[24px] object-cover"
             />
           </div>
-
-          <div className="tablet:p-[12px] mobile:p-[9px] flex h-full w-full flex-col justify-between p-6 text-left">
-            <div>
-              <p className={`${textProps().color} mobile:text-[14px] font-bold`}>
-                {textProps().text}
-              </p>
-              <p className="tablet:text-[18px] mobile:text-[14px] tablet:m-0 mobile:mt-[5px] mt-2 text-[20px] font-bold">
-                {activity.title}
-              </p>
-              <p className="tablet:text-[14px] mobile:text-[12px] tablet:mt-[5px] mobile:mt-[5px] mt-3 text-[18px]">
-                {date} · {startTime} - {endTime} · {headCount}명
-              </p>
-            </div>
-
-            <div className="mobile:h-[32px] tablet:mt-[12px] mobile:mt-[5px] mobile:mr-[3px] mt-4 flex h-10 items-center justify-between">
-              <p className="tablet:text-[20px] mobile:text-[16px] text-[24px] font-medium">
-                ₩{totalPrice.toLocaleString()}
-              </p>
-
-              {reservStatus === "pending" && (
-                <Button
-                  onClick={handleCancelClick}
-                  disabled={isPending}
-                  className="text-brand-nomad-black hover:bg-brand-nomad-black h-[40px] w-[144px] border bg-white text-lg font-bold hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {isPending ? "취소 중..." : "예약 취소"}
-                </Button>
-              )}
-
-              {reservStatus === "completed" && (
-                <ReviewModal
-                  title={activity.title}
-                  thumbnailUrl={activity.bannerImageUrl}
-                  dateText={`${date} (${startTime}~${endTime})`}
-                  startTime={startTime}
-                  endTime={endTime}
-                  priceText={totalPrice}
-                  reservationId={id}
-                  trigger={
-                    <Button className="hover:text-brand-nomad-black bg-brand-nomad-black h-[40px] w-[144px] border text-lg font-bold text-white hover:bg-white">
-                      후기 작성
-                    </Button>
-                  }
-                />
-              )}
-            </div>
-          </div>
         </Link>
+
+        <div className="tablet:p-[12px] mobile:p-[9px] flex h-full w-full flex-col justify-between p-6 text-left">
+          <div>
+            <p className={`${textProps().color} mobile:text-[14px] font-bold`}>
+              {textProps().text}
+            </p>
+            <p className="tablet:text-[18px] mobile:text-[14px] tablet:m-0 mobile:mt-[5px] mt-2 text-[20px] font-bold">
+              {activity.title}
+            </p>
+            <p className="tablet:text-[14px] mobile:text-[12px] tablet:mt-[5px] mobile:mt-[5px] mt-3 text-[18px]">
+              {date} · {startTime} - {endTime} · {headCount}명
+            </p>
+          </div>
+
+          <div className="mobile:h-[32px] tablet:mt-[12px] mobile:mt-[5px] mobile:mr-[3px] mt-4 flex h-10 items-center justify-between">
+            <p className="tablet:text-[20px] mobile:text-[16px] text-[24px] font-medium">
+              ₩{totalPrice.toLocaleString()}
+            </p>
+
+            {reservStatus === "pending" && (
+              <Button
+                onClick={handleCancelClick}
+                disabled={isPending}
+                className="text-brand-nomad-black hover:bg-brand-nomad-black h-[40px] w-[144px] border bg-white text-lg font-bold hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isPending ? "취소 중..." : "예약 취소"}
+              </Button>
+            )}
+
+            {reservStatus === "completed" && (
+              <ReviewModal
+                title={activity.title}
+                thumbnailUrl={activity.bannerImageUrl}
+                dateText={`${date} (${startTime}~${endTime})`}
+                startTime={startTime}
+                endTime={endTime}
+                priceText={totalPrice}
+                reservationId={id}
+                trigger={
+                  <Button className="hover:text-brand-nomad-black bg-brand-nomad-black h-[40px] w-[144px] border text-lg font-bold text-white hover:bg-white">
+                    후기 작성
+                  </Button>
+                }
+              />
+            )}
+          </div>
+        </div>
       </li>
     </>
   );
