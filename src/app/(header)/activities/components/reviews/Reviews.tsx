@@ -24,7 +24,6 @@ export default function Review({
     }
   }
 
-  console.log(totalCount);
   return (
     <div className="border-brand-nomad-black/25 flex flex-col gap-6 border-t py-[40px]">
       <p className="text-brand-nomad-black text-2lg font-bold">후기</p>
@@ -40,7 +39,7 @@ export default function Review({
       </div>
       {totalCount === 0 ? (
         <div className="text-2lg text-brand-nomad-black items-center font-normal">
-          아직 후기가 없어요.
+          아직 등록된 후기가 없어요.
         </div>
       ) : (
         <ReviewContainer id={id} />
