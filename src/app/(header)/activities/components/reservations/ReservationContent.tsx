@@ -1,4 +1,3 @@
-// ReservationContent.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -13,25 +12,18 @@ import Toast from "@/components/ui/toast";
 import { useToast } from "@/components/ui/toast/useToast";
 import { useAvailableSchedule, useCreateReservation } from "@/lib/api/activities/hooks";
 import type { ScheduleSlot } from "@/lib/api/activities/types";
+import { useAuthStatus } from "@/lib/hooks/useAuthStatus"; // ✅ 로그인 상태 확인
 
 import ReservationWrap from "./ReservationWrap";
+import type { ReserveSummary } from "./summaryType";
 import ParticipantsCounter from "../participants/ParticipantsCounter";
 
 // ---------- Props ----------
 export interface Schedule {
   id: number;
-  date: string; // "YYYY-MM-DD"
-  startTime: string; // "HH:mm"
-  endTime: string; // "HH:mm"
-}
-export interface ReservationContentProps {
-  activityId: number;
-  /** 외부 시그니처 유지용: 사용하지 않지만 prop은 받습니다. */
-  title: string;
-  price: number;
-  schedules?: Schedule[];
-  /** 나의 '대기(pending)' 날짜들 */
-  pendingDates?: string[];
+  date: string;
+  startTime: string;
+  endTime: string;
 }
 
 // ---------- Utils ----------
@@ -46,65 +38,62 @@ const customLocale: Locale = {
   options: { ...enUS.options, weekStartsOn: 0 },
 };
 
-type JsonRec = Record<string, unknown>;
-const isRec = (v: unknown): v is JsonRec => typeof v === "object" && v !== null;
-const getIn = (obj: unknown, path: string[]): unknown => {
-  let cur: unknown = obj;
-  for (const k of path) {
-    if (!isRec(cur)) return undefined;
-    cur = (cur as JsonRec)[k];
-  }
-  return cur;
-};
-
-function toStatusAndMessage(err: unknown): { status?: number; message: string } {
-  const status =
-    (typeof getIn(err, ["status"]) === "number" ? (getIn(err, ["status"]) as number) : undefined) ??
-    (typeof getIn(err, ["response", "status"]) === "number"
-      ? (getIn(err, ["response", "status"]) as number)
-      : undefined) ??
-    (typeof getIn(err, ["payload", "status"]) === "number"
-      ? (getIn(err, ["payload", "status"]) as number)
-      : undefined);
-
-  const msgFromError = err instanceof Error ? err.message : undefined;
-  const message =
-    msgFromError ??
-    (typeof getIn(err, ["message"]) === "string"
-      ? (getIn(err, ["message"]) as string)
-      : undefined) ??
-    (typeof getIn(err, ["response", "data", "message"]) === "string"
-      ? (getIn(err, ["response", "data", "message"]) as string)
-      : undefined) ??
-    (typeof getIn(err, ["payload", "message"]) === "string"
-      ? (getIn(err, ["payload", "message"]) as string)
-      : undefined) ??
-    "요청 중 오류가 발생했습니다.";
-  return { status, message };
-}
-
 // ---------- Component ----------
 interface SelectedSlot {
   date: string;
   slot: ScheduleSlot;
 }
 
+export interface ReservationContentProps {
+  activityId: number;
+  title: string;
+  price: number;
+  schedules?: Schedule[];
+  pendingDates?: string[];
+
+  // 선택 중 요약(모바일 하단 바 기본 노출)
+  onSummaryChange?: (s: ReserveSummary) => void;
+
+  // ✅ 예약 확정 후 요약(모바일 하단 바에 "내가 예약한 내역"으로 노출)
+  onReservationCommitted?: (s: ReserveSummary) => void;
+}
+
 export default function ReservationContent({
   activityId,
-  // title: 외부 시그니처 유지 목적, 내부 미사용
   price,
   schedules,
   pendingDates = [],
+  onSummaryChange,
+  onReservationCommitted,
 }: ReservationContentProps) {
   const router = useRouter();
   const { openToast } = useToastProvider();
   const { showToast } = useToast();
   const { mutateAsync, isPending } = useCreateReservation(activityId);
+  const { isLoggedIn } = useAuthStatus(); // ✅ 로그인 상태 확인
 
-  // 1) 최초: 가장 최신 예약 가능 날짜의 월로 달력 오픈
+  // ✅ 예약 완료 날짜 Set
+  const pendingDatesSet = useMemo(() => new Set(pendingDates), [pendingDates]);
+
+  // ---------- 상태 ----------
   const [calendarMonth, setCalendarMonth] = useState<Date>(new Date());
   const [didInitMonth, setDidInitMonth] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedSlots, setSelectedSlots] = useState<SelectedSlot[]>([]);
+  const [members, setMembers] = useState(1);
+  const [reserved, setReserved] = useState(false);
 
+  // ✅ 예약 완료 후 초기화
+  useEffect(() => {
+    if (reserved) {
+      setSelectedDate(null);
+      setSelectedSlots([]);
+      setMembers(1);
+      setReserved(false);
+    }
+  }, [reserved]);
+
+  // ---------- 달력 초기 설정 ----------
   useEffect(() => {
     if (didInitMonth || !schedules?.length) return;
     const latest = schedules
@@ -114,38 +103,20 @@ export default function ReservationContent({
     setDidInitMonth(true);
   }, [schedules, didInitMonth]);
 
-  // 2) 월별 가능일 조회
   const year = format(calendarMonth, "yyyy");
   const month = format(calendarMonth, "MM");
   const { data: monthlyAvailable } = useAvailableSchedule(activityId, year, month);
 
-  // 3) 선택 상태
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedSlots, setSelectedSlots] = useState<SelectedSlot[]>([]);
-  const [members, setMembers] = useState(1);
-  const [reserved, setReserved] = useState(false);
-
-  // 4) 현재 달의 예약 가능 일자 Set
   const availableSet = useMemo(() => {
-    if (monthlyAvailable?.length) return new Set(monthlyAvailable.map((g) => g.date));
+    const fromHook = monthlyAvailable?.map((g) => g.date) ?? [];
     const fromProp =
       schedules
         ?.filter((s) => format(parseISO(s.date), "yyyyMM") === `${year}${month}`)
         .map((s) => s.date) ?? [];
-    return new Set(fromProp);
+    return new Set([...fromHook, ...fromProp]);
   }, [monthlyAvailable, schedules, year, month]);
 
-  const todayStr = format(new Date(), "yyyy-MM-dd");
-  const hasSelectableDates = useMemo(() => {
-    const fromHookDates = (monthlyAvailable ?? []).map((g) => g.date);
-    const fromPropDates = (schedules ?? []).map((s) => s.date);
-    const all = Array.from(new Set([...fromHookDates, ...fromPropDates]));
-    return all.some((d) => d >= todayStr);
-  }, [monthlyAvailable, schedules, todayStr]);
-
-  const pendingDatesSet = useMemo(() => new Set(pendingDates), [pendingDates]);
-
-  // 5) 선택한 날짜의 시간 슬롯
+  // ---------- 슬롯 처리 ----------
   const ymd = selectedDate ? format(selectedDate, "yyyy-MM-dd") : "";
   const isSelectedDatePending = selectedDate ? pendingDatesSet.has(ymd) : false;
 
@@ -153,7 +124,6 @@ export default function ReservationContent({
     if (!selectedDate || isSelectedDatePending) return [];
     const fromHook = monthlyAvailable?.find((g) => g.date === ymd);
     if (fromHook) return fromHook.times;
-
     const fromProp =
       schedules
         ?.filter((s) => s.date === ymd)
@@ -161,12 +131,6 @@ export default function ReservationContent({
     return fromProp;
   }, [monthlyAvailable, schedules, selectedDate, isSelectedDatePending, ymd]);
 
-  // pending 날짜면 시간 초기화
-  useEffect(() => {
-    if (isSelectedDatePending && selectedSlots.length > 0) setSelectedSlots([]);
-  }, [isSelectedDatePending, selectedSlots.length]);
-
-  // 6) 슬롯 다중 선택
   const toggleSlot = (date: Date, slot: ScheduleSlot) => {
     const dateStr = format(date, "yyyy-MM-dd");
     setSelectedSlots((prev) => {
@@ -177,56 +141,60 @@ export default function ReservationContent({
     });
   };
 
-  // 에러 공통 처리
-  const handleKnownError = (status?: number, message?: string) => {
-    if (status === 409) return showToast("reserveReject");
-    if (status === 401) {
+  // ---------- 예약 실행 ----------
+  const handleReserve = async () => {
+    if (!isLoggedIn) {
       openToast(<Toast message="로그인이 필요합니다." icon="error" />);
       router.push("/login");
       return;
     }
-    if (status === 404) return router.push("/not-found");
-    if (status === 500)
-      return openToast(<Toast message="서버 오류가 발생했습니다." icon="error" />);
-    if (message) openToast(<Toast message={message} icon="error" />);
-  };
 
-  // 7) 예약 실행
-  const handleReserve = async () => {
-    const disabled = reserved || isPending || !hasSelectableDates || selectedSlots.length === 0;
-    if (disabled) return;
+    if (selectedSlots.length === 0 || isPending) return;
 
     try {
-      const results = await Promise.allSettled(
+      await Promise.allSettled(
         selectedSlots.map(({ slot }) => mutateAsync({ scheduleId: slot.id, headCount: members })),
       );
-
-      const firstRejected = results.find((r) => r.status === "rejected") as
-        | PromiseRejectedResult
-        | undefined;
-      if (firstRejected) {
-        const { status, message } = toStatusAndMessage(firstRejected.reason);
-        handleKnownError(status, message);
-        return;
-      }
-
       setReserved(true);
       showToast("reserveDone");
-    } catch (e) {
-      const { status, message } = toStatusAndMessage(e);
-      handleKnownError(status, message);
+    } catch {
+      showToast("reserveReject");
     }
   };
 
   const totalAmount = price * members * selectedSlots.length;
   const isReserveDisabled =
-    reserved ||
-    isPending ||
-    isSelectedDatePending ||
-    selectedSlots.length === 0 ||
-    !hasSelectableDates;
+    reserved || isPending || selectedSlots.length === 0 || isSelectedDatePending;
 
-  // ---------- Render ----------
+  // ✅ 하단바 요약에 뿌릴 데이터 계산 & 통지
+  useEffect(() => {
+    const count = selectedSlots.length;
+    const totalPrice = count === 0 ? price * 1 : price * members * count;
+    const totalMembers = count === 0 ? 1 : members * count;
+
+    let dateText: string | undefined;
+    let timeText: string | undefined;
+    if (selectedDate && count > 0) {
+      dateText = format(selectedDate, "yyyy-MM-dd");
+      if (count === 1) {
+        const only = selectedSlots[0].slot;
+        timeText = `${only.startTime}~${only.endTime}`;
+      } else {
+        const first = selectedSlots[0].slot;
+        timeText = `${first.startTime}~${first.endTime} 외 ${count - 1}건`;
+      }
+    }
+
+    onSummaryChange?.({
+      dateText,
+      timeText,
+      members,
+      totalMembers,
+      totalPrice,
+    });
+  }, [selectedDate, selectedSlots, members, price, onSummaryChange]);
+
+  // ---------- 렌더 ----------
   return (
     <ReservationWrap>
       {/* 가격 */}
@@ -243,40 +211,43 @@ export default function ReservationContent({
             inline
             autoComplete="off"
             locale={customLocale}
+            disabled={!isLoggedIn} // ✅ 로그인 안된 경우 달력 비활성화
             minDate={new Date()}
             openToDate={calendarMonth}
             selected={selectedDate}
             onChange={(d) => {
+              if (!isLoggedIn) return;
+              if (d && pendingDatesSet.has(format(d, "yyyy-MM-dd"))) return;
               setSelectedDate(d);
-              if (d && pendingDatesSet.has(format(d, "yyyy-MM-dd"))) setSelectedSlots([]);
             }}
             onMonthChange={setCalendarMonth}
             onYearChange={setCalendarMonth}
-            showDisabledMonthNavigation
-            filterDate={(d) => availableSet.has(format(d, "yyyy-MM-dd"))}
-            highlightDates={[
-              ...((
-                monthlyAvailable?.map((g) => parseISO(g.date)) ??
-                schedules
-                  ?.filter((s) => format(parseISO(s.date), "yyyyMM") === `${year}${month}`)
-                  .map((s) => parseISO(s.date)) ??
-                []
-              ).length
-                ? [
-                    {
-                      "rdp-available":
-                        monthlyAvailable?.map((g) => parseISO(g.date)) ??
-                        schedules
-                          ?.filter((s) => format(parseISO(s.date), "yyyyMM") === `${year}${month}`)
-                          .map((s) => parseISO(s.date)) ??
-                        [],
-                    },
-                  ]
-                : []),
-            ]}
-            dayClassName={(d) =>
-              availableSet.has(format(d, "yyyy-MM-dd")) ? "rdp-available" : "rdp-unavailable"
-            }
+            dayClassName={(d) => {
+              const key = format(d, "yyyy-MM-dd");
+              if (pendingDatesSet.has(key)) return "rdp-pending"; // ✅ 회색 처리
+              if (availableSet.has(key)) return "rdp-available";
+              return "rdp-unavailable";
+            }}
+            renderDayContents={(day, date) => {
+              const key = format(date, "yyyy-MM-dd");
+              const isAvail = availableSet.has(key);
+              const isPending = pendingDatesSet.has(key);
+
+              return (
+                <div className="relative flex h-8 w-8 items-center justify-center">
+                  <span>{day}</span>
+
+                  {/* ✅ 예약 가능한 날짜 표시 (초록 점) */}
+                  {isAvail && !isPending && (
+                    <span className="pointer-events-none absolute bottom-0.5 inline-block h-1.5 w-1.5 rounded-full bg-green-600" />
+                  )}
+                  {/* ✅ 이미 예약된 날짜 표시 (회색 점) */}
+                  {isPending && (
+                    <span className="pointer-events-none absolute bottom-0.5 inline-block h-1.5 w-1.5 rounded-full bg-gray-400" />
+                  )}
+                </div>
+              );
+            }}
             renderCustomHeader={({
               date,
               decreaseMonth,
@@ -332,18 +303,6 @@ export default function ReservationContent({
                 </div>
               </div>
             )}
-            renderDayContents={(day, date) => {
-              const key = format(date, "yyyy-MM-dd");
-              const isAvail = availableSet.has(key);
-              return (
-                <div className="relative flex h-8 w-8 items-center justify-center">
-                  <span>{day}</span>
-                  {isAvail && (
-                    <span className="pointer-events-none absolute bottom-0.5 inline-block h-1.5 w-1.5 rounded-full bg-green-600" />
-                  )}
-                </div>
-              );
-            }}
           />
         </div>
       </div>
@@ -351,14 +310,9 @@ export default function ReservationContent({
       {/* 시간 선택 */}
       <div className="mobile:mt-7 mt-4 flex flex-col gap-3.5">
         <p className="text-brand-nomad-black text-2lg mobile:text-h2 font-bold">예약 가능한 시간</p>
-
-        {!hasSelectableDates ? (
+        {isSelectedDatePending ? (
           <div className="text-h4-regular text-brand-nomad-black mb-4">
-            예약가능한 시간이 없습니다
-          </div>
-        ) : isSelectedDatePending ? (
-          <div className="text-h4-regular text-brand-nomad-black mb-4">
-            이미 예약된 대기 상태입니다.
+            이미 예약 완료된 날짜입니다.
           </div>
         ) : selectedDate && daySlots.length > 0 ? (
           <div className="flex flex-wrap">
@@ -376,7 +330,6 @@ export default function ReservationContent({
                       ? "bg-brand-nomad-black border-brand-nomad-black text-white"
                       : "text-brand-nomad-black border-brand-nomad-black bg-white"
                   }`}
-                  aria-pressed={selected}
                 >
                   {slot.startTime}~{slot.endTime}
                 </button>
@@ -386,19 +339,6 @@ export default function ReservationContent({
         ) : (
           <div className="text-h4-regular text-brand-nomad-black mb-4">
             {selectedDate ? "예약가능한 시간이 없습니다" : "날짜를 먼저 선택하세요"}
-          </div>
-        )}
-
-        {selectedSlots.length > 0 && (
-          <div className="mt-2 rounded-md bg-gray-50 p-3 text-sm text-gray-700">
-            <p className="mb-1 font-semibold">선택된 예약 ({selectedSlots.length}개)</p>
-            <ul className="list-inside list-disc space-y-1">
-              {selectedSlots.map(({ date, slot }) => (
-                <li key={`${date}-${slot.id}`}>
-                  {date} {slot.startTime}~{slot.endTime}
-                </li>
-              ))}
-            </ul>
           </div>
         )}
       </div>
@@ -419,7 +359,13 @@ export default function ReservationContent({
           isReserveDisabled ? "cursor-not-allowed bg-gray-400" : "bg-[var(--color-brand-black)]"
         }`}
       >
-        {reserved ? "예약 완료" : isPending ? "예약 중..." : `예약하기 (${selectedSlots.length}건)`}
+        {reserved
+          ? "예약 완료"
+          : isPending
+            ? "예약 중..."
+            : !isLoggedIn
+              ? "로그인이 필요합니다"
+              : `예약하기 (${selectedSlots.length}건)`}
       </button>
 
       {/* 합계 */}
