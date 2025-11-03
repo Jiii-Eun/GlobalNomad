@@ -112,7 +112,7 @@ export default function ReservationsCard({
       >
         <Link
           href={`/activities/${activity.id}`}
-          className="tablet:h-[156px] mobile:h-[128px] text-black200 flex h-[204px] max-w-[792px] rounded-[24px] bg-white text-[16px]"
+          className="tablet:max-w-[156px] mobile:max-w-[128px] max-w-[204px] rounded-[24px] bg-white text-[16px]"
         >
           <div className="tablet:min-w-[156px] tablet:h-[156px] mobile:min-w-[128px] mobile:h-[128px] relative h-[204px] min-w-[204px]">
             <Image
