@@ -1,22 +1,22 @@
 import { Arrow } from "@/components/icons";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
-import type { Reservation } from "@/lib/api/my-activities/types";
+import type { Reservation, ReservedScheduleItem } from "@/lib/api/my-activities/types";
 
 type TabKey = "pending" | "confirmed" | "declined";
 
-interface SlotCount {
-  pending: number;
-  confirmed: number;
-  declined: number;
-}
+// interface SlotCount {
+//   pending: number;
+//   confirmed: number;
+//   declined: number;
+// }
 
-interface DaySlot {
-  scheduleId: number;
-  startTime: string;
-  endTime: string;
-  count?: Partial<SlotCount>;
-}
+// interface DaySlot {
+//   scheduleId: number;
+//   startTime: string;
+//   endTime: string;
+//   count?: Partial<SlotCount>;
+// }
 
 interface ReservationPanelContentProps {
   openDate: string;
@@ -24,7 +24,7 @@ interface ReservationPanelContentProps {
   activeTab: TabKey;
   setActiveTab: (tab: TabKey) => void;
 
-  daySlots: DaySlot[] | undefined;
+  daySlots: ReservedScheduleItem[] | undefined;
 
   selectedScheduleId: number | null;
   setSelectedScheduleId: (id: number | null) => void;
@@ -43,10 +43,9 @@ interface ReservationPanelContentProps {
   confirmAndAutoDecline: (r: Reservation) => void;
   decline: (r: Reservation) => void;
   hasConfirmed: boolean;
-
-  // 여기! Ref 타입은 React.RefObject로만 표기.
   listScrollRef: React.RefObject<HTMLDivElement | null>;
   targetRef: (node: HTMLLIElement | null) => void;
+  isMutating?: boolean;
 }
 
 export default function ReservationPanelContent({
@@ -63,14 +62,13 @@ export default function ReservationPanelContent({
   hasConfirmed,
   listScrollRef,
   targetRef,
+  isMutating = false,
 }: ReservationPanelContentProps) {
   return (
     <div className="flex flex-col gap-4">
-      {/* 상단 (제목/탭) */}
       <div className="border-brand-gray-200 flex flex-col gap-10 border-b">
         <div className="flex justify-between">
           <div className="text-2xl font-bold">예약 정보</div>
-          {/* 닫기 버튼은 wrapper(데스크탑 모달 / DrawerHeader) 쪽에서 넣는다 */}
         </div>
 
         <div className="flex gap-3">
@@ -89,7 +87,6 @@ export default function ReservationPanelContent({
         </div>
       </div>
 
-      {/* 날짜 / 시간 슬롯 선택 영역 */}
       <div className="flex min-h-0 flex-col gap-4">
         <div className="shrink-0 text-xl font-semibold">예약 날짜</div>
 
@@ -117,8 +114,7 @@ export default function ReservationPanelContent({
           </Field>
         </div>
 
-        {/* 예약 내역 리스트 (선택한 슬롯 기준) */}
-        {selectedScheduleId && (
+        {selectedScheduleId !== null && (
           <div className="flex min-h-0 flex-1 flex-col gap-4">
             <span className="text-xl font-semibold">예약 내역</span>
 
@@ -144,7 +140,7 @@ export default function ReservationPanelContent({
                         <>
                           <button
                             className="text-md h-fit w-fit rounded bg-black px-5 py-2.5 text-center text-white"
-                            disabled={hasConfirmed}
+                            disabled={hasConfirmed || isMutating}
                             onClick={() => confirmAndAutoDecline(r)}
                           >
                             승인하기
@@ -153,6 +149,7 @@ export default function ReservationPanelContent({
                           <button
                             className="text-md h-fit w-fit rounded border px-5 py-2.5 text-center"
                             onClick={() => decline(r)}
+                            disabled={isMutating}
                           >
                             거절하기
                           </button>
@@ -180,7 +177,6 @@ export default function ReservationPanelContent({
                   </li>
                 )}
 
-                {/* 무한스크롤 관찰 대상 */}
                 <li ref={targetRef} className="h-6" aria-hidden />
               </ul>
             </div>
