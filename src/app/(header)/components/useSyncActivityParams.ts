@@ -26,7 +26,7 @@ export function useSyncActivityParams() {
 
     const cParam = params.get("category");
     const kParam = params.get("keyword");
-    const pParam = Number(params.get("page") ?? "1");
+    const pParam = Number(params.get("page") ?? 1);
 
     const c =
       cParam && ActivityCategorySchema.safeParse(cParam).success

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 export function useDevice() {
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
-  const [isPc, setIsPc] = useState(false);
+  const [isPc, setIsPc] = useState(true);
 
   useEffect(() => {
     const check = () => {
