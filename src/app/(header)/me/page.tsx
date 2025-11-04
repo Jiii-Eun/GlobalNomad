@@ -27,7 +27,7 @@ export default function Mypage() {
     getValues,
     reset,
   } = useForm<FormValues>({
-    mode: "onBlur",
+    mode: "onChange",
     defaultValues: { nickname: "", email: "", password: "", confirm: "" },
   });
 
@@ -93,10 +93,17 @@ export default function Mypage() {
     alert("저장되었습니다.");
   };
 
+  const watchNickname = useWatch({ control, name: "nickname" });
+  const watchPassword = useWatch({ control, name: "password" });
+
+  const hasChanges =
+    (watchNickname?.trim() ?? "") !== (me?.nickname?.trim() ?? "") ||
+    (watchPassword?.length ?? 0) > 0;
+
   return (
     <main
       className={[
-        "mx-auto mt-20 mb-[88px] flex w-full max-w-[1200px]",
+        "mx-auto flex w-full max-w-[1200px]",
         "tablet:w-[429px] tablet:mt-6 tablet:mb-[214px] tablet:mr-6",
         "moblie:mr-[15px] mobile:hidden",
       ].join(" ")}
@@ -107,7 +114,7 @@ export default function Mypage() {
           <Button
             type="submit"
             variant="b"
-            isDisabled={!isValid || isSubmitting || isMeLoading}
+            isDisabled={isSubmitting || isMeLoading || !hasChanges}
             className="h-12 w-[120px] text-lg"
           >
             {isSubmitting ? "저장 중..." : "저장하기"}
@@ -140,8 +147,10 @@ export default function Mypage() {
             placeholder="8자 이상 입력해 주세요."
             aria-invalid={!!errors.password}
             {...register("password", {
-              required: "비밀번호를 입력해 주세요.",
-              minLength: { value: 8, message: "비밀번호는 8자 이상이어야 합니다." },
+              validate: (v) =>
+                (v?.length ?? 0) === 0 ||
+                (v?.length ?? 0) >= 8 ||
+                "비밀번호는 8자 이상이어야 합니다.",
             })}
           />
         </Field>
@@ -154,8 +163,8 @@ export default function Mypage() {
             aria-invalid={!!errors.confirm}
             {...register("confirm", {
               validate: (v) => {
-                const p = getValues("password");
-                if (!p && !v) return true;
+                const p = getValues("password") || "";
+                if (p.length === 0) return true;
                 return v === p || "비밀번호가 일치하지 않습니다.";
               },
             })}

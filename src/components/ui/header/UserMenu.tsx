@@ -33,7 +33,7 @@ export default function UserMenu({ user }: UserMenuProps) {
     <>
       <div className="flex-center">
         <Image
-          src={userProfile || "/mock/default-profile.png"}
+          src={userProfile || "/profileImg.png"}
           alt=""
           width={32}
           height={32}

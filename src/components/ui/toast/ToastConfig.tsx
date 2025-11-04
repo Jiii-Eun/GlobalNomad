@@ -15,11 +15,21 @@ export interface ToastConfigItem {
 }
 
 export const TOAST_CONFIG: Record<string, ToastConfigItem> = {
+  loginSuccess: {
+    message: "로그인되었습니다!",
+    autoClose: true,
+  },
+  loginFail: {
+    message: "로그인에 실패했습니다.",
+  },
   password: {
     message: "비밀번호가 일치하지 않습니다.",
   },
   email: {
     message: "이미 사용중인 이메일입니다.",
+  },
+  emailType: {
+    message: "이메일 형식으로 작성해 주세요.",
   },
   signup: {
     message: "가입이 완료되었습니다!",

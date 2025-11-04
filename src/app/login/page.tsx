@@ -3,7 +3,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Suspense } from "react";
 import { useForm } from "react-hook-form";
 
 import KaKaoLoginButton from "@/components/oauth/KaKaoAuthButton";
@@ -11,10 +10,10 @@ import Logo from "@/components/ui/brand/Logo";
 import Button from "@/components/ui/button/Button";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
+import { useToast } from "@/components/ui/toast/useToast";
 import { useLogin } from "@/lib/api/auth/hooks";
 
 import { baseProfileSetting } from "./baseProfileSetting";
-import KakaoSigninHandler from "./KakaoSigninHandler";
 
 interface FormValues {
   email: string;
@@ -24,17 +23,20 @@ interface FormValues {
 export default function Login() {
   const router = useRouter();
   const qc = useQueryClient();
+  const { showToast } = useToast();
+
   const {
     register,
     handleSubmit,
     setError,
     formState: { errors, isValid, isSubmitting },
-  } = useForm<FormValues>({ mode: "onBlur", defaultValues: { email: "", password: "" } });
+  } = useForm<FormValues>({ mode: "onChange", defaultValues: { email: "", password: "" } });
 
   const loginMutation = useLogin(false, {
     onSuccess: async () => {
       try {
         await baseProfileSetting();
+        showToast("loginSuccess");
       } catch (e) {
         if (process.env.NODE_ENV !== "production") {
           console.warn("[baseProfileSetting] 실패:", e);
@@ -47,12 +49,14 @@ export default function Login() {
     onError: (e: unknown) => {
       const msg = (e as { message?: string })?.message ?? "";
       if (/비밀번호/i.test(msg) || /password/i.test(msg)) {
-        alert("비밀번호가 일치하지 않습니다.");
         setError("password", { type: "server", message: "비밀번호가 일치하지 않습니다." });
+        showToast("password");
       } else if (/이메일/i.test(msg) || /email/i.test(msg)) {
         setError("email", { type: "server", message: "이메일 형식으로 작성해 주세요." });
+        showToast("emailType");
       } else {
         setError("email", { type: "server", message: msg || "로그인에 실패했습니다." });
+        showToast("loginFail");
       }
     },
   });
@@ -108,7 +112,7 @@ export default function Login() {
           isDisabled={!isValid || isSubmitting || loginMutation.isPending}
           className="h-12 w-full text-lg"
         >
-          {isSubmitting ? "로그인 중..." : "로그인"}
+          {isSubmitting ? "로그인 중" : "로그인 하기"}
         </Button>
 
         <div className="mx-auto mt-8 flex w-fit gap-3">
@@ -130,10 +134,6 @@ export default function Login() {
         <div className="mt-6 flex justify-center">
           <KaKaoLoginButton mode="signin" />
         </div>
-
-        <Suspense fallback={null}>
-          <KakaoSigninHandler />
-        </Suspense>
       </form>
     </main>
   );
