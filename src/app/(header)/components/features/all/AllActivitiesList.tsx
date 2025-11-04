@@ -26,6 +26,7 @@ export default function AllActivitiesList({ initialData }: InitActivityProps) {
   }, [LENGTH, setSize]);
 
   const params = useActivityParams();
+  const keyword = params.keyword;
   const { data, isLoading } = useActivities(
     params,
     false,
@@ -64,7 +65,7 @@ export default function AllActivitiesList({ initialData }: InitActivityProps) {
             </div>
           ))
         )}
-        {!isLoading && activities?.length === 0 && (
+        {!isLoading && !keyword && activities?.length === 0 && (
           <p className="text-brand-gray-500 col-span-full py-10 text-center">
             진행중인 체험이 없습니다.
           </p>

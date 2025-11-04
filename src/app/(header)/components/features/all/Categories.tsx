@@ -1,7 +1,7 @@
 "use client";
 
-import { useSetAtom } from "jotai";
-import { useState } from "react";
+import { useAtom, useSetAtom } from "jotai";
+import { useEffect, useState } from "react";
 
 import Button from "@/components/ui/button/Button";
 import { activityCategoryAtom, activityPageAtom } from "@/lib/api/activities/atoms";
@@ -12,10 +12,15 @@ export const sharedButtonClass = "text-2lg h-[58px] w-[127px] rounded-[15px] whi
 
 export default function Categories() {
   const categories = ["모두", ...ActivityCategorySchema.options] as const;
-  const [selected, setSelected] = useState("모두");
 
-  const setCategory = useSetAtom(activityCategoryAtom);
+  const [category, setCategory] = useAtom(activityCategoryAtom);
   const setPage = useSetAtom(activityPageAtom);
+
+  const [selected, setSelected] = useState(category ?? "모두");
+
+  useEffect(() => {
+    setSelected(category ?? "모두");
+  }, [category]);
 
   const handleSelect = (category: "모두" | ActivityCategory) => {
     setSelected(category);

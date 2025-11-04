@@ -22,7 +22,7 @@ export default function MainBannerClient({ activities }: BannerProps) {
           >
             <Image src={bannerImageUrl} alt={title} fill priority={true} className="object-cover" />
             <div className="absolute inset-0 bg-[rgba(0,0,0,0.5)]" />
-            <div className="container-base tablet:pl-8 mobile:pl-6 mobile:gap-0 absolute inset-0 flex flex-col justify-center gap-4 text-white">
+            <div className="container-base tablet:px-8 mobile:px-6 mobile:gap-1 absolute inset-0 flex flex-col justify-center gap-4 text-white">
               <h2 className="tablet:text-[54px] mobile:text-2xl tablet:max-w-3/5 transition-base max-w-1/2 text-[68px] leading-tight font-bold break-keep">
                 {title}
               </h2>
@@ -41,7 +41,7 @@ export default function MainBannerClient({ activities }: BannerProps) {
                 className={cn(
                   "rounded-12 flex items-center justify-center bg-white text-lg font-medium transition-all duration-150",
                   "bg-brand-deep-green-500 hover:bg-brand-nomad-black text-white",
-                  "h-14 w-60",
+                  "tablet:w-40 tablet:h-12 tablet:text-md tablet:mb-6 h-14 w-60",
                 )}
               >
                 자세히보기

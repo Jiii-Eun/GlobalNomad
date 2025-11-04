@@ -4,14 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { Logo } from "@/components/icons";
+import { useResetActivityParams } from "@/components/ui/header/useResetActivityParams";
 
 export default function HeaderLogo() {
   const pathname = usePathname();
+  const resetActivityParams = useResetActivityParams();
 
   const handleClick = (e: React.MouseEvent) => {
     if (pathname === "/") {
       e.preventDefault();
-      window.location.reload();
+      resetActivityParams();
     }
   };
 
