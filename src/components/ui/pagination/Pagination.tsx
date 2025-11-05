@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import scrollToAnchor from "@/app/(header)/components/scrollToAnchor";
 import { Arrow } from "@/components/icons";
 import PaginationButton from "@/components/ui/pagination/PaginationButton";
 import { cn } from "@/lib/cn";
@@ -12,9 +13,10 @@ interface dataProps {
   totalPages: number;
   className?: string;
   size?: number;
+  id?: string;
 }
 
-export default function Pagination({ page, setPage, totalPages, className, size }: dataProps) {
+export default function Pagination({ page, setPage, totalPages, className, size, id }: dataProps) {
   const pagesGroup = 5;
 
   const [groupIndex, setGroupIndex] = useState(0);
@@ -27,16 +29,29 @@ export default function Pagination({ page, setPage, totalPages, className, size 
 
   const arrowButtonClass = "hover:bg-transparent";
 
+  const isId = () => {
+    if (id) {
+      scrollToAnchor(id);
+    }
+  };
+
   const handlePrevGroup = () => {
     if (!firstGroup) {
       setGroupIndex((prev) => prev - 1);
+      isId();
     }
   };
 
   const handleNextGroup = () => {
     if (!lastGroup) {
       setGroupIndex((prev) => prev + 1);
+      isId();
     }
+  };
+
+  const handlePageChange = (num: number) => {
+    setPage(num);
+    isId();
   };
 
   useEffect(() => {
@@ -63,7 +78,7 @@ export default function Pagination({ page, setPage, totalPages, className, size 
           return (
             <PaginationButton
               key={num}
-              onClick={() => setPage(num)}
+              onClick={() => handlePageChange(num)}
               aria-current={isNum ? "page" : undefined}
               className={cn(
                 "transition-colors",

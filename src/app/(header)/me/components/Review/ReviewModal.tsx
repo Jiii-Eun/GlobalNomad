@@ -117,7 +117,7 @@ export default function ReviewModal({
       <DrawerFooter isNext>
         <div className="w-full">
           <Drawer.Close asChild>
-            <button ref={closeButtonRef} className="hidden" aria-hidden />
+            <button ref={closeButtonRef} type="button" className="hidden" aria-hidden />
           </Drawer.Close>
 
           <Button

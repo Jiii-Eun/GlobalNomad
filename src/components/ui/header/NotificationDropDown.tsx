@@ -1,15 +1,12 @@
 "use client";
 
-import { useRef } from "react";
 import { createPortal } from "react-dom";
 
 import { Status } from "@/components/icons";
-import { getMyNotifications } from "@/lib/api/my-notifications/api";
 import { useDeleteMyNotification } from "@/lib/api/my-notifications/hooks";
-import type { GetNotifsReq, GetNotifsRes, Notification } from "@/lib/api/my-notifications/types";
+import type { GetNotifsRes, Notification } from "@/lib/api/my-notifications/types";
 import { cn } from "@/lib/cn";
 import { useDevice } from "@/lib/hooks/useDevice";
-import { useInfiniteScrollQuery } from "@/lib/hooks/useInfiniteScroll";
 import { useLockBodyScroll } from "@/lib/hooks/useLockBodyScroll";
 import { usePortal } from "@/lib/hooks/usePortal";
 import { flattenPages } from "@/lib/utills/flattenPages";
@@ -18,34 +15,35 @@ import getTimeAgo from "@/lib/utills/getTimeAgo";
 interface NotificationDropDownProps {
   isOpen: boolean;
   onClose: () => void;
+  data: GetNotifsRes[];
+  targetRef: (node?: HTMLDivElement | null) => void;
+  scrollRef: React.RefObject<HTMLDivElement | null>;
+  totalCount: number;
 }
 
-export default function NotificationDropDown({ isOpen, onClose }: NotificationDropDownProps) {
+export default function NotificationDropDown({
+  isOpen,
+  onClose,
+  data,
+  targetRef,
+  scrollRef,
+  totalCount,
+}: NotificationDropDownProps) {
   const { isMobile } = useDevice();
-  const scrollRef = useRef<HTMLDivElement | null>(null);
   const portalRoot = usePortal("notification-portal");
 
   useLockBodyScroll(isOpen && isMobile);
 
   const { mutate: deleteNotification } = useDeleteMyNotification();
 
-  const { data, targetRef } = useInfiniteScrollQuery<GetNotifsRes, GetNotifsReq>({
-    queryKey: ["myNotifications"],
-    fetchFn: getMyNotifications,
-    initialParams: { size: 5 },
-    rootRef: scrollRef,
-  });
-
   const notifications = flattenPages(data, (page) => page.notifications);
-
-  const totalCount = data[0]?.totalCount ?? 0;
 
   const handleDelete = (id: number) => {
     deleteNotification({ notificationId: id });
   };
 
   const bgClass = cn(
-    "bg-brand-deep-green-50 absolute top-14 -right-32 z-30 h-[356px] min-w-[356px]",
+    "bg-brand-deep-green-50 absolute top-14 -right-32 z-600 h-[356px] min-w-[356px]",
     "flex flex-col shadow-blue rounded-[10px] px-5 py-6",
     "tablet:-right-4",
     "mobile:min-w-full mobile:min-h-screen mobile:top-0 mobile:right-0 mobile:rounded-none mobile:border-0 mobile:py-10 mobile:fixed mobile:inset-0",

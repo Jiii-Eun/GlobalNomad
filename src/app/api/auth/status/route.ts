@@ -2,7 +2,6 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  // Next 14.2+/15: cookies()가 Promise라 await 필요
   const jar = await cookies();
   const token = jar.get("accessToken")?.value;
 

@@ -8,10 +8,11 @@ import { getActivities } from "@/lib/api/activities/api";
 export default async function Features() {
   const userAgent = (await headers()).get("user-agent") ?? "";
   const isMobile = /mobile|iphone|ipad|android/i.test(userAgent);
+  const isTablet = /ipad|tablet/i.test(userAgent);
 
   const [bestRes, allRes] = await Promise.all([
-    getActivities({ method: "offset", sort: "most_reviewed", size: 3 }),
-    getActivities({ method: "offset", sort: "latest", size: isMobile ? 4 : 8 }),
+    getActivities({ method: "offset", sort: "most_reviewed", size: isMobile || isTablet ? 5 : 3 }),
+    getActivities({ method: "offset", sort: "latest", size: isMobile ? 4 : isTablet ? 9 : 8 }),
   ]);
 
   return (

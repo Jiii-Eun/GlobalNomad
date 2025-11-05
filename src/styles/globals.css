@@ -147,7 +147,6 @@
     @apply flex justify-center items-center;
   }
 
-
   .container-base {
     @apply mx-auto w-full max-w-[1200px];
   }
