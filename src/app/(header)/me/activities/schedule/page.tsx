@@ -8,7 +8,11 @@ import Calendar from "@/app/(header)/me/activities/schedule/components/Calendar"
 import { Arrow } from "@/components/icons";
 import Field from "@/components/ui/input/Field";
 import Input from "@/components/ui/input/Input";
-import { getReservations, updateReservationStatus } from "@/lib/api/my-activities/api";
+import {
+  getReservations,
+  updateReservationStatus,
+  getReservedSchedule,
+} from "@/lib/api/my-activities/api";
 import {
   useReservationDashboard,
   useMyActivities,
@@ -40,6 +44,9 @@ export default function Schedule() {
   const calendarWrapRef = useRef<HTMLDivElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
   const [panelTop, setPanelTop] = useState(0);
+  const [countsByDate, setCountsByDate] = useState<
+    Map<string, { pending: number; confirmed: number; declined: number }>
+  >(new Map());
 
   const isTabletOrBelow = useIsTabletOrBelow();
 
@@ -48,16 +55,32 @@ export default function Schedule() {
   });
 
   const dailyStatusMap = useMemo(() => {
-    const map = new Map<string, { pending: number; confirmed: number; completed: number }>();
+    const map = new Map<
+      string,
+      { pending: number; confirmed: number; declined: number; completed: number }
+    >();
     (monthDash ?? []).forEach((d) => {
       map.set(d.date, {
         pending: d.reservations.pending ?? 0,
         confirmed: d.reservations.confirmed ?? 0,
+        declined: d.reservations.declined ?? 0,
         completed: d.reservations.completed ?? 0,
       });
     });
+    const ym = `${year}-${String(month).padStart(2, "0")}-`;
+    for (const [date, totals] of countsByDate.entries()) {
+      if (!date.startsWith(ym)) continue;
+      const prev = map.get(date) ?? { pending: 0, confirmed: 0, declined: 0, completed: 0 };
+      map.set(date, {
+        ...prev,
+        pending: totals.pending,
+        confirmed: totals.confirmed,
+        declined: totals.declined,
+      });
+    }
+
     return map;
-  }, [monthDash]);
+  }, [monthDash, countsByDate, year, month]);
 
   const [openDate, setOpenDate] = useState<string | null>(null);
   const { data: daySlots } = useReservedSchedule(
@@ -184,6 +207,36 @@ export default function Schedule() {
     });
   }
 
+  function sumReservedSchedule(
+    slots: {
+      count?: { pending?: number; confirmed?: number; declined?: number };
+    }[] = [],
+  ) {
+    return slots.reduce(
+      (acc, s) => {
+        acc.pending += s.count?.pending ?? 0;
+        acc.confirmed += s.count?.confirmed ?? 0;
+        acc.declined += s.count?.declined ?? 0;
+        return acc;
+      },
+      { pending: 0, confirmed: 0, declined: 0 } as {
+        pending: number;
+        confirmed: number;
+        declined: number;
+      },
+    );
+  }
+
+  async function fetchInChunks<T>(tasks: (() => Promise<T>)[], chunkSize = 5) {
+    const out: T[] = [];
+    for (let i = 0; i < tasks.length; i += chunkSize) {
+      const slice = tasks.slice(i, i + chunkSize);
+      const results = await Promise.all(slice.map((fn) => fn()));
+      out.push(...results);
+    }
+    return out;
+  }
+
   async function confirmAndAutoDecline(target: Reservation) {
     await updateReservationStatus({
       activityId: target.activityId,
@@ -222,6 +275,61 @@ export default function Schedule() {
       queryKey: ["reservedSchedule", Number(activityId || 0), openDate],
     });
   }
+
+  useEffect(() => {
+    if (!openDate || !daySlots) return;
+    const total = sumReservedSchedule(daySlots);
+    setCountsByDate((prev) => {
+      const next = new Map(prev);
+      next.set(openDate, total);
+      return next;
+    });
+  }, [openDate, daySlots]);
+
+  useEffect(() => {
+    if (!activityId || !monthDash) return;
+    const targetDates = (monthDash ?? [])
+      .filter((d) => (d.reservations.pending ?? 0) + (d.reservations.confirmed ?? 0) > 0)
+      .map((d) => d.date);
+
+    if (targetDates.length === 0) {
+      setCountsByDate(new Map());
+      return;
+    }
+
+    const needDates = targetDates.filter((date) => !countsByDate.has(date));
+    if (needDates.length === 0) return;
+
+    let aborted = false;
+    (async () => {
+      try {
+        const tasks = needDates.map((date) => async () => {
+          const slots = await getReservedSchedule({ activityId: Number(activityId), date });
+          const totals = sumReservedSchedule(slots ?? []);
+          return { date, totals };
+        });
+
+        const results = await fetchInChunks(tasks, 5);
+
+        if (aborted) return;
+
+        setCountsByDate((prev) => {
+          const next = new Map(prev);
+          for (const { date, totals } of results) {
+            next.set(date, totals);
+          }
+          return next;
+        });
+      } catch (e) {
+        // 네트워크 오류 나는 날짜가 있어도 전체 중단하지 않도록 try/catch (여기선 단순 무시)
+        // 필요시 토스트/로그 추가
+      }
+    })();
+
+    return () => {
+      aborted = true;
+    };
+  }, [activityId, monthDash]);
 
   useEffect(() => {
     if (!openDate) return;
@@ -398,6 +506,7 @@ export default function Schedule() {
                     hasConfirmed={hasConfirmed}
                     listScrollRef={listScrollRef}
                     targetRef={targetRef}
+                    onClose={() => setOpenDate(null)}
                   />
                 </DesktopReservationPanel>
               ))}
