@@ -3,6 +3,8 @@
 import { useAtom, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 
+import { ID_ALL_ACTIVITIES } from "@/app/(header)/components/features/all/AllActivities";
+import scrollToAnchor from "@/app/(header)/components/scrollToAnchor";
 import Button from "@/components/ui/button/Button";
 import { activityCategoryAtom, activityPageAtom } from "@/lib/api/activities/atoms";
 import { ActivityCategory, ActivityCategorySchema } from "@/lib/api/activities/types";
@@ -28,6 +30,7 @@ export default function Categories() {
     setCategory(category === "모두" ? undefined : category);
 
     setPage(1);
+    scrollToAnchor(ID_ALL_ACTIVITIES);
   };
 
   return (

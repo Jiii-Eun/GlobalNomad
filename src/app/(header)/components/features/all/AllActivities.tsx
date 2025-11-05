@@ -4,9 +4,11 @@ import ArrayActivities from "@/app/(header)/components/features/all/ArrayActivit
 import Categories from "@/app/(header)/components/features/all/Categories";
 import { InitActivityProps } from "@/app/(header)/components/features/best/BestActivities";
 
+export const ID_ALL_ACTIVITIES = "allActivities";
+
 export default function AllActivities({ initialData }: InitActivityProps) {
   return (
-    <div id="allActivities">
+    <div id={ID_ALL_ACTIVITIES}>
       <div className="mt-[60px] flex items-center justify-between">
         <Categories />
         <ArrayActivities />
