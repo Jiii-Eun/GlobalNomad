@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState, useRef } from "react";
 interface DayCounts {
   pending?: number;
   confirmed?: number;
-  declined?: number;
   completed?: number;
 }
 
@@ -209,12 +208,6 @@ export default function Calendar({
                         <div className="rounded-4 flex w-full items-center gap-0.5 bg-[#9CA3AF]/10 px-1 py-[3px] text-[14px]">
                           <span className="font-medium text-[#6B7280]">완료</span>
                           <span className="font-semibold text-[#6B7280]">{counts.completed}</span>
-                        </div>
-                      )}
-                      {typeof counts.declined === "number" && counts.declined > 0 && (
-                        <div className="rounded-4 flex w-full items-center gap-0.5 bg-[#EF4444]/10 px-1 py-[3px] text-[14px]">
-                          <span className="font-medium text-[#EF4444]">거절</span>
-                          <span className="font-semibold text-[#EF4444]">{counts.declined}</span>
                         </div>
                       )}
                     </div>
