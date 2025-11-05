@@ -506,6 +506,7 @@ export default function Schedule() {
                     hasConfirmed={hasConfirmed}
                     listScrollRef={listScrollRef}
                     targetRef={targetRef}
+                    onClose={() => setOpenDate(null)}
                   />
                 </DesktopReservationPanel>
               ))}

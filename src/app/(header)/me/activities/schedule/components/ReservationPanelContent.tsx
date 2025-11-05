@@ -5,19 +5,6 @@ import type { Reservation, ReservedScheduleItem } from "@/lib/api/my-activities/
 
 type TabKey = "pending" | "confirmed" | "declined";
 
-// interface SlotCount {
-//   pending: number;
-//   confirmed: number;
-//   declined: number;
-// }
-
-// interface DaySlot {
-//   scheduleId: number;
-//   startTime: string;
-//   endTime: string;
-//   count?: Partial<SlotCount>;
-// }
-
 interface ReservationPanelContentProps {
   openDate: string;
 
@@ -46,6 +33,7 @@ interface ReservationPanelContentProps {
   listScrollRef: React.RefObject<HTMLDivElement | null>;
   targetRef: (node: HTMLLIElement | null) => void;
   isMutating?: boolean;
+  onClose?: () => void;
 }
 
 export default function ReservationPanelContent({
@@ -63,12 +51,24 @@ export default function ReservationPanelContent({
   listScrollRef,
   targetRef,
   isMutating = false,
+  onClose,
 }: ReservationPanelContentProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="border-brand-gray-200 flex flex-col gap-10 border-b">
         <div className="flex justify-between">
           <div className="text-2xl font-bold">예약 정보</div>
+          {onClose && (
+            <button
+              type="button"
+              aria-label="닫기"
+              onClick={onClose}
+              disabled={isMutating}
+              className="text-2xl"
+            >
+              <span aria-hidden>✕</span>
+            </button>
+          )}
         </div>
 
         <div className="flex gap-3">
