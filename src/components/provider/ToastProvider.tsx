@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "motion/react";
 import { createContext, useContext, useState, useCallback, useRef, ReactNode } from "react";
 
-import useOutsideClick from "@/lib/hooks/useOutsideClick";
+import useClickOutside from "@/lib/hooks/useClickOutside";
 
 interface ToastContextValue {
   toast: ReactNode | null;
@@ -25,7 +25,6 @@ const DEFAULT_OPTIONS: Required<ToastOptions> = {
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toast, setToast] = useState<ReactNode | null>(null);
-  const toastRef = useRef<HTMLDivElement | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const clearTimer = () => {
@@ -57,7 +56,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     setToast(null);
   }, []);
 
-  useOutsideClick(toastRef, closeToast);
+  const toastRef = useClickOutside(closeToast);
 
   return (
     <ToastContext.Provider value={{ toast, openToast, closeToast }}>

@@ -11,7 +11,7 @@ import {
   type SelectOption,
 } from "@/components/ui/input/Input";
 import { cn } from "@/lib/cn";
-import useOutsideClick from "@/lib/hooks/useOutsideClick";
+import useClickOutside from "@/lib/hooks/useClickOutside";
 
 export default function SelectInput(props: InputSelectProps) {
   const {
@@ -31,8 +31,7 @@ export default function SelectInput(props: InputSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState<SelectOption | null>(null);
 
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  useOutsideClick(wrapperRef, () => setIsOpen(false));
+  const wrapperRef = useClickOutside(() => setIsOpen(false));
 
   useEffect(() => {
     if (value === undefined || value === null) {

@@ -6,7 +6,7 @@ import { InitActivityProps } from "@/app/(header)/components/features/best/BestA
 
 export default function AllActivities({ initialData }: InitActivityProps) {
   return (
-    <div>
+    <div id="allActivities">
       <div className="mt-[60px] flex items-center justify-between">
         <Categories />
         <ArrayActivities />
