@@ -2,7 +2,11 @@ import ActivitiesTitle from "@/app/(header)/components/features/all/ActivitiesTi
 import AllActivitiesList from "@/app/(header)/components/features/all/AllActivitiesList";
 import ArrayActivities from "@/app/(header)/components/features/all/ArrayActivities";
 import Categories from "@/app/(header)/components/features/all/Categories";
-import { InitActivityProps } from "@/app/(header)/components/features/best/BestActivities";
+import { GetActivitiesRes } from "@/lib/api/activities/types";
+
+export interface InitActivityProps {
+  initialData?: GetActivitiesRes;
+}
 
 export const ID_ALL_ACTIVITIES = "allActivities";
 

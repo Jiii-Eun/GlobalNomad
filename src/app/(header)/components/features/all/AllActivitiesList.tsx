@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 
 import ActivityCardBase from "@/app/(header)/components/features/ActivityCardBase";
 import ActivitiesPagination from "@/app/(header)/components/features/all/ActivitiesPagination";
-import { InitActivityProps } from "@/app/(header)/components/features/best/BestActivities";
+import { InitActivityProps } from "@/app/(header)/components/features/all/AllActivities";
 import SkeletonList from "@/app/(header)/components/features/SkeletonList";
 import { useActivityParams } from "@/app/(header)/components/useActivityParams";
 import { activitySizeAtom } from "@/lib/api/activities/atoms";

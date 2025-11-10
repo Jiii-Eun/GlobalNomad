@@ -1,24 +1,18 @@
-import { headers } from "next/headers";
-
 import AllActivities from "@/app/(header)/components/features/all/AllActivities";
 import BestActivities from "@/app/(header)/components/features/best/BestActivities";
 import FeaturesClient from "@/app/(header)/components/features/FeaturesClient";
-import { getActivities } from "@/lib/api/activities/api";
+import { GetActivitiesRes } from "@/lib/api/activities/types";
 
-export default async function Features() {
-  const userAgent = (await headers()).get("user-agent") ?? "";
-  const isMobile = /mobile|iphone|ipad|android/i.test(userAgent);
-  const isTablet = /ipad|tablet/i.test(userAgent);
+interface FeatureProps {
+  allActivities?: GetActivitiesRes;
+  bestActivities?: GetActivitiesRes;
+}
 
-  const [bestRes, allRes] = await Promise.all([
-    getActivities({ method: "offset", sort: "most_reviewed", size: isMobile || isTablet ? 5 : 3 }),
-    getActivities({ method: "offset", sort: "latest", size: isMobile ? 4 : isTablet ? 9 : 8 }),
-  ]);
-
+export default async function Features({ allActivities, bestActivities }: FeatureProps) {
   return (
     <FeaturesClient>
-      <BestActivities initialData={bestRes} />
-      <AllActivities initialData={allRes} />
+      <BestActivities initialData={bestActivities} />
+      <AllActivities initialData={allActivities} />
     </FeaturesClient>
   );
 }
