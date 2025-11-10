@@ -21,16 +21,21 @@ export default function DrawerFooter({
   isDisabled,
   frameClass,
   buttonClass,
+  isNext = false,
 }: footerProps) {
-  const { onClose } = useDrawerContext();
+  const { nextStep, onClose } = useDrawerContext();
 
   const handleClick = () => {
-    if (onClick) {
-      onClick();
-    } else if (onClose) {
-      onClose();
+    onClick?.();
+
+    if (isNext && nextStep) {
+      nextStep();
     }
+
+    onClose?.();
   };
+
+  const Wrapper = isNext ? "div" : Drawer.Close;
 
   const FooterButton = (
     <Button
@@ -44,7 +49,7 @@ export default function DrawerFooter({
   return (
     <div className={cn("flex w-full items-center justify-center", frameClass)}>
       {children ? (
-        <Drawer.Close asChild>{children}</Drawer.Close>
+        <Wrapper className="w-full">{children}</Wrapper>
       ) : (
         <Drawer.Close asChild>{FooterButton}</Drawer.Close>
       )}

@@ -7,8 +7,6 @@ import Pagination from "@/components/ui/pagination/Pagination";
 import { activityPageAtom } from "@/lib/api/activities/atoms";
 import { useActivityReviews } from "@/lib/api/activities/hooks";
 
-import { testReview } from "../../[id]/testData/testReview";
-
 export function formatDate(dateString: string) {
   const d = new Date(dateString);
   const y = d.getFullYear().toString();

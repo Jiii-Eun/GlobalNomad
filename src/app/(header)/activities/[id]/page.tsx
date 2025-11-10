@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 
+import ReservationWidget from "@/app/(header)/activities/components/reservations/ReservationWidget";
 import { useActivityDetail } from "@/lib/api/activities/hooks";
 import { useAuthStatus } from "@/lib/hooks/useAuthStatus";
 import { useKakaoReady } from "@/lib/hooks/useKakaoReady";
@@ -10,7 +11,6 @@ import { useMyPendingDatesForActivity } from "@/lib/hooks/useMyPendingDatesForAc
 import ActivityHead from "../components/activity/ActivityHead";
 import ActivityImages from "../components/activity/ActivityImages";
 import Map from "../components/activity/Map";
-import ReservationWidgetContainerSelector from "../components/reservations/ReservationWidgetContainerSelector";
 import Reviews from "../components/reviews/Reviews";
 
 export default function ActivitiesDetailPage() {
@@ -56,9 +56,9 @@ export default function ActivitiesDetailPage() {
       <ActivityImages bannerImageUrl={bannerImageUrl} subImages={subImages} altPrefix={title} />
 
       {/* 본문 + (데스크톱) 예약 사이드바 */}
-      <div className="tablet:block mt-[50px] grid grid-cols-[1fr_360px] gap-5">
+      <div className="tablet:block mt-[50px] grid grid-cols-[1fr_384px] gap-5">
         {/* 본문 */}
-        <section className="min-w-0">
+        <section>
           <div className="border-brand-nomad-black/25 flex flex-col gap-4 border-t py-10">
             <p className="text-brand-nomad-black text-xl font-bold">체험 설명</p>
             <p className="text-brand-nomad-black/75 truncate text-lg break-keep whitespace-pre-wrap">
@@ -73,18 +73,20 @@ export default function ActivitiesDetailPage() {
         </section>
 
         {/* 데스크톱 우측 사이드 예약 */}
-        <ReservationWidgetContainerSelector
-          price={price}
-          // capacityLabel={`총 ${data.capacity ?? 10}인`} // 있으면 표시
-          reservationProps={{
-            activityId: dataId,
-            title: title,
-            price: price,
-            schedules: schedules,
-            pendingDates: pendingDates,
-            // onSummaryChange는 Mobile 컨테이너에서만 넣어줍니다.
-          }}
-        />
+        <div className="h-full">
+          <ReservationWidget
+            price={price}
+            // capacityLabel={`총 ${data.capacity ?? 10}인`} // 있으면 표시
+            reservationProps={{
+              activityId: dataId,
+              title: title,
+              price: price,
+              schedules: schedules,
+              pendingDates: pendingDates,
+              // onSummaryChange는 Mobile 컨테이너에서만 넣어줍니다.
+            }}
+          />
+        </div>
       </div>
     </main>
   );

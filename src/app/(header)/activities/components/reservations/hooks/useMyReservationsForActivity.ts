@@ -1,9 +1,7 @@
-"use client";
-
 import { useMemo } from "react";
 
 import { useMyReservations } from "@/lib/api/my-reservations/hooks";
-import type { MyReservation, GetMyResvsReq } from "@/lib/api/my-reservations/types";
+import type { MyReservation } from "@/lib/api/my-reservations/types";
 
 /**
  * 특정 체험(activityId)에 대한 내 예약 내역을 필터링하는 훅

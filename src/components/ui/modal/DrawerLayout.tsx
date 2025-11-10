@@ -9,7 +9,8 @@ import { useDirection } from "@/lib/hooks/useDirection";
 import DrawerContext from "./DrawerContext";
 
 interface DrawerLayoutProps {
-  trigger: React.ReactNode;
+  trigger?: React.ReactNode;
+  triggerChildren?: React.ReactNode;
   title?: string;
   children?: React.ReactNode;
   width?: "md" | "full";
@@ -30,6 +31,7 @@ const widthMap = {
 
 export default function DrawerLayout({
   trigger,
+  triggerChildren,
   title,
   children,
   width = "full",
@@ -83,9 +85,9 @@ export default function DrawerLayout({
           }
         }}
       >
-        <Drawer.Trigger asChild>{trigger}</Drawer.Trigger>
+        {trigger ? <Drawer.Trigger asChild>{trigger}</Drawer.Trigger> : triggerChildren}
         <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 z-[900] bg-black/40" />
+          <Drawer.Overlay className="fixed inset-0 z-900 bg-black/40" />
           <Drawer.Content
             className={cn(
               "rounded-t-16 fixed bottom-0 left-1/2 z-[910] flex max-h-[96%] w-full -translate-x-1/2 flex-col bg-white p-6 shadow-lg",
