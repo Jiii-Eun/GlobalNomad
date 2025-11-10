@@ -18,7 +18,7 @@ export default function ActivityImages({
   // 모바일/태블릿: 캐러셀
   const [emblaRef] = useEmblaCarousel({
     loop: true,
-    align: "start",
+    align: "center",
     dragFree: false,
     containScroll: "trimSnaps",
   });
@@ -31,7 +31,7 @@ export default function ActivityImages({
     <>
       {/* 데스크톱(>=lg): 그리드 */}
       <div
-        className="mt-[42px] hidden h-[540px] gap-2 overflow-hidden rounded-2xl lg:flex"
+        className="tablet:hidden mt-[42px] flex h-[540px] gap-2 overflow-hidden rounded-2xl"
         style={{ boxShadow: "0px 4px 12px rgba(17,34,17,0.05)" }}
       >
         {count === 0 && (
@@ -130,14 +130,14 @@ export default function ActivityImages({
       </div>
 
       {/* 모바일/태블릿(<lg): Embla 캐러셀 */}
-      <div className="mobile:-mx-6 pt-[15px] lg:mx-0">
+      <div className="mobile:-mx-6 tablet:block mx-0 hidden pt-[15px]">
         {/* 부모 px-6 상쇄 (24px) */}
         <div className="overflow-hidden">
           <div className="embla" ref={emblaRef}>
             <div className="embla__container">
               {[bannerImageUrl, ...subs].map((src, i) => (
                 <div key={i} className="embla__slide">
-                  <div className="relative h-[310px] w-full">
+                  <div className="mobile:h-[310px] relative h-[540px] w-full">
                     <Image
                       src={src}
                       alt={`이미지 ${i}`}
@@ -163,8 +163,8 @@ export default function ActivityImages({
         }
         .embla__slide {
           position: relative;
-          flex: 0 0 100%; /* ← 슬라이드는 정확히 100% 폭 */
-          min-width: 0; /* 내용이 넘쳐도 폭 유지 */
+          flex: 0 0 100vw; /* ← 슬라이드는 정확히 view 폭 */
+          min-width: 100%; /* 내용이 넘쳐도 폭 유지 */
         }
       `}</style>
     </>

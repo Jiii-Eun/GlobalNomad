@@ -1,3 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap");
+
+.react-datepicker {
+  font-family: "Open Sans", sans-serif !important;
+}
+
+.react-datepicker__day--keyboard-selected{
+  border-radius: 8px !important;
+}
 
 .react-datepicker__triangle {
   display: none !important;

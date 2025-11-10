@@ -29,13 +29,11 @@ export default function MobileReservationWidgetContainer({
     useMyReservationsForActivity(activityId);
 
   return (
-    <div className="lg:hidden">
-      <div className="h-[84px]" />
-
+    <div className="tablet:block hidden">
       <Drawer.Root open={open} onOpenChange={setOpen}>
         {/* 하단 고정 요약 바 */}
-        <div className="fixed inset-x-0 bottom-0 z-[60] h-[90px] border-t border-black/10 bg-white pb-[calc(env(safe-area-inset-bottom))] shadow-[0_-6px_20px_rgba(0,0,0,0.06)]">
-          <div className="mx-auto flex max-w-[1200px] items-center justify-between px-4 py-3">
+        <div className="fixed inset-x-0 bottom-0 z-60 h-[90px] items-center justify-between border-t border-black/10 bg-white pb-[calc(env(safe-area-inset-bottom))] shadow-[0_-6px_20px_rgba(0,0,0,0.06)]">
+          <div className="mx-auto flex h-full max-w-[1200px] items-center justify-between px-4 py-3">
             <div className="min-w-0">
               {isLoading ? (
                 <p className="text-[14px] text-gray-500">예약 정보를 불러오는 중...</p>

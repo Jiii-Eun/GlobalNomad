@@ -1,10 +1,11 @@
 "use client";
 import React from "react";
 
+import { useDevice } from "@/lib/hooks/useDevice";
+
 import DesktopReservationWidgetContainer from "./container/DesktopReservationWidgetContainer";
 import MobileReservationWidgetContainer from "./container/MobileReservationWidgetContainer";
 import type { ReservationContentProps } from "./ReservationContent";
-import useMediaQuery from "./useMediaQuery";
 
 interface SelectorProps {
   price: number;
@@ -17,12 +18,13 @@ export default function ReservationWidgetContainerSelector({
   reservationProps,
   capacityLabel,
 }: SelectorProps) {
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const { isPc } = useDevice();
   // const isMobile = useMediaQuery("(max-width: 1023px)"); // 필요 시
 
-  if (isDesktop) {
+  if (isPc) {
     return <DesktopReservationWidgetContainer price={price} reservationProps={reservationProps} />;
   }
+
   return (
     <MobileReservationWidgetContainer
       price={price}

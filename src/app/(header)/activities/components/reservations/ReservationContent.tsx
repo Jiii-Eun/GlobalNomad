@@ -12,6 +12,7 @@ import Toast from "@/components/ui/toast";
 import { useToast } from "@/components/ui/toast/useToast";
 import { useAvailableSchedule, useCreateReservation } from "@/lib/api/activities/hooks";
 import type { ScheduleSlot } from "@/lib/api/activities/types";
+import { cn } from "@/lib/cn";
 import { useAuthStatus } from "@/lib/hooks/useAuthStatus"; // ✅ 로그인 상태 확인
 
 import ReservationWrap from "./ReservationWrap";
@@ -163,8 +164,7 @@ export default function ReservationContent({
   };
 
   const totalAmount = price * members * selectedSlots.length;
-  const isReserveDisabled =
-    reserved || isPending || selectedSlots.length === 0 || isSelectedDatePending;
+  const isReserveDisabled = reserved || isPending || selectedSlots.length === 0;
 
   // ✅ 하단바 요약에 뿌릴 데이터 계산 & 통지
   useEffect(() => {
@@ -204,7 +204,7 @@ export default function ReservationContent({
       </div>
 
       {/* 날짜 선택 */}
-      <div className="mt-4 border-t border-[#DDDDDD]">
+      <div className="border-brand-gray-300 mt-4 border-t">
         <p className="text-brand-nomad-black mt-4 mb-4 text-xl font-bold">날짜</p>
         <div className="flex justify-center">
           <DatePicker
@@ -217,34 +217,41 @@ export default function ReservationContent({
             selected={selectedDate}
             onChange={(d) => {
               if (!isLoggedIn) return;
-              if (d && pendingDatesSet.has(format(d, "yyyy-MM-dd"))) return;
               setSelectedDate(d);
             }}
             onMonthChange={setCalendarMonth}
             onYearChange={setCalendarMonth}
             dayClassName={(d) => {
               const key = format(d, "yyyy-MM-dd");
+              const today = new Date();
+              today.setHours(0, 0, 0, 0);
+
+              if (d.getTime() < today.getTime()) return "rdp-past"; // 지난 날짜
               if (pendingDatesSet.has(key)) return "rdp-pending"; // ✅ 회색 처리
               if (availableSet.has(key)) return "rdp-available";
               return "rdp-unavailable";
             }}
             renderDayContents={(day, date) => {
               const key = format(date, "yyyy-MM-dd");
+              const isPast = date.getTime() < new Date().setHours(0, 0, 0, 0);
               const isAvail = availableSet.has(key);
               const isPending = pendingDatesSet.has(key);
 
+              const dotClass =
+                "pointer-events-none absolute bottom-1 inline-block size-1.5 rounded-full";
+
               return (
-                <div className="relative flex h-8 w-8 items-center justify-center">
+                <div className="relative flex items-center justify-center">
                   <span>{day}</span>
 
+                  {/* ✅ 이미 예약된 날짜 표시 (노란 점) */}
+                  {!isPast && isPending && <span className={cn(dotClass, "bg-brand-yellow-500")} />}
+
                   {/* ✅ 예약 가능한 날짜 표시 (초록 점) */}
-                  {isAvail && !isPending && (
-                    <span className="pointer-events-none absolute bottom-0.5 inline-block h-1.5 w-1.5 rounded-full bg-green-600" />
-                  )}
-                  {/* ✅ 이미 예약된 날짜 표시 (회색 점) */}
-                  {isPending && (
-                    <span className="pointer-events-none absolute bottom-0.5 inline-block h-1.5 w-1.5 rounded-full bg-gray-400" />
-                  )}
+                  {isAvail && !isPending && <span className={cn(dotClass, "bg-brand-green-500")} />}
+
+                  {/* 지난 날짜 표시 (회색 점) */}
+                  {isPast && <span className={cn(dotClass, "bg-brand-gray-300")} />}
                 </div>
               );
             }}
@@ -312,7 +319,7 @@ export default function ReservationContent({
         <p className="text-brand-nomad-black text-2lg mobile:text-h2 font-bold">예약 가능한 시간</p>
         {isSelectedDatePending ? (
           <div className="text-h4-regular text-brand-nomad-black mb-4">
-            이미 예약 완료된 날짜입니다.
+            예약이 모두 완료되어 이용 가능한 시간이 없습니다.
           </div>
         ) : selectedDate && daySlots.length > 0 ? (
           <div className="flex flex-wrap">
@@ -325,13 +332,14 @@ export default function ReservationContent({
                 <button
                   key={slot.id}
                   onClick={() => selectedDate && toggleSlot(selectedDate, slot)}
+                  disabled={isSelectedDatePending}
                   className={`mr-[1.2rem] mb-[1.2rem] rounded-lg border px-[1.2rem] py-[1rem] text-base font-medium ${
                     selected
                       ? "bg-brand-nomad-black border-brand-nomad-black text-white"
                       : "text-brand-nomad-black border-brand-nomad-black bg-white"
                   }`}
                 >
-                  {slot.startTime}~{slot.endTime}
+                  {slot.startTime} ~ {slot.endTime}
                 </button>
               );
             })}
@@ -356,7 +364,7 @@ export default function ReservationContent({
         onClick={handleReserve}
         disabled={isReserveDisabled}
         className={`text-body1-bold my-7 w-full rounded-md px-4 py-[1.4rem] text-white ${
-          isReserveDisabled ? "cursor-not-allowed bg-gray-400" : "bg-[var(--color-brand-black)]"
+          isReserveDisabled ? "bg-brand-gray-300 cursor-not-allowed" : "bg-brand-black"
         }`}
       >
         {reserved
@@ -369,8 +377,8 @@ export default function ReservationContent({
       </button>
 
       {/* 합계 */}
-      <div className="border-t-gray200 text-h3-bold text-nomad-black flex justify-between border-t pt-4">
-        <p>총 합계</p>
+      <div className="border-brand-gray-300 text-h3-bold text-nomad-black flex justify-between border-t pt-4 text-xl font-bold">
+        <p className="">총 합계</p>
         <div>{currency(totalAmount)}</div>
       </div>
     </ReservationWrap>

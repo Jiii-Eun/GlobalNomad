@@ -75,7 +75,6 @@ export default function ProfileSidebar({
       </button>
     );
   };
-  console.log("[Sidebar] initialProfileUrl:", initialProfileUrl);
 
   return (
     <aside

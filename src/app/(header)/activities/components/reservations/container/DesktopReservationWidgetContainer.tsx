@@ -4,7 +4,7 @@ import React from "react";
 import type { ReservationContentProps } from "../ReservationContent";
 import ReservationContent from "../ReservationContent";
 
-function currency(n: number) {
+export function currency(n: number) {
   return new Intl.NumberFormat("ko-KR").format(n);
 }
 
@@ -20,11 +20,7 @@ export default function DesktopReservationWidgetContainer({
   stickyTop = 96,
 }: DesktopProps) {
   return (
-    <aside
-      className="rounded-2xl bg-white p-4 shadow-[0_4px_16px_rgba(17,34,17,0.05)]"
-      style={{ position: "sticky", top: stickyTop }}
-      aria-label="예약 사이드 카드"
-    >
+    <aside style={{ position: "sticky", top: stickyTop }} aria-label="예약 사이드 카드">
       {/* (원하면 가격 헤더 등 넣기)
       <div className="mb-4 flex items-baseline gap-2">
         <p className="text-2xl font-bold">₩ {currency(price)}</p>

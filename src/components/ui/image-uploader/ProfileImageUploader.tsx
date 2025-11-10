@@ -21,7 +21,6 @@ export default function ProfileImageUploader({ initialUrl }: { initialUrl?: stri
   const normalizeUrl = (u?: string | null) =>
     typeof u === "string" && u.trim() !== "" ? u.trim() : DEFAULT_PROFILE;
   const [preview, setPreview] = useState(() => normalizeUrl(initialUrl));
-  console.log("[Uploader] initialUrl prop:", initialUrl);
 
   useEffect(() => {
     const safe = normalizeUrl(initialUrl);
