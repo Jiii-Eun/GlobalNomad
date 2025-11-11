@@ -2,6 +2,7 @@ import { format } from "date-fns";
 
 import { SelectedSlot } from "@/app/(header)/activities/components/reservations/hooks/useReservationCore";
 import type { ScheduleSlot } from "@/lib/api/activities/types";
+import { cn } from "@/lib/cn";
 
 export interface TimeSlotProps {
   selectedDate: Date | null;
@@ -38,11 +39,14 @@ export default function ReservationTimeSlots({
                 key={times.id}
                 onClick={() => selectedDate && toggleSlot(selectedDate, times)}
                 disabled={isSelectedDatePending}
-                className={`mr-[1.2rem] mb-[1.2rem] rounded-lg border px-[1.2rem] py-[1rem] text-base font-medium ${
+                className={cn(
+                  "mr-[1.2rem] mb-[1.2rem] rounded-lg border px-[1.2rem] py-4 text-base font-medium",
+                  "tablet:mr-0 mobile:px-0 mobile:py-0 mobile:leading-12",
                   selected
-                    ? "bg-brand-nomad-black border-brand-nomad-black text-white"
-                    : "text-brand-nomad-black border-brand-nomad-black bg-white"
-                }`}
+                    ? "bg-brand-deep-green-500 border-brand-deebg-brand-deep-green-500 text-white"
+                    : "text-brand-deep-green-500 border-brand-deep-green-500 bg-white",
+                  "tablet:w-full",
+                )}
               >
                 {times.startTime} ~ {times.endTime}
               </button>

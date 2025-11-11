@@ -30,6 +30,7 @@ export default function DrawerFooter({
   const showChildren = step === currentStep;
 
   const Wrapper = isNext && !isLastStep ? "div" : Drawer.Close;
+  const WrapperProps = isNext && !isLastStep ? {} : { asChild: true };
 
   const handleClick = () => {
     onClick?.();
@@ -59,14 +60,16 @@ export default function DrawerFooter({
     <div className={cn("flex w-full items-center justify-center", frameClass)}>
       {children ? (
         !currentStep || showChildren ? (
-          <Wrapper className={widthClass}>{children}</Wrapper>
+          <Wrapper className={widthClass} {...WrapperProps}>
+            {children}
+          </Wrapper>
         ) : (
-          <Wrapper className={widthClass} asChild>
+          <Wrapper className={widthClass} {...WrapperProps}>
             {FooterButton}
           </Wrapper>
         )
       ) : (
-        <Wrapper className={widthClass} asChild>
+        <Wrapper className={widthClass} {...WrapperProps}>
           {FooterButton}
         </Wrapper>
       )}

@@ -29,7 +29,7 @@ export default function ReservationButton({
       className={cn(
         "text-body1-bold my-7 w-full rounded-md px-4 py-[1.4rem] text-white",
         disabled ? "bg-brand-gray-300 cursor-not-allowed" : "bg-brand-black",
-        "mobile:my-0 px-0 py-0 leading-12",
+        "tablet:my-0 mobile:px-0 mobile:py-0 mobile:leading-12",
       )}
     >
       {reserved

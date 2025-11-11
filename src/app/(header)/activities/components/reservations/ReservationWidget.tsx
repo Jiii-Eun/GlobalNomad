@@ -1,5 +1,6 @@
 "use client";
 
+import { format } from "date-fns";
 import React, { useState } from "react";
 import { Drawer } from "vaul";
 
@@ -10,6 +11,7 @@ import { ReserveSummary } from "@/app/(header)/activities/components/reservation
 import Button from "@/components/ui/button/Button";
 import { DrawerBody, DrawerFooter, DrawerHeader, DrawerLayout } from "@/components/ui/modal";
 import { Schedule } from "@/lib/api/activities/types";
+import { cn } from "@/lib/cn";
 import { useDevice } from "@/lib/hooks/useDevice";
 
 import { useMyReservationsForActivity } from "./hooks/useMyReservationsForActivity";
@@ -42,8 +44,7 @@ export default function ReservationWidget({
   const { activityId, schedules, pendingDates = [], onSummaryChange } = reservationProps;
   const { isMobile, isPc } = useDevice();
 
-  const { reservations, totalMembers, totalPrice, isLoading } =
-    useMyReservationsForActivity(activityId);
+  const { isLoading } = useMyReservationsForActivity(activityId);
 
   const core = useReservationCore({
     activityId,
@@ -55,9 +56,22 @@ export default function ReservationWidget({
 
   const { steps } = useReservationSteps(core);
 
-  const { selectedSlots, reserved, isPending, isReserveDisabled, handleReserve } = core;
+  const {
+    selectedDate,
+    selectedSlots,
+    members,
+    reserved,
+    isPending,
+    isReserveDisabled,
+    handleReserve,
+  } = core;
 
   const handleOpen = () => {
+    requestAnimationFrame(() => {
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+    });
     setOpen(true);
   };
 
@@ -71,20 +85,26 @@ export default function ReservationWidget({
         <div className="min-w-0">
           {isLoading ? (
             <p className="text-[14px] text-gray-500">예약 정보를 불러오는 중...</p>
-          ) : reservations.length > 0 ? (
+          ) : (
             <>
               <div className="flex items-baseline gap-2">
-                <p className="text-[18px] leading-none font-bold">₩ {currency(totalPrice)}</p>
-                <span className="text-brand-deep-green-500/80 text-[14px] leading-none">
-                  / 총 {totalMembers}명
+                <p className="text-[20px] leading-none font-bold">₩ {currency(price)} / </p>
+                <span className="text-brand-deep-green-500/80 text-lg leading-none">
+                  총 {members}명
                 </span>
               </div>
-              <p className="mt-1 truncate text-[13px] text-[#111]/60">
-                {reservations.map((r) => r.date).join(", ")}
-              </p>
+              {selectedSlots && (
+                <p className="text-brand-deep-green-500 text-md mt-1 truncate">
+                  {selectedSlots.length > 0 &&
+                    selectedSlots
+                      .map(
+                        (slot) =>
+                          `${format(slot.date, "yy/MM/dd")} ${slot.times.startTime} ~ ${slot.times.endTime}`,
+                      )
+                      .join(", ")}
+                </p>
+              )}
             </>
-          ) : (
-            <p className="text-[14px] text-gray-500">예약 내역이 없습니다.</p>
           )}
         </div>
 
@@ -138,8 +158,10 @@ export default function ReservationWidget({
           <DrawerHeader />
           <DrawerBody>
             <div
-              className="mx-auto w-full overflow-y-auto px-4 pt-3 pb-[calc(16px+env(safe-area-inset-bottom))]"
-              style={{ maxHeight: "calc(90vh - 20px)" }}
+              className={cn(
+                "max-h-[calc(90vh - 20px)] mx-auto w-full overflow-y-auto px-4 pt-3 pb-[calc(16px+env(safe-area-inset-bottom))]",
+                "tablet:px-0 tablet:pt-0 tablet:pb-0",
+              )}
             >
               <ReservationContent price={price} {...core} />
             </div>

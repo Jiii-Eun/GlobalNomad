@@ -42,6 +42,7 @@ export default function ActivityImages({
               fill
               className="object-cover"
               priority
+              sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
         )}
@@ -56,7 +57,6 @@ export default function ActivityImages({
                 width={1200}
                 height={900}
                 className="h-full w-full object-cover"
-                priority
               />
             </div>
 
@@ -137,7 +137,7 @@ export default function ActivityImages({
             <div className="embla__container">
               {[bannerImageUrl, ...subs].map((src, i) => (
                 <div key={i} className="embla__slide">
-                  <div className="mobile:h-[310px] relative h-[540px] w-full">
+                  <div className="mobile:h-[310px] transition-base relative h-[540px] w-full">
                     <Image
                       src={src}
                       alt={`이미지 ${i}`}

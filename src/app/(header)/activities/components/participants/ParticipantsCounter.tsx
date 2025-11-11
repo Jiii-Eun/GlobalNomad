@@ -16,7 +16,7 @@ const ParticipantsCounter = ({
   handleCountPlus,
   handleCountMinus,
 }: ParticipantsProps) => (
-  <div className="tablet:border-none mobile:border-none flex flex-col gap-[12px] border-t border-[#DDDDDD] pt-[1.2rem]">
+  <div className="tablet:border-none border-brand-gray-300 tablet:pb-5 flex flex-col gap-3 border-t pt-[1.2rem]">
     <p className="text-brand-nomad-black mobile:text-h2 text-2lg font-bold">참여 인원 수</p>
     <div className="flex w-[120px] justify-between rounded-md border border-[#CDD0DC] bg-white shadow-[0_2px_4px_0_rgba(5,16,55,0.06)]">
       <button onClick={handleCountMinus} disabled={count <= 1}>
