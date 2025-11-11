@@ -73,7 +73,7 @@ export default function ReservationCalendar({
                 <span>{day}</span>
                 {!isPast && isPending && <span className={cn(dotClass, "bg-brand-yellow-500")} />}
                 {isAvail && !isPending && <span className={cn(dotClass, "bg-brand-green-500")} />}
-                {isPast && !isPending && <span className={cn(dotClass, "bg-brand-gray-300")} />}
+                {isPast && isPending && <span className={cn(dotClass, "bg-brand-gray-300")} />}
               </div>
             );
           }}
