@@ -20,6 +20,7 @@ export interface CalendarProps {
   selectedDate: Date | null;
   availableSet: Set<string>;
   pendingDatesSet: Set<string>;
+  fullyReservedDates: Set<string>;
   setCalendarMonth: (d: Date) => void;
   setSelectedDate: (d: Date) => void;
 }
@@ -30,6 +31,7 @@ export default function ReservationCalendar({
   selectedDate,
   availableSet,
   pendingDatesSet,
+  fullyReservedDates,
   setCalendarMonth: onMonthChange,
   setSelectedDate: onSelect,
 }: CalendarProps) {
@@ -54,7 +56,7 @@ export default function ReservationCalendar({
               const today = new Date();
               today.setHours(0, 0, 0, 0);
               if (d.getTime() < today.getTime()) return "rdp-past";
-              if (pendingDatesSet.has(key)) return "rdp-pending";
+              if (pendingDatesSet.has(key) || fullyReservedDates.has(key)) return "rdp-pending";
               if (availableSet.has(key)) return "rdp-available";
               return "rdp-unavailable";
             }}
@@ -62,7 +64,7 @@ export default function ReservationCalendar({
               const key = format(date, "yyyy-MM-dd");
               const isPast = date.getTime() < new Date().setHours(0, 0, 0, 0);
               const isAvail = availableSet.has(key);
-              const isPending = pendingDatesSet.has(key);
+              const isPending = pendingDatesSet.has(key) || fullyReservedDates.has(key);
               const dotClass =
                 "pointer-events-none absolute bottom-0.5 inline-block size-1.5 rounded-full";
 
@@ -71,7 +73,7 @@ export default function ReservationCalendar({
                   <span>{day}</span>
                   {!isPast && isPending && <span className={cn(dotClass, "bg-brand-yellow-500")} />}
                   {isAvail && !isPending && <span className={cn(dotClass, "bg-brand-green-500")} />}
-                  {isPast && <span className={cn(dotClass, "bg-brand-gray-300")} />}
+                  {isPast && !isPending && <span className={cn(dotClass, "bg-brand-gray-300")} />}
                 </div>
               );
             }}

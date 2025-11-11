@@ -49,6 +49,7 @@ export function useReservationCore({
   const [members, setMembers] = useState(1);
   const [reserved, setReserved] = useState(false);
   const [didInitMonth, setDidInitMonth] = useState(false);
+  const [reservedSlotIds, setReservedSlotIds] = useState<Set<number>>(new Set());
 
   const pendingDatesSet = useMemo(() => new Set(pendingDates), [pendingDates]);
 
@@ -64,7 +65,7 @@ export function useReservationCore({
 
   const year = format(calendarMonth, "yyyy");
   const month = format(calendarMonth, "MM");
-  const { data: monthlyAvailable } = useAvailableSchedule(activityId, year, month);
+  const { data: monthlyAvailable, refetch } = useAvailableSchedule(activityId, year, month);
 
   /** 예약 가능한 날짜들 */
   const availableSet = useMemo(() => {
@@ -73,8 +74,40 @@ export function useReservationCore({
       schedules
         ?.filter((s) => format(parseISO(s.date), "yyyyMM") === `${year}${month}`)
         .map((s) => s.date) ?? [];
-    return new Set([...fromHook, ...fromProp]);
-  }, [monthlyAvailable, schedules, year, month]);
+
+    const allDates = new Set([...fromHook, ...fromProp]);
+
+    const datesToRemove = new Set<string>();
+
+    allDates.forEach((date) => {
+      const daySchedule = monthlyAvailable?.find((g) => g.date === date);
+      if (daySchedule) {
+        // 해당 날짜의 모든 슬롯이 예약되었는지 확인
+        const allSlotsReserved = daySchedule.times.every((slot) => reservedSlotIds.has(slot.id));
+        if (allSlotsReserved) {
+          datesToRemove.add(date);
+        }
+      }
+    });
+
+    datesToRemove.forEach((date) => allDates.delete(date));
+
+    return allDates;
+  }, [monthlyAvailable, schedules, year, month, reservedSlotIds]);
+
+  /** 예약이 다 찬 슬롯 */
+  const fullyReservedDates = useMemo(() => {
+    const dates = new Set<string>();
+
+    monthlyAvailable?.forEach(({ date, times }) => {
+      const allSlotsReserved = times.every((slot) => reservedSlotIds.has(slot.id));
+      if (allSlotsReserved && times.length > 0) {
+        dates.add(date);
+      }
+    });
+
+    return dates;
+  }, [monthlyAvailable, reservedSlotIds]);
 
   /** 날짜별 가능한 시간 슬롯 */
   const ymd = selectedDate ? format(selectedDate, "yyyy-MM-dd") : "";
@@ -82,13 +115,19 @@ export function useReservationCore({
   const daySlots: ScheduleSlot[] = useMemo(() => {
     if (!selectedDate || isSelectedDatePending) return [];
     const fromHook = monthlyAvailable?.find((g) => g.date === ymd);
-    if (fromHook) return fromHook.times;
-    const fromProp =
-      schedules
-        ?.filter((s) => s.date === ymd)
-        .map((s) => ({ id: s.id, startTime: s.startTime, endTime: s.endTime })) ?? [];
-    return fromProp;
-  }, [monthlyAvailable, schedules, selectedDate, isSelectedDatePending, ymd]);
+    let slots: ScheduleSlot[] = [];
+
+    if (fromHook) {
+      slots = fromHook.times;
+    } else {
+      slots =
+        schedules
+          ?.filter((s) => s.date === ymd)
+          .map((s) => ({ id: s.id, startTime: s.startTime, endTime: s.endTime })) ?? [];
+    }
+
+    return slots.filter((slot) => !reservedSlotIds.has(slot.id));
+  }, [monthlyAvailable, schedules, selectedDate, isSelectedDatePending, ymd, reservedSlotIds]);
 
   /** 슬롯 선택 */
   const toggleSlot = (date: Date, times: ScheduleSlot) => {
@@ -110,10 +149,17 @@ export function useReservationCore({
     }
     if (selectedSlots.length === 0 || isPending) return;
 
+    const slotIds = selectedSlots.map((s) => s.times.id);
+
     try {
       await Promise.allSettled(
         selectedSlots.map(({ times }) => mutateAsync({ scheduleId: times.id, headCount: members })),
       );
+
+      setReservedSlotIds((prev) => new Set([...prev, ...slotIds]));
+
+      refetch();
+
       setReserved(true);
       showToast("reserveDone");
     } catch {
@@ -156,8 +202,19 @@ export function useReservationCore({
       setSelectedDate(null);
       setSelectedSlots([]);
       setMembers(1);
+      setCalendarMonth(new Date());
+      setDidInitMonth(false);
       setReserved(false);
     }
+    console.log(
+      "초기화",
+      reserved,
+      selectedDate,
+      selectedSlots,
+      members,
+      calendarMonth,
+      didInitMonth,
+    );
   }, [reserved]);
 
   return {
@@ -175,6 +232,7 @@ export function useReservationCore({
     totalAmount,
     isLoggedIn,
     pendingDatesSet,
+    fullyReservedDates,
 
     // 액션
     setCalendarMonth,

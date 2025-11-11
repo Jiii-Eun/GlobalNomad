@@ -28,6 +28,7 @@ export interface ContentProps
     TimeSlotProps {
   pendingDates?: string[];
   price: number;
+  fullyReservedDates: Set<string>;
   setMembers: (members: number) => void;
   setSelectedDate: (date: Date) => void;
   handleReserve: () => void;
@@ -48,6 +49,7 @@ export default function ReservationContent({
   isPending,
   isReserveDisabled,
   totalAmount,
+  fullyReservedDates,
   setCalendarMonth,
   setSelectedDate,
   setMembers,
@@ -64,6 +66,7 @@ export default function ReservationContent({
         selectedDate={selectedDate}
         availableSet={availableSet}
         pendingDatesSet={pendingDatesSet}
+        fullyReservedDates={fullyReservedDates}
         setCalendarMonth={setCalendarMonth}
         setSelectedDate={setSelectedDate}
       />
@@ -82,14 +85,16 @@ export default function ReservationContent({
         handleCountMinus={() => setMembers(members > 1 ? members - 1 : 1)}
       />
 
-      <ReservationButton
-        reserved={reserved}
-        isPending={isPending}
-        isLoggedIn
-        isReserveDisabled={isReserveDisabled}
-        slotCount={selectedSlots.length}
-        handleReserve={handleReserve}
-      />
+      <div className="tablet:hidden">
+        <ReservationButton
+          reserved={reserved}
+          isPending={isPending}
+          isLoggedIn
+          isReserveDisabled={isReserveDisabled}
+          slotCount={selectedSlots.length}
+          handleReserve={handleReserve}
+        />
+      </div>
 
       <ReservationSummary totalAmount={totalAmount} />
     </ReservationWrap>

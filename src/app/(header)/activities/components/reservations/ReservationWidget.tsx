@@ -106,10 +106,26 @@ export default function ReservationWidget({
       {isPc ? (
         <ReservationContent price={price} {...core} />
       ) : isMobile ? (
-        <DrawerLayout steps={steps} isClose title="체험 예약" trigger={Trigger} isOpen={open}>
+        <DrawerLayout
+          isClose
+          steps={steps}
+          title="체험 예약"
+          trigger={Trigger}
+          isOpen={open}
+          onClose={handleClose}
+        >
           <DrawerHeader />
           <DrawerBody frameClass="py-0" />
-          <DrawerFooter isNext />
+          <DrawerFooter isNext currentStep={1}>
+            <ReservationButton
+              reserved={reserved}
+              isPending={isPending}
+              isLoggedIn
+              isReserveDisabled={isReserveDisabled}
+              slotCount={selectedSlots.length}
+              handleReserve={handleReserve}
+            />
+          </DrawerFooter>
         </DrawerLayout>
       ) : (
         <DrawerLayout

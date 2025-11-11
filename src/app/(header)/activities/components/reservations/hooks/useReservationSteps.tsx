@@ -1,6 +1,5 @@
 import ParticipantsCounter from "@/app/(header)/activities/components/participants/ParticipantsCounter";
 import { useReservationCore } from "@/app/(header)/activities/components/reservations/hooks/useReservationCore";
-import ReservationButton from "@/app/(header)/activities/components/reservations/ReservationButton";
 import ReservationCalendar from "@/app/(header)/activities/components/reservations/ReservationCalendar";
 import ReservationSummary from "@/app/(header)/activities/components/reservations/ReservationSummary";
 import ReservationTimeSlots from "@/app/(header)/activities/components/reservations/ReservationTimeSlots";
@@ -14,15 +13,12 @@ export function useReservationSteps(core: UseReservationCoreReturn) {
     selectedDate,
     availableSet,
     pendingDatesSet,
+    fullyReservedDates,
     members,
     setCalendarMonth,
     setSelectedDate,
     setMembers,
     toggleSlot,
-    reserved,
-    isPending,
-    isReserveDisabled,
-    handleReserve,
     totalAmount,
   } = core;
 
@@ -34,6 +30,7 @@ export function useReservationSteps(core: UseReservationCoreReturn) {
         selectedDate={selectedDate}
         availableSet={availableSet}
         pendingDatesSet={pendingDatesSet}
+        fullyReservedDates={fullyReservedDates}
         setCalendarMonth={setCalendarMonth}
         setSelectedDate={setSelectedDate}
       />
@@ -50,14 +47,6 @@ export function useReservationSteps(core: UseReservationCoreReturn) {
         members={members}
         handleCountPlus={() => setMembers((n) => n + 1)}
         handleCountMinus={() => setMembers((n) => (n > 1 ? n - 1 : 1))}
-      />
-      <ReservationButton
-        reserved={reserved}
-        isPending={isPending}
-        isLoggedIn
-        isReserveDisabled={isReserveDisabled}
-        slotCount={selectedSlots.length}
-        handleReserve={handleReserve}
       />
       <ReservationSummary totalAmount={totalAmount} />
     </>,

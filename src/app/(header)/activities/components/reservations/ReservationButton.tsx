@@ -1,3 +1,6 @@
+import Button from "@/components/ui/button/Button";
+import { cn } from "@/lib/cn";
+
 export interface ButtonProps {
   reserved: boolean;
   isPending: boolean;
@@ -19,13 +22,15 @@ export default function ReservationButton({
   handleReserve: onClick,
 }: AllButtonProps) {
   return (
-    <button
+    <Button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`text-body1-bold my-7 w-full rounded-md px-4 py-[1.4rem] text-white ${
-        disabled ? "bg-brand-gray-300 cursor-not-allowed" : "bg-brand-black"
-      }`}
+      className={cn(
+        "text-body1-bold my-7 w-full rounded-md px-4 py-[1.4rem] text-white",
+        disabled ? "bg-brand-gray-300 cursor-not-allowed" : "bg-brand-black",
+        "mobile:my-0 px-0 py-0 leading-12",
+      )}
     >
       {reserved
         ? "예약 완료"
@@ -34,6 +39,6 @@ export default function ReservationButton({
           : !isLoggedIn
             ? "로그인이 필요합니다"
             : `예약하기 (${slotCount}건)`}
-    </button>
+    </Button>
   );
 }

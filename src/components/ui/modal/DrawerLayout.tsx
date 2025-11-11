@@ -61,6 +61,7 @@ export default function DrawerLayout({
   }, [steps]);
 
   const isBack = step > 0;
+  const isLastStep = step === (steps?.length ?? 0) - 1;
 
   const contextValue = {
     title,
@@ -68,6 +69,7 @@ export default function DrawerLayout({
     onClose,
     isClose,
     isBack,
+    isLastStep,
     step,
     direction,
     steps,
