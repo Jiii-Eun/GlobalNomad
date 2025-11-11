@@ -43,7 +43,6 @@ export default function ReviewModal({
       setIsOpen(false);
     },
   });
-  console.log("reservationId:", reservationId);
   const serverError = useMemo(() => {
     if (!error) return "";
     return (error as Error).message || "후기 등록 중 오류가 발생했습니다.";

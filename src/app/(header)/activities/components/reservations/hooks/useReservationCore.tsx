@@ -206,15 +206,6 @@ export function useReservationCore({
       setDidInitMonth(false);
       setReserved(false);
     }
-    console.log(
-      "초기화",
-      reserved,
-      selectedDate,
-      selectedSlots,
-      members,
-      calendarMonth,
-      didInitMonth,
-    );
   }, [reserved]);
 
   return {
