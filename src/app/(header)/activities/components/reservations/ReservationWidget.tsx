@@ -56,15 +56,7 @@ export default function ReservationWidget({
 
   const { steps } = useReservationSteps(core);
 
-  const {
-    selectedDate,
-    selectedSlots,
-    members,
-    reserved,
-    isPending,
-    isReserveDisabled,
-    handleReserve,
-  } = core;
+  const { selectedSlots, members, reserved, isPending, isReserveDisabled, handleReserve } = core;
 
   const handleOpen = () => {
     requestAnimationFrame(() => {
