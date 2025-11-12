@@ -12,6 +12,7 @@ interface footerProps {
   frameClass?: string;
   buttonClass?: string;
   isNext?: boolean;
+  currentStep?: number;
 }
 
 export default function DrawerFooter({
@@ -21,13 +22,24 @@ export default function DrawerFooter({
   isDisabled,
   frameClass,
   buttonClass,
+  isNext = false,
+  currentStep,
 }: footerProps) {
-  const { onClose } = useDrawerContext();
+  const { nextStep, onClose, step, isLastStep } = useDrawerContext();
+
+  const showChildren = step === currentStep;
+
+  const Wrapper = isNext && !isLastStep ? "div" : Drawer.Close;
+  const WrapperProps = isNext && !isLastStep ? {} : { asChild: true };
 
   const handleClick = () => {
-    if (onClick) {
-      onClick();
-    } else if (onClose) {
+    onClick?.();
+
+    if (isNext && nextStep) {
+      nextStep();
+    }
+
+    if (!isNext && onClose) {
       onClose();
     }
   };
@@ -41,12 +53,25 @@ export default function DrawerFooter({
       {buttonText ?? "확인"}
     </Button>
   );
+
+  const widthClass = "w-full";
+
   return (
     <div className={cn("flex w-full items-center justify-center", frameClass)}>
       {children ? (
-        <Drawer.Close asChild>{children}</Drawer.Close>
+        !currentStep || showChildren ? (
+          <Wrapper className={widthClass} {...WrapperProps}>
+            {children}
+          </Wrapper>
+        ) : (
+          <Wrapper className={widthClass} {...WrapperProps}>
+            {FooterButton}
+          </Wrapper>
+        )
       ) : (
-        <Drawer.Close asChild>{FooterButton}</Drawer.Close>
+        <Wrapper className={widthClass} {...WrapperProps}>
+          {FooterButton}
+        </Wrapper>
       )}
     </div>
   );

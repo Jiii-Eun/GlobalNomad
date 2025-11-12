@@ -8,9 +8,9 @@ export default function Loading() {
           src="/images/loading.webp"
           alt="로딩중.. 글로벌로 체험을 떠나는 비행기"
           fill
-          sizes="100vw"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-contain"
-          priority={false}
+          priority
         />
       </div>
     </div>

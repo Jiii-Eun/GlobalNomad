@@ -8,6 +8,7 @@ interface DrawerContextValue {
   onClose?: () => void;
   isClose?: boolean;
   isBack?: boolean;
+  isLastStep?: boolean;
   steps?: React.ReactNode[];
   step?: number;
   direction?: "next" | "prev";

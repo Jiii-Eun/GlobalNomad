@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 
+import { InitActivityProps } from "@/app/(header)/components/features/all/AllActivities";
 import BestActivitiesList from "@/app/(header)/components/features/best/BestACtivitiesList";
 import BestPagination from "@/app/(header)/components/features/best/BestPagination";
 import { getActivities } from "@/lib/api/activities/api";
@@ -11,10 +12,6 @@ import { cn } from "@/lib/cn";
 import { useDevice } from "@/lib/hooks/useDevice";
 import { useInfiniteScrollQuery } from "@/lib/hooks/useInfiniteScroll";
 import { flattenPages } from "@/lib/utills/flattenPages";
-
-export interface InitActivityProps {
-  initialData?: GetActivitiesRes;
-}
 
 export default function BestActivities({ initialData }: InitActivityProps) {
   const { isPc } = useDevice();
@@ -39,7 +36,11 @@ export default function BestActivities({ initialData }: InitActivityProps) {
   const { data: offsetData, isLoading } = useActivities(
     baseParams,
     false,
-    page === 1 ? { placeholderData: initialData } : undefined,
+    page === 1
+      ? {
+          initialData,
+        }
+      : undefined,
   );
 
   const {

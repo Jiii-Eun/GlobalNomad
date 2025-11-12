@@ -6,14 +6,14 @@ import { Activity } from "@/lib/api/activities/types";
 import { cn } from "@/lib/cn";
 
 interface BannerProps {
-  activities: Activity[];
+  bannerActivities: Activity[];
 }
 
-export default function MainBannerClient({ activities }: BannerProps) {
+export default function MainBannerClient({ bannerActivities }: BannerProps) {
   return (
     <EmblaCarousel autoplayDelay={5000}>
-      {activities.map((activity) => {
-        const { id, bannerImageUrl, title, description } = activity;
+      {bannerActivities.map((bannerActivitie) => {
+        const { id, bannerImageUrl, title, description } = bannerActivitie;
 
         return (
           <div
